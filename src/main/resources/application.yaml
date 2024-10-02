@@ -1,0 +1,17 @@
+# dev env setting
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+
+---
+# prod env setting
+spring:
+  config:
+    activate:
+      on-profile: prod
