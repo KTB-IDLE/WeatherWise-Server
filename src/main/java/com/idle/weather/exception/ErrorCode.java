@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    SUCCESS(HttpStatus.OK , "success" , "요청에 성공했습니다.");
+    SUCCESS(HttpStatus.OK , "success" , "요청에 성공했습니다."),
+
+    // Access Denied Error
+    ACCESS_DENIED_ERROR(HttpStatus.FORBIDDEN, "4030", "액세스 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String code;
