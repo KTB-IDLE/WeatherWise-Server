@@ -1,7 +1,6 @@
 package com.idle.weather.interceptor;
 
 import com.idle.weather.exception.ResponseDto;
-import com.idle.weather.global.BaseResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +23,7 @@ public class ResponseInterceptor implements ResponseBodyAdvice {
                                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (returnType.getParameterType() == ResponseDto.class) { //파라미터 타입이 ResponseDto일 경우
             //입력받은 body를 ResponseDto 형식으로 변환하고 그 httspStatus 가져옴
-            HttpStatus status = ((BaseResponse<?>) body).getStatus();
+            HttpStatus status = ((ResponseDto<?>) body).httpStatus();
             //status 적용
             response.setStatusCode(status);
         }

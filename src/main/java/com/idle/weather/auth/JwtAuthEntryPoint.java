@@ -1,4 +1,4 @@
-package com.example.kakao_mlms.security;
+package com.idle.weather.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idle.weather.exception.ErrorCode;
