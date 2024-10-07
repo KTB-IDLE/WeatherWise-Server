@@ -1,4 +1,8 @@
 package com.idle.weather.location.service;
 
-public class LocationServiceImpl {
+import com.idle.weather.location.api.port.LocationService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class LocationServiceImpl implements LocationService {
 }
