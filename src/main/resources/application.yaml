@@ -30,17 +30,8 @@ after-login:
   default-fail: ${AFTER_LOGIN_DEFAULT_FAIL_URL}
   oauth2-success: ${AFTER_LOGIN_OAUTH2_SUCCESS_URL}
   oauth2-fail: ${AFTER_LOGIN_OAUTH2_FAIL_URL}
-server:
-  port: 8888
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.web.filter: DEBUG
-    org.apache.coyote.http11.Http11Processor: DEBUG
-    org.apache.tomcat: DEBUG
