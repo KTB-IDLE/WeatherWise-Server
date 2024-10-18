@@ -60,6 +60,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers(Constants.NO_NEED_AUTH_URLS).permitAll()
                         .requestMatchers("/api/v1/admins/**").hasRole(ERole.ADMIN.name())
                         .anyRequest().authenticated())

@@ -1,6 +1,7 @@
 package com.idle.weather.level.api.response;
 
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -30,7 +31,7 @@ public class LevelResponseDto {
     public static class SingleRanking {
         private String nickName;
         private int level;
-        public static SingleRanking from(User user) {
+        public static SingleRanking from(UserEntity user) {
             return SingleRanking.builder()
                     .level(user.getLevel())
                     .nickName(user.getNickname())

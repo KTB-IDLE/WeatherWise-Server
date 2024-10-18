@@ -54,7 +54,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         List<MissionHistory> missionHistoryByDate = missionHistoryRepository.findMissionHistoryByDate(user.getId(), date);
         // Domain -> DTO 변환
@@ -64,7 +65,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public MissionAuthenticationView getMission(Long missionHistoryId , Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
         return MissionAuthenticationView.of(user.getNickname() , missionHistory);
     }
@@ -74,7 +76,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     public MissionAuthenticate authMission(Long missionHistoryId,
                                                                      MultipartFile imageFile,
                                                                      Long userId) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         // 이미지 인증 결과
         boolean authenticationResult  = sendFastAPIServer(imageFile);
@@ -113,12 +116,12 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public SuccessMissionHistories getSuccessMissions(Long userId) {
-        // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
-        // List<MissionHistory> userMissionHistories = user.getMissionHistories();
-        List<MissionHistoryEntity> missionHistories = user.getMissionHistories();
-        List<SingleMissionHistory> userSuccessMissionHistories = missionHistories.stream()
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+
+        List<MissionHistory> userMissionHistories = user.getMissionHistories();
+        List<SingleMissionHistory> userSuccessMissionHistories = userMissionHistories.stream()
                 .filter(MissionHistory::isCompleted)
                 .map(SingleMissionHistory::from)
                 .toList();
@@ -183,8 +186,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
      */
     public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, Long userId ,
                                                        MultipartFile imageFile) throws IOException {
-        // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
 

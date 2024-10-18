@@ -11,10 +11,8 @@ public class MissionHistory {
     private Long id;
     private Mission mission;
     private boolean isCompleted;
-
     // 완료됐다면 업로드된 Image 링크
     private String uploadFileLink;
-
     public void updateCompleted() {
         this.isCompleted = true;
     }

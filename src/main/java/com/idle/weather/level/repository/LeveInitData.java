@@ -1,19 +1,64 @@
 package com.idle.weather.level.repository;
 
+import com.idle.weather.user.dto.type.EProvider;
+import com.idle.weather.user.dto.type.ERole;
+import com.idle.weather.user.repository.UserEntity;
+import com.idle.weather.user.service.port.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class LeveInitData {
     private final LevelInitService levelInitService;
+    private final UserInitService userInitService;
+
 
     @PostConstruct
     public void init() {
         levelInitService.levelInit();
+        userInitService.userInit();
+    }
+
+    @Service
+    @RequiredArgsConstructor
+    @Transactional
+    static class UserInitService {
+        private final UserRepository userRepository;
+        public void userInit() {
+            UserEntity user = UserEntity.builder()
+                    .nickname("cian")
+                    .serialId("serialId")
+                    .role(ERole.USER)
+                    .password("1234")
+                    .provider(EProvider.KAKAO)
+                    .build();
+            userRepository.save(user);
+            // 2. 권한 설정 (여기서는 단일 권한 예시)
+            List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+                    new SimpleGrantedAuthority(user.getRole().name())
+            );
+
+            // 3. Authentication 객체 생성
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    user, // principal: 사용자 정보 (UserDetails)
+                    null, // credentials: 보통 null을 사용
+                    authorities // 권한 목록
+            );
+
+            // 4. SecurityContextHolder에 설정
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
     }
 
     @Service

@@ -1,6 +1,7 @@
 package com.idle.weather.user.repository;
 
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ToString
 @Entity
@@ -110,6 +112,14 @@ public class UserEntity {
     public void register(String nickname) {
         this.nickname = nickname;
         this.role = ERole.USER;
+    }
+    public User toDomain() {
+        return User.builder()
+                .nickname(nickname)
+                .level(level)
+                .point(point)
+                .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
+                .build();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.idle.weather.global.BaseEntity;
 import com.idle.weather.mission.repository.MissionEntity;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class MissionHistoryEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="mission_id")
