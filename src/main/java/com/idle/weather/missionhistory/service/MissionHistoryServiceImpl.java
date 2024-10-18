@@ -181,9 +181,10 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
      * S3 에 저장한 후 Fast API 에 호출
      * 후순위
      */
-    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, MultipartFile imageFile) throws IOException {
+    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, Long userId ,
+                                                       MultipartFile imageFile) throws IOException {
         // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User user = getUser();
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
 
@@ -198,10 +199,5 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
 
         return MissionAuthenticate.builder().build();
-    }
-
-
-    private User getUser() {
-        return userRepository.findById(1L).get();
     }
 }
