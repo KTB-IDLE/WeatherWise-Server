@@ -50,6 +50,9 @@ public class User {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    private int level;
+
+    private int point;
     @Builder
     public User(Long id, String serialId, String password,  String nickname, EProvider provider, ERole role) {
         this.id = id;
