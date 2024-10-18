@@ -1,17 +1,32 @@
 # dev env setting
 spring:
-  config:
-    activate:
-      on-profile: dev
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+    region.static: ${S3_REGION_STATIC}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
 
----
-# prod env setting
-spring:
-  config:
-    activate:
-      on-profile: prod
+weather:
+  endpoint: ${WEATHER_END_POINT}
+  serviceKey: ${WEATHER_SERVICE_KEY}
+
+after-login:
+  default-success: ${AFTER_LOGIN_DEFAULT_SUCCESS_URL}
+  default-fail: ${AFTER_LOGIN_DEFAULT_FAIL_URL}
+  oauth2-success: ${AFTER_LOGIN_OAUTH2_SUCCESS_URL}
+  oauth2-fail: ${AFTER_LOGIN_OAUTH2_FAIL_URL}
