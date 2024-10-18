@@ -1,4 +1,6 @@
 package com.idle.weather.board.repository;
 
-public interface BoardJpaRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BoardJpaRepository extends JpaRepository<BoardEntity , Long> {
 }

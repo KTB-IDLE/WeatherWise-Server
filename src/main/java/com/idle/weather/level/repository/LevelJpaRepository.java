@@ -1,4 +1,6 @@
 package com.idle.weather.level.repository;
 
-public interface LevelJpaRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface LevelJpaRepository extends JpaRepository<LevelEntity , Long> {
 }
