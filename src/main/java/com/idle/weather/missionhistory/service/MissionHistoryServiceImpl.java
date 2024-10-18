@@ -74,8 +74,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Override
     @Transactional
     public MissionAuthenticate authMission(Long missionHistoryId,
-                                                                     MultipartFile imageFile,
-                                                                     Long userId) throws IOException {
+                                           MultipartFile imageFile,
+                                           Long userId) throws IOException {
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
