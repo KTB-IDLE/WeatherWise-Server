@@ -33,6 +33,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -51,31 +53,28 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final String pythonServerUrl = "http://python-server-url/authenticate";
 
     @Override
-    public MissionHistoryResponseDto.MissionHistoriesInfo getMissionList(LocalDate date) {
-        // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User user = getUser();
+    public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
         List<MissionHistory> missionHistoryByDate = missionHistoryRepository.findMissionHistoryByDate(user.getId(), date);
         // Domain -> DTO 변환
-        List<MissionHistoryResponseDto.SingleMissionHistory> result = missionHistoryByDate.stream().map(MissionHistoryResponseDto.SingleMissionHistory::from).toList();
-        return MissionHistoryResponseDto.MissionHistoriesInfo.of(user.getNickname(),result);
+        List<SingleMissionHistory> result = missionHistoryByDate.stream().map(SingleMissionHistory::from).toList();
+        return MissionHistoriesInfo.of(user.getNickname(),result);
     }
 
     @Override
-    public MissionHistoryResponseDto.MissionAuthenticationView getMission(Long missionHistoryId) {
-        // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User user = getUser();
-
+    public MissionAuthenticationView getMission(Long missionHistoryId , Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
-        return MissionHistoryResponseDto.MissionAuthenticationView.of(user.getNickname() , missionHistory);
+        return MissionAuthenticationView.of(user.getNickname() , missionHistory);
     }
 
     @Override
     @Transactional
-    public MissionHistoryResponseDto.MissionAuthenticate authMission(Long missionHistoryId, MultipartFile imageFile) throws IOException {
-        // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User userEntity = getUser();
-        UserDomain userDomain = userEntity.toDomain();
+    public MissionAuthenticate authMission(Long missionHistoryId,
+                                                                     MultipartFile imageFile,
+                                                                     Long userId) throws IOException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
         // 이미지 인증 결과
         boolean authenticationResult  = sendFastAPIServer(imageFile);
@@ -93,39 +92,38 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         // User 경험치 추가
 
         // 경험치 추가 할 때 레벨 계산하기
-        LevelEntity level = levelRepository.findById(userDomain.getLevel())
+        LevelEntity level = levelRepository.findById(user.getLevel())
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_LEVEL));
-        int totalPoint = userDomain.getPoint() + mission.getPoint();
+        int totalPoint = user.getPoint() + mission.getPoint();
         if (totalPoint >= level.getMaxExp()) {
-            userDomain.levelUp(totalPoint-level.getMaxExp());
+            user.levelUp(totalPoint-level.getMaxExp());
         }
 
-        userDomain.updatedExperience(mission.getPoint());
+        user.updatedExperience(mission.getPoint());
 
         // MissionHistory 인증 성공으로 업데이트
         missionHistory.updateCompleted();
 
         // Entity 에 반영하기
-        userEntity.updatePoint(userDomain);
         missionHistoryEntity.updateCompleted(missionHistory);
 
-        return MissionHistoryResponseDto.MissionAuthenticate.of(authenticationResult , mission.getPoint() , userDomain.getLevel() ,userDomain.getPoint(),level.getMaxExp());
+        return MissionAuthenticate.of(authenticationResult , mission.getPoint() ,
+                user.getLevel() ,user.getPoint(),level.getMaxExp());
     }
 
     @Override
-    public MissionHistoryResponseDto.SuccessMissionHistories getSuccessMissions() {
+    public SuccessMissionHistories getSuccessMissions(Long userId) {
         // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
-        User userEntity = getUser();
-        UserDomain userDomain = userEntity.toDomain();
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
-        List<MissionHistory> userMissionHistories = userDomain.getMissionHistories();
-
-        List<MissionHistoryResponseDto.SingleMissionHistory> userSuccessMissionHistories = userMissionHistories.stream()
+        // List<MissionHistory> userMissionHistories = user.getMissionHistories();
+        List<MissionHistoryEntity> missionHistories = user.getMissionHistories();
+        List<SingleMissionHistory> userSuccessMissionHistories = missionHistories.stream()
                 .filter(MissionHistory::isCompleted)
-                .map(MissionHistoryResponseDto.SingleMissionHistory::from)
+                .map(SingleMissionHistory::from)
                 .toList();
 
-        return MissionHistoryResponseDto.SuccessMissionHistories.from(userSuccessMissionHistories);
+        return SuccessMissionHistories.from(userSuccessMissionHistories);
     }
 
     private boolean sendFastAPIServer(MultipartFile imageFile) throws IOException {
@@ -183,7 +181,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
      * S3 에 저장한 후 Fast API 에 호출
      * 후순위
      */
-    public MissionHistoryResponseDto.MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, MultipartFile imageFile) throws IOException {
+    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, MultipartFile imageFile) throws IOException {
         // TODO: 10/7/24 USER 부분 수정 (현재는 무조건 1L 을 가지는 User 로 생각)
         User user = getUser();
 
@@ -199,7 +197,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         metadata.setContentLength(imageFile.getSize());
         amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
 
-        return MissionHistoryResponseDto.MissionAuthenticate.builder().build();
+        return MissionAuthenticate.builder().build();
     }
 
 

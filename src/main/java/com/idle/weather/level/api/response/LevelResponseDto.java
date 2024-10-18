@@ -1,6 +1,5 @@
 package com.idle.weather.level.api.response;
 
-import com.example.mission.User;
 import com.idle.weather.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;

@@ -2,6 +2,7 @@ package com.idle.weather.mission.repository;
 
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.mission.domain.Mission;
+import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

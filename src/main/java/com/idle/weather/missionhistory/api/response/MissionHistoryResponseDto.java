@@ -1,6 +1,5 @@
 package com.idle.weather.missionhistory.api.response;
 
-import com.example.mission.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import lombok.Builder;
 import lombok.Getter;

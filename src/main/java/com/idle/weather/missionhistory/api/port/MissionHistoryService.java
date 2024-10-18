@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import static com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto.*;
 
 public interface MissionHistoryService {
-    MissionHistoriesInfo getMissionList(LocalDate date);
-    MissionAuthenticationView getMission(Long missionHistoryId);
+    MissionHistoriesInfo getMissionList(LocalDate date , Long userId);
+    MissionAuthenticationView getMission(Long missionHistoryId , Long userId);
 
-    MissionAuthenticate authMission(Long missionHistoryId, MultipartFile imageFile) throws IOException;
+    MissionAuthenticate authMission(Long missionHistoryId, MultipartFile imageFile , Long userId) throws IOException;
 
-    SuccessMissionHistories getSuccessMissions();
+    SuccessMissionHistories getSuccessMissions(Long userId);
 }

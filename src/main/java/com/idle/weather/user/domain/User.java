@@ -1,5 +1,6 @@
 package com.idle.weather.user.domain;
 
+import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
@@ -8,6 +9,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ToString
@@ -20,7 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "social_id", nullable = false, unique = true)
@@ -53,6 +56,9 @@ public class User {
     private int level;
 
     private int point;
+
+    @OneToMany(mappedBy = "user")
+    private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
     @Builder
     public User(Long id, String serialId, String password,  String nickname, EProvider provider, ERole role) {
         this.id = id;
@@ -104,6 +110,18 @@ public class User {
     public void register(String nickname) {
         this.nickname = nickname;
         this.role = ERole.USER;
+    }
+
+    /**
+     * levelUp 과 updatedExperience 는 User Domain 분리해서 넣을 예정
+     */
+    public void levelUp(int remainValue) {
+        this.level++;
+        this.point = remainValue;
+    }
+
+    public void updatedExperience(int point) {
+        this.point = this.point + point;
     }
 
     @Override
