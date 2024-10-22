@@ -1,4 +1,6 @@
 package com.idle.weather.missionhistory.repository;
 
-public interface MissionHistoryJpaRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistoryEntity , Long> {
 }

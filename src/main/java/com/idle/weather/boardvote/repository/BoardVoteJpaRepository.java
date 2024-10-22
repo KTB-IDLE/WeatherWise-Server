@@ -5,6 +5,7 @@ import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

@@ -5,17 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class BaseException extends RuntimeException{
+public class BaseException extends RuntimeException {
 
-    private final HttpStatus httpStatus;
-    private final String code;
-    private final String message;
+    private final ErrorCode errorCode;
 
-    public BaseException(ErrorCode code) {
-        this.message = code.getMessage();
-        this.code = code.getCode();
-        this.httpStatus = code.getStatus();
+    public BaseException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
+    @Override
+    public String getMessage() {
+        return errorCode.getMessage();
     }
 }
