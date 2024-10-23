@@ -4,7 +4,10 @@ import com.idle.weather.board.repository.BoardEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record BoardResponse(
-        @Schema(description = "사용자 ID",example = "1")
+        @Schema(description = "게시글 ID", example = "1")
+        Long boardId,
+
+        @Schema(description = "사용자 ID", example = "1")
         Long userId,
 
         @Schema(description = "게시글 제목", example = "날씨가 너무 좋아요!")
@@ -18,6 +21,7 @@ public record BoardResponse(
 ) {
     public static BoardResponse from(BoardEntity board) {
         return new BoardResponse(
+                board.getBoardId(),
                 board.getUser().getId(),
                 board.getTitle(),
                 board.getContent(),
