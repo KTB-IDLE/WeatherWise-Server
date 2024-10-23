@@ -18,12 +18,14 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
 
     // 특정 위치 반경 25km 이내 게시글 목록을 조회 (Native Query)
     @Query(value = """
-            SELECT *
-            FROM board b
-            WHERE ST_Distance_Sphere(
-                point(b.latitude, b.longitude),
-                point(:latitude, :longitude)
-            ) <= 25000
-            """, nativeQuery = true)
+        SELECT b.*
+        FROM board_entity b
+        JOIN location l ON b.location_id = l.location_id
+        WHERE ST_Distance_Sphere(
+            point(l.longitude, l.latitude),  -- 경도, 위도 순으로 수정
+            point(:longitude, :latitude)     -- 경도, 위도 순으로 수정
+        ) <= 25000
+        """, nativeQuery = true)
     List<BoardEntity> findByLocationWithinRadius(@Param("latitude") double latitude, @Param("longitude") double longitude);
+
 }
