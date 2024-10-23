@@ -16,6 +16,7 @@ import com.idle.weather.location.domain.Location;
 import com.idle.weather.location.repository.LocationJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserJpaRepository;
+import com.idle.weather.user.service.port.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
     private final BoardVoteJpaRepository boardVoteJpaRepository;
-    private final UserJpaRepository userJpaRepository;
+    private final UserRepository userJpaRepository;
     private final LocationJpaRepository locationJpaRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
 
