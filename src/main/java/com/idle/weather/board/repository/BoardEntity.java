@@ -25,7 +25,7 @@ public class BoardEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
