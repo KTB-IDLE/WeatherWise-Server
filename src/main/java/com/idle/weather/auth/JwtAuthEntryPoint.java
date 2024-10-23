@@ -1,6 +1,7 @@
 package com.idle.weather.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,12 @@ import java.io.IOException;
 @Component
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthEntryPoint() {
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule()); // JavaTimeModule 등록
+    }
 
     @Override
     public void commence(final HttpServletRequest request,
