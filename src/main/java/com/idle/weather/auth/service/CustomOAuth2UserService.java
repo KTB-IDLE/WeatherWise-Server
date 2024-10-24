@@ -6,6 +6,7 @@ import com.idle.weather.auth.info.factory.OAuth2UserInfoFactory;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
+import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import com.idle.weather.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         UserRepository.UserSecurityForm userOpt = userRepository.findBySerialIdAndProvider(userInfo.getId(), provider)
                 .orElseGet(() -> {
-                    User user = userRepository.save(new User(
+                    UserEntity user = userRepository.save(new UserEntity(
                             userInfo.getId(),
                             bCryptPasswordEncoder.encode(PasswordUtil.generateRandomPassword()),
                             provider,

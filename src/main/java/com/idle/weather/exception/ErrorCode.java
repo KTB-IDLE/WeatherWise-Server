@@ -13,6 +13,9 @@ public enum ErrorCode {
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "4040", "해당 사용자가 존재하지 않습니다."),
     NOT_FOUND_END_POINT(HttpStatus.NOT_FOUND, "4042", "존재하지 않는 API 엔드포인트입니다."),
     NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "4043", "해당 파일을 찾을 수 없습니다."),
+    NOT_FOUND_MISSION(HttpStatus.NOT_FOUND, "4044" , "해당 미션이 존재하지 않습니다."),
+    NOT_FOUND_MISSION_HISTORY(HttpStatus.NOT_FOUND, "4045" , "해당 미션 기록이 존재하지 않습니다."),
+    NOT_FOUND_LEVEL(HttpStatus.NOT_FOUND, "4046" , "해당 레벨은 존재하지 않습니다."),
 
     // Server, File Up/DownLoad Error
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5000", "API 서버 오류입니다."),
