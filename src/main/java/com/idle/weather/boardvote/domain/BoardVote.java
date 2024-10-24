@@ -2,6 +2,7 @@ package com.idle.weather.boardvote.domain;
 
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class BoardVote {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)

@@ -4,6 +4,7 @@ import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,7 @@ public class BoardEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id", nullable = false)
@@ -39,7 +40,7 @@ public class BoardEntity extends BaseEntity {
     @Builder.Default
     private Set<BoardVote> votes = new HashSet<>();
 
-    public static BoardEntity createNewBoard(User user, Location location, String title, String content) {
+    public static BoardEntity createNewBoard(UserEntity user, Location location, String title, String content) {
         return BoardEntity.builder()
                 .user(user)
                 .location(location)

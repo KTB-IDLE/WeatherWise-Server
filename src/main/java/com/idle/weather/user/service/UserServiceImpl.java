@@ -3,6 +3,7 @@ package com.idle.weather.user.service;
 import com.idle.weather.user.api.port.UserService;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
+import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,23 +23,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User signUp(AuthSignUpDto authSignUpDto) {
-        log.info("SignUp process initiated for serialId: {}", authSignUpDto.serialId());
-
+    public UserEntity signUp(AuthSignUpDto authSignUpDto) {
         String encodedPass = passwordEncoder.encode(authSignUpDto.password());
-        User newUser = User.signUp(authSignUpDto, encodedPass);
+        UserEntity newUser = UserEntity.signUp(authSignUpDto, encodedPass);
 
-        log.info("User saved successfully: serialId = {}", newUser.getSerialId());
         return userJpaRepository.save(newUser);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<UserEntity> findById(Long id) {
         return userJpaRepository.findById(id);
     }
 
     @Override
-    public Optional<User> findBySerialId(String serialId) {
+    public Optional<UserEntity> findBySerialId(String serialId) {
         return userJpaRepository.findUserIdAndRoleBySerialId(serialId)
                 .flatMap(userSecurityForm -> userJpaRepository.findById(userSecurityForm.getId()));
     }

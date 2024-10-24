@@ -15,6 +15,7 @@ import com.idle.weather.boardvote.service.port.BoardVoteRepository;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.location.repository.LocationJpaRepository;
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponse createBoard(BoardRequest boardRequest) {
-        User user = userJpaRepository.findById(boardRequest.userId())
+        UserEntity user = userJpaRepository.findById(boardRequest.userId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Location location = boardRequest.locationRequest().toEntity();
@@ -79,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardListResponse getUserBoards(Long userId) {
-        User user = userJpaRepository.findById(userId)
+        UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<BoardEntity> userBoards = boardJpaRepository.findByUser(user);
         return BoardListResponse.from(userBoards);
@@ -122,7 +123,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void addVote(Long boardId, Long userId, VoteType voteType) {
-        User user = userJpaRepository.findById(userId)
+        UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));

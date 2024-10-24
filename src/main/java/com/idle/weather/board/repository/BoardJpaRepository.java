@@ -1,6 +1,7 @@
 package com.idle.weather.board.repository;
 
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
             FROM BoardEntity b
             WHERE b.user = :user
             """)
-    List<BoardEntity> findByUser(@Param("user") User user);
+    List<BoardEntity> findByUser(@Param("user") UserEntity user);
 
     // 특정 위치 반경 25km 이내 게시글 목록을 조회 (Native Query)
     @Query(value = """
