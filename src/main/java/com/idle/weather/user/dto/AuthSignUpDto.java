@@ -12,5 +12,10 @@ public record AuthSignUpDto(@JsonProperty("serialId")
                             @JsonProperty("nickname")
                             @NotNull
                             @NotBlank
-                            String nickname) {
+                            String nickname,
+                            @JsonProperty("password")
+                            @NotNull
+                            @NotBlank
+                            String password
+) {
 }

@@ -85,7 +85,7 @@ public class JwtUtil implements InitializingBean {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + accessTokenExpiredPeriod))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

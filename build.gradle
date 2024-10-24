@@ -30,6 +30,11 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0' // swagger 의존성 추가
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.10' // Schema를 위한 swagger annotations 추가
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2' // Jakarta Validation API
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final' // Hibernate Validator (Bean Validation 구현체)
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -37,6 +42,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.security:spring-security-web'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security' // Spring Security 추가
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

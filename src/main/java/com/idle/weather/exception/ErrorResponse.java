@@ -1,5 +1,6 @@
 package com.idle.weather.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @JsonPropertyOrder({"time", "status", "code", "message", "result"})
 public class ErrorResponse {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime time = LocalDateTime.now();
     private HttpStatus status;
     private String code;
