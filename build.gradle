@@ -13,6 +13,10 @@ java {
 	}
 }
 
+ext {
+	set('springCloudVersion', "2023.0.3")
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -54,6 +58,18 @@ dependencies {
 
 	// JsonParser
 	implementation 'com.google.code.gson:gson:2.10.1'
+
+	//AWS
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// FeignClient
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {
