@@ -35,3 +35,6 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}
+
+server:
+  port: 8999
