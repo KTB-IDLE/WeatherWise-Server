@@ -54,15 +54,20 @@ public class UserEntity {
 
     @Column(name = "refresh_token")
     private String refreshToken;
-
     private int level;
-
     private int point;
+    // 더위
+    private boolean runHot;
+    // 추위
+    private boolean runCold;
+    // 땀
+    private boolean runSweat;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
     @Builder
-    public UserEntity(Long id, String serialId, String password, String nickname, EProvider provider, ERole role) {
+    public UserEntity(Long id, String serialId, String password, String nickname,
+                      EProvider provider, ERole role , boolean runHot , boolean runCold , boolean runSweat) {
         this.id = id;
         this.serialId = serialId;
         this.password = password;
@@ -71,6 +76,9 @@ public class UserEntity {
         this.role = role;
         this.createdDate = LocalDate.now();
         this.isLogin = false;
+        this.runCold = runCold;
+        this.runHot = runHot;
+        this.runSweat = runSweat;
     }
 
     @Builder
@@ -115,6 +123,7 @@ public class UserEntity {
     }
     public User toDomain() {
         return User.builder()
+                .id(id)
                 .nickname(nickname)
                 .level(level)
                 .point(point)
