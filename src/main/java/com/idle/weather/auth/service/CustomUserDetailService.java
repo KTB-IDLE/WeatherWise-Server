@@ -19,7 +19,6 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        log.info(username);
         UserRepository.UserSecurityForm user = userRepository.findUserIdAndRoleBySerialId(username)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
@@ -29,7 +28,6 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserById(Long userId) throws BaseException {
         UserRepository.UserSecurityForm user = userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(userId, true)
                 .orElseThrow(() -> new UsernameNotFoundException("Not Found UserId"));
-
         return CustomUserDetails.create(user);
     }
 }
