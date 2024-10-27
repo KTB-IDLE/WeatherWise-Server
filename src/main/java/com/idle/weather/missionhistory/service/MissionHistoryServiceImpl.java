@@ -8,11 +8,10 @@ import com.idle.weather.level.repository.LevelEntity;
 import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
-import com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
-import com.idle.weather.mock.MockAuthFastApiService;
+import com.idle.weather.mock.MockFastApiService;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final LevelJpaRepository levelRepository;
 
     // Mock Server
-    private final MockAuthFastApiService mockAuthFastApiService;
+    private final MockFastApiService mockFastApiService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -151,7 +150,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         /**
          * 우선 Mock 서버로 대체 (항상 True)
          */
-        return mockAuthFastApiService.send(requestEntity);
+        return mockFastApiService.missionAuthentication(requestEntity);
     }
 
     private Object convertMultipartFileToResource(MultipartFile file) throws IOException {
