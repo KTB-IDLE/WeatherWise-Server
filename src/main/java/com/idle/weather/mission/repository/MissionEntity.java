@@ -5,10 +5,7 @@ import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.mission.domain.MissionType;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,7 @@ import static jakarta.persistence.EnumType.*;
 @Getter
 @AllArgsConstructor(access= AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "missions")
+@Table(name = "missions") @Builder
 public class MissionEntity extends BaseEntity {
 
     @Id
@@ -28,6 +25,9 @@ public class MissionEntity extends BaseEntity {
     private Long id;
     private String name;
     private int point;
+
+    private String uploadFileName;
+    private String storeFileName;
 
     @OneToMany(mappedBy = "mission")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
@@ -40,6 +40,9 @@ public class MissionEntity extends BaseEntity {
                 .id(id)
                 .point(point)
                 .name(name)
+                .missionType(missionType)
+                .storeFileName(storeFileName)
+                .uploadFileName(uploadFileName)
                 .build();
     }
 }
