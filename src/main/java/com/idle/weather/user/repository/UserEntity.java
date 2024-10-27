@@ -55,14 +55,26 @@ public class UserEntity {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Column(name = "level" , nullable = false)
     private int level;
 
+    @Column(name = "point" , nullable = false)
     private int point;
+    // 더위
+    @Column(name = "hot" , nullable = false)
+    private boolean runHot;
+    // 추위
+    @Column(name = "cold" , nullable = false)
+    private boolean runCold;
+    // 땀
+    @Column(name = "sweat" , nullable = false)
+    private boolean runSweat;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
     @Builder
-    public UserEntity(Long id, String serialId, String password, String nickname, EProvider provider, ERole role) {
+    public UserEntity(Long id, String serialId, String password, String nickname,
+                      EProvider provider, ERole role, boolean runHot , boolean runCold , boolean runSweat) {
         this.id = id;
         this.serialId = serialId;
         this.password = password;
@@ -71,6 +83,11 @@ public class UserEntity {
         this.role = role;
         this.createdDate = LocalDate.now();
         this.isLogin = false;
+        this.runCold = runCold;
+        this.runHot = runHot;
+        this.runSweat = runSweat;
+        this.level = 1;
+        this.point = 0;
     }
 
     @Builder
@@ -103,9 +120,11 @@ public class UserEntity {
                 .password(encodedPassword)
                 .provider(EProvider.DEFAULT)
                 .role(ERole.USER)
+                .runCold(authSignUpDto.survey().runCold())
+                .runSweat(authSignUpDto.survey().runSweat())
+                .runHot(authSignUpDto.survey().runHot())
                 .build();
         user.register(authSignUpDto.nickname());
-
         return user;
     }
 
