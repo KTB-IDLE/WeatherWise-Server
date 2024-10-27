@@ -2,6 +2,7 @@ package com.idle.weather.mission.repository;
 
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.mission.domain.Mission;
+import com.idle.weather.mission.domain.MissionType;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,6 +12,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.EnumType.*;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public class MissionEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "mission")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
+
+    @Enumerated(STRING)
+    private MissionType missionType;
 
     public Mission toDomain() {
         return Mission.builder()

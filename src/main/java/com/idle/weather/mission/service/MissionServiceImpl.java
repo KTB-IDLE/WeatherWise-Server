@@ -13,6 +13,7 @@ public class MissionServiceImpl implements MissionService {
     private MockFastApiService fastApiService;
     @Override
     public Mission createMission(Long userId, int nx, int ny) {
+        // FastAPI 에서 받은 결과를 적절하게 파싱
         CurrentWeatherResponse currentWeatherInfo = fastApiService.getCurrentWeatherInfo(nx, ny);
 
         // currentWeatherInfo 를 기반으로 MissionRepository 에서 적절한 미션을 가지고 온다.
