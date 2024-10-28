@@ -10,4 +10,5 @@ public interface MissionHistoryRepository {
     List<MissionHistory> findMissionHistoryByDate(Long userId , LocalDate date);
     MissionHistory findById(Long id);
     MissionHistoryEntity findByIdEntity(Long id);
+    MissionHistory save(MissionHistory missionHistory);
 }

@@ -35,6 +35,17 @@ public class MissionEntity extends BaseEntity {
     @Enumerated(STRING)
     private MissionType missionType;
 
+    public static MissionEntity toEntity(Mission mission) {
+        return MissionEntity.builder()
+                .id(mission.getId())
+                .name(mission.getName())
+                .point(mission.getPoint())
+                .uploadFileName(mission.getUploadFileName())
+                .storeFileName(mission.getStoreFileName())
+                .missionType(mission.getMissionType())
+                .build();
+    }
+
     public Mission toDomain() {
         return Mission.builder()
                 .id(id)

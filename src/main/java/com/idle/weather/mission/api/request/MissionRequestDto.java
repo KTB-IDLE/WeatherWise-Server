@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 
 public class MissionRequestDto {
     @Builder @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor @AllArgsConstructor
     public static class CreateMission {
         // 예보지점의 X 좌표값
         private int nx;
         // 예보지점의 Y 좌표값
         private int ny;
+        // 미션 타임
+        private String missionTime;
     }
 }

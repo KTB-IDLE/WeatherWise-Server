@@ -11,16 +11,17 @@ import java.util.List;
 public class MissionResponseDto {
 
     @Builder @Getter
-    @NoArgsConstructor @AllArgsConstructor
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SingleMission {
         private Long id;
         private String name;
         private boolean isCompleted;
         private int point;
 
-        public static SingleMission from(Mission mission) {
+        public static SingleMission of(Mission mission , Long missionHistoryId) {
             return SingleMission.builder()
-                    .id(mission.getId())
+                    .id(missionHistoryId)
                     .name(mission.getName())
                     .point(mission.getPoint())
                     .isCompleted(mission.isCompleted())

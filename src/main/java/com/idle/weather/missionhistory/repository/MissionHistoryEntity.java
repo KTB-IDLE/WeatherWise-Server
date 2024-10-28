@@ -6,18 +6,17 @@ import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Getter
 @AllArgsConstructor(access= AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "mission_histories")
+@Table(name = "mission_histories") @Builder
 public class MissionHistoryEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,15 +34,24 @@ public class MissionHistoryEntity extends BaseEntity {
     @JoinColumn(name ="mission_id")
     private MissionEntity mission;
 
-    private String uploadFileName;
-    private String storeFileName;
+    @Enumerated(STRING)
+    private MissionTime missionTime;
+
+    public static MissionHistoryEntity toEntity(MissionHistory missionHistory) {
+        return MissionHistoryEntity.builder()
+                .id(missionHistory.getId())
+                .isCompleted(missionHistory.isCompleted())
+                .mission(MissionEntity.toEntity(missionHistory.getMission()))
+                .user(UserEntity.toEntity(missionHistory.getUser()))
+                .missionTime(missionHistory.getMissionTime())
+                .build();
+    }
 
     public MissionHistory toDomain() {
         return MissionHistory.builder()
                 .id(id)
                 .mission(mission.toDomain())
                 .isCompleted(isCompleted)
-                .uploadFileLink(uploadFileName)
                 .build();
     }
 

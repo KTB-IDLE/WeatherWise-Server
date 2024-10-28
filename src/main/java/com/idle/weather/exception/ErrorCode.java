@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_FOUND_MISSION_HISTORY(HttpStatus.NOT_FOUND, "4045" , "해당 미션 기록이 존재하지 않습니다."),
     NOT_FOUND_LEVEL(HttpStatus.NOT_FOUND, "4046" , "해당 레벨은 존재하지 않습니다."),
 
+    INVALID_MISSION_TIME(HttpStatus.BAD_REQUEST,"4047" , "해당 미션 시간은 존재하지 않습니다."),
     // Server, File Up/DownLoad Error
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5000", "API 서버 오류입니다."),
 

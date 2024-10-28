@@ -27,6 +27,6 @@ public class MissionController {
     public ResponseEntity<BaseResponse<SingleMission>> createMission(@UserId Long userId,
                                                                      @RequestBody CreateMission createMission) {
         return ResponseEntity.ok().body(new BaseResponse<>(missionService
-                .createMission(userId,createMission.getNx(),createMission.getNy())));
+                .createMission(userId,createMission)));
     }
 }

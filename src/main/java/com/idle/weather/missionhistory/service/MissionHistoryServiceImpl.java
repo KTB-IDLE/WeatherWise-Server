@@ -10,6 +10,7 @@ import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.missionhistory.repository.MissionTime;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.mock.MockFastApiService;
 import com.idle.weather.user.domain.User;
@@ -68,6 +69,15 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
                 .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
         return MissionAuthenticationView.of(user.getNickname() , missionHistory);
+    }
+
+    @Override
+    @Transactional
+    public MissionHistory save(Long userId , Mission mission, MissionTime missionTime) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+
+        return missionHistoryRepository.save(MissionHistory.of(user, mission,missionTime));
     }
 
     @Override
