@@ -30,6 +30,9 @@ public class User {
     private int point;
 
     private List<MissionHistory> missionHistories = new ArrayList<>();
+    private boolean runHot;
+    private boolean runCold;
+    private boolean runSweat;
 
     public void updatedExperience(int point) {
         this.point = this.point + point;

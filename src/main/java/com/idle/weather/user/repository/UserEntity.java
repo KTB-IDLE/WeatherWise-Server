@@ -149,10 +149,14 @@ public class UserEntity {
     }
     public User toDomain() {
         return User.builder()
+                .id(id)
                 .nickname(nickname)
                 .level(level)
                 .point(point)
                 .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
+                .runHot(runHot)
+                .runCold(runCold)
+                .runSweat(runSweat)
                 .build();
     }
 
