@@ -15,6 +15,8 @@ public class MissionHistory {
     private boolean isCompleted;
     private MissionTime missionTime;
     private User user;
+    private String uploadFileName;
+    private String storeFileName;
     public void updateCompleted() {
         this.isCompleted = true;
     }

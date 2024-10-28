@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
  */
 @Service
 public class MockFastApiService {
-    public boolean missionAuthentication(HttpEntity<MultiValueMap<String, Object>> requestEntity) {
+    public boolean missionAuthentication() {
         // 무조건 성공이라고 가정
         // return true;
         // 무조건 실패라고 가정

@@ -36,6 +36,8 @@ public class MissionHistoryEntity extends BaseEntity {
 
     @Enumerated(STRING)
     private MissionTime missionTime;
+    private String uploadFileName;
+    private String storeFileName;
 
     public static MissionHistoryEntity toEntity(MissionHistory missionHistory) {
         return MissionHistoryEntity.builder()

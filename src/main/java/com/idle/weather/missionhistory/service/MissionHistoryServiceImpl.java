@@ -138,29 +138,35 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         return SuccessMissionHistories.from(userSuccessMissionHistories);
     }
 
+    /**
+     * S3 에 저장한 후 Fast API 에 호출
+     * 후순위
+     */
+    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, Long userId ,
+                                                       MultipartFile imageFile) throws IOException {
+        User user = userRepository
+                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+
+        MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
+
+        //파일의 원본 이름
+        String originalFileName = imageFile.getOriginalFilename();
+        //DB에 저장될 파일 이름
+        String storeFileName = createStoreFileName(originalFileName);
+        //S3에 저장
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(imageFile.getContentType());
+        metadata.setContentLength(imageFile.getSize());
+        amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
+
+        return MissionAuthenticate.builder().build();
+    }
+
     private boolean sendFastAPIServer(MultipartFile imageFile) throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 요청 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Multipart 요청 바디에 파일을 포함
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("imageFile", convertMultipartFileToResource(imageFile));
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        // 파이썬 서버로 이미지 파일 POST 요청 전송
-        /*ResponseEntity<Boolean> responseEntity = restTemplate.postForEntity(
-                pythonServerUrl, requestEntity, Boolean.class
-        );*/
-        // return responseEntity.getBody();
-
         /**
          * 우선 Mock 서버로 대체 (항상 True)
          */
-        return mockFastApiService.missionAuthentication(requestEntity);
+        return mockFastApiService.missionAuthentication();
     }
 
     private Object convertMultipartFileToResource(MultipartFile file) throws IOException {
@@ -189,27 +195,5 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         return originalFilename.substring(post + 1);
     }
 
-    /**
-     * S3 에 저장한 후 Fast API 에 호출
-     * 후순위
-     */
-    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, Long userId ,
-                                                       MultipartFile imageFile) throws IOException {
-        User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
-        MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
-
-        //파일의 원본 이름
-        String originalFileName = imageFile.getOriginalFilename();
-        //DB에 저장될 파일 이름
-        String storeFileName = createStoreFileName(originalFileName);
-        //S3에 저장
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(imageFile.getContentType());
-        metadata.setContentLength(imageFile.getSize());
-        amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
-
-        return MissionAuthenticate.builder().build();
-    }
 }

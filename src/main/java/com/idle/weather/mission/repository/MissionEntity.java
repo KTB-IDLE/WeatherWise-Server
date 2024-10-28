@@ -26,9 +26,6 @@ public class MissionEntity extends BaseEntity {
     private String name;
     private int point;
 
-    private String uploadFileName;
-    private String storeFileName;
-
     @OneToMany(mappedBy = "mission")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
 
@@ -40,8 +37,6 @@ public class MissionEntity extends BaseEntity {
                 .id(mission.getId())
                 .name(mission.getName())
                 .point(mission.getPoint())
-                .uploadFileName(mission.getUploadFileName())
-                .storeFileName(mission.getStoreFileName())
                 .missionType(mission.getMissionType())
                 .build();
     }
@@ -52,8 +47,6 @@ public class MissionEntity extends BaseEntity {
                 .point(point)
                 .name(name)
                 .missionType(missionType)
-                .storeFileName(storeFileName)
-                .uploadFileName(uploadFileName)
                 .build();
     }
 }

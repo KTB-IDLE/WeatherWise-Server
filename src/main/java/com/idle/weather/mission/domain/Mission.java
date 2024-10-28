@@ -15,7 +15,5 @@ public class Mission {
     private MissionType missionType;
     private int point;
     private List<MissionHistory> missionHistories;
-    private String uploadFileName;
-    private String storeFileName;
     private boolean isCompleted;
 }
