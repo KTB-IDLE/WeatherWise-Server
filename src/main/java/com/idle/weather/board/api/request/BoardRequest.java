@@ -5,9 +5,6 @@ import com.idle.weather.location.api.request.LocationRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record BoardRequest(
-        @Schema(description = "사용자 ID",example = "1")
-        Long userId,
-
         @Schema(description = "게시글 제목", example = "날씨가 너무 좋아요!")
         String title,
 
