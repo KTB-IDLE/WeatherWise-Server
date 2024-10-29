@@ -3,6 +3,7 @@ package com.idle.weather.board.api.port;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.user.domain.User;
 
@@ -33,6 +34,8 @@ public interface BoardService {
     int getUpvoteCount(Long boardId);
 
     int getDownvoteCount(Long boardId);
+
+    BoardVoteResponse getUserVote(Long boardId, Long userId);
 
     // 투표 추가
     void addVote(Long boardId, Long userId, VoteType voteType);

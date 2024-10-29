@@ -8,6 +8,7 @@ import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.board.service.port.BoardRepository;
+import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
@@ -111,17 +112,47 @@ public class BoardServiceImpl implements BoardService {
     public int getUpvoteCount(Long boardId) {
         String upvoteKey = UPVOTE_KEY + boardId;
         Integer upvoteCount = redisTemplate.opsForValue().get(upvoteKey);
-        return (upvoteCount != null) ? upvoteCount : 0;
+
+        if (upvoteCount == null) {
+            BoardEntity board = boardJpaRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+            upvoteCount = board.getUpvoteCount();
+            redisTemplate.opsForValue().set(upvoteKey, upvoteCount);
+        }
+
+        return upvoteCount;
     }
 
     @Override
     public int getDownvoteCount(Long boardId) {
         String downvoteKey = DOWNVOTE_KEY + boardId;
         Integer downvoteCount = redisTemplate.opsForValue().get(downvoteKey);
-        return (downvoteCount != null) ? downvoteCount : 0;
+
+        if (downvoteCount == null) {
+            BoardEntity board = boardJpaRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+            downvoteCount = board.getDownvoteCount();
+            redisTemplate.opsForValue().set(downvoteKey, downvoteCount);
+        }
+        return downvoteCount;
     }
 
     @Override
+    public BoardVoteResponse getUserVote(Long boardId, Long userId) {
+        UserEntity user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        BoardEntity board = boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+        Optional<BoardVote> currentUserVote = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        return currentUserVote
+                .map(BoardVoteResponse::from)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional
     public void addVote(Long boardId, Long userId, VoteType voteType) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -133,32 +164,62 @@ public class BoardServiceImpl implements BoardService {
 
         Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
-        if (currentVoteOpt.isPresent()) {
-            BoardVote currentVote = currentVoteOpt.get();
+        try {
+            if (currentVoteOpt.isPresent()) {
+                BoardVote currentVote = currentVoteOpt.get();
 
-            if (currentVote.getVoteType() == voteType) {
-                if (voteType == VoteType.UPVOTE) {
-                    redisTemplate.opsForValue().decrement(upvoteKey);
-                } else if (voteType == VoteType.DOWNVOTE) {
-                    redisTemplate.opsForValue().get(downvoteKey);
+                // 동일한 투표 타입을 클릭하여 취소하는 경우
+                if (currentVote.getVoteType() == voteType) {
+                    if (voteType == VoteType.UPVOTE) {
+                        Integer upvoteCount = redisTemplate.opsForValue().get(upvoteKey); // NullPointException 처리
+                        upvoteCount = (upvoteCount == null) ? 0 : upvoteCount; // null 체크
+                        if (upvoteCount > 0) {
+                            redisTemplate.opsForValue().decrement(upvoteKey); // Redis에서 감소
+                            board.decrementUpvote();
+                            boardJpaRepository.save(board);
+                        } else {
+                            throw new IllegalStateException("Cannot decrease upvote count below zero.");
+                        }
+                    } else if (voteType == VoteType.DOWNVOTE) {
+                        Integer downvoteCount = redisTemplate.opsForValue().get(downvoteKey);
+                        downvoteCount = (downvoteCount == null) ? 0 : downvoteCount;
+                        if (downvoteCount > 0) {
+                            redisTemplate.opsForValue().decrement(downvoteKey); // Redis에서 감소
+                            board.decrementDownvote();
+                            boardJpaRepository.save(board);
+                        } else {
+                            throw new IllegalStateException("Cannot decrease downvote count below zero.");
+                        }
+                    }
+                    boardVoteJpaRepository.delete(currentVote); // 데이터베이스에서 삭제
+                } else {
+                    // 다른 투표 타입으로 변경
+                    if (currentVote.getVoteType() == VoteType.UPVOTE) {
+                        redisTemplate.opsForValue().decrement(upvoteKey);
+                        redisTemplate.opsForValue().increment(downvoteKey);
+                        board.decrementUpvote();
+                        board.incrementDownvote();
+                        boardJpaRepository.save(board);
+                    } else if (currentVote.getVoteType() == VoteType.DOWNVOTE) {
+                        redisTemplate.opsForValue().decrement(downvoteKey);
+                        redisTemplate.opsForValue().increment(upvoteKey);
+                        board.decrementDownvote();
+                        board.incrementUpvote();
+                        boardJpaRepository.save(board);
+                    }
+                    currentVote.updateVoteType(voteType);
+                    boardVoteJpaRepository.save(currentVote); // 데이터베이스 업데이트
                 }
-                boardVoteJpaRepository.removeVote(user, board);
             } else {
-                if (currentVote.getVoteType() == VoteType.UPVOTE) {
-                    redisTemplate.opsForValue().decrement(upvoteKey);
-                    redisTemplate.opsForValue().increment(downvoteKey);
-                } else if (currentVote.getVoteType() == VoteType.DOWNVOTE) {
-                    redisTemplate.opsForValue().decrement(downvoteKey);
-                    redisTemplate.opsForValue().increment(upvoteKey);
-                }
-                currentVote.updateVoteType(voteType);
-                boardVoteJpaRepository.save(currentVote);
-            }
-        } else {
+                // 새로운 투표 추가
                 if (voteType == VoteType.UPVOTE) {
                     redisTemplate.opsForValue().increment(upvoteKey);
+                    board.incrementUpvote();
+                    boardJpaRepository.save(board);
                 } else if (voteType == VoteType.DOWNVOTE) {
                     redisTemplate.opsForValue().increment(downvoteKey);
+                    board.incrementDownvote();
+                    boardJpaRepository.save(board);
                 }
 
                 BoardVote newVote = BoardVote.builder()
@@ -167,7 +228,16 @@ public class BoardServiceImpl implements BoardService {
                         .voteType(voteType)
                         .build();
 
-                boardVoteJpaRepository.save(newVote);
+                boardVoteJpaRepository.save(newVote); // 데이터베이스에 새로운 투표 저장
             }
+        } catch (Exception e) {
+            // 예외 발생 시 Redis에서 카운트를 롤백 (optional)
+            if (voteType == VoteType.UPVOTE) {
+                redisTemplate.opsForValue().decrement(upvoteKey);
+            } else if (voteType == VoteType.DOWNVOTE) {
+                redisTemplate.opsForValue().decrement(downvoteKey);
+            }
+            throw e; // 예외 다시 발생시켜 트랜잭션 롤백
         }
+    }
 }
