@@ -1,6 +1,8 @@
 package com.idle.weather.user.api;
 
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.request.ReActivateRequest;
+import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.repository.UserEntity;
@@ -22,22 +24,39 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping(path = "/signup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserEntity> signUp(@RequestBody AuthSignUpDto authSignUpDto) {
-        UserEntity newUser = userService.signUp(authSignUpDto);
-        return ResponseEntity.ok(newUser);
+    public UserResponse signUp(@RequestBody AuthSignUpDto authSignUpDto) {
+        return userService.signUp(authSignUpDto);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{userId}")
+    public UserResponse getUserById(@PathVariable Long userId) {
+        return userService.findById(userId);
     }
 
     @GetMapping("/serialId/{serialId}")
-    public ResponseEntity<UserEntity> getUserBySerialId(@PathVariable String serialId) {
-        return userService.findBySerialId(serialId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public UserResponse getUserBySerialId(@PathVariable String serialId) {
+        return userService.findBySerialId(serialId);
+    }
+
+    @PutMapping("/password/{userId}")
+    public ResponseEntity<String> updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
+        userService.updatePassword(userId, newPassword);
+        return ResponseEntity.ok("Password updated successfully.");
+    }
+
+    @PutMapping("/nickname/{userId}")
+    public UserResponse updateNickname(@PathVariable Long userId, @RequestBody String newNickname) {
+        return userService.updateNickname(userId, newNickname);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PutMapping("/reactivate")
+    public UserResponse reActivateUser(@RequestBody ReActivateRequest request) {
+        return userService.reActivateUser(request.serialId(), request.newPassword());
     }
 }
