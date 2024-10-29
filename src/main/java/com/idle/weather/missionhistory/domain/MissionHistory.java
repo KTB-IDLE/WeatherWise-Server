@@ -1,6 +1,8 @@
 package com.idle.weather.missionhistory.domain;
 
 import com.idle.weather.mission.domain.Mission;
+import com.idle.weather.missionhistory.repository.MissionTime;
+import com.idle.weather.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,9 +13,20 @@ public class MissionHistory {
     private Long id;
     private Mission mission;
     private boolean isCompleted;
-    // 완료됐다면 업로드된 Image 링크
-    private String uploadFileLink;
+    private MissionTime missionTime;
+    private User user;
+    private String uploadFileName;
+    private String storeFileName;
     public void updateCompleted() {
         this.isCompleted = true;
+    }
+
+    public static MissionHistory of(User user , Mission mission , MissionTime missionTime) {
+        return MissionHistory.builder()
+                .mission(mission)
+                .user(user)
+                .isCompleted(false)
+                .missionTime(missionTime)
+                .build();
     }
 }

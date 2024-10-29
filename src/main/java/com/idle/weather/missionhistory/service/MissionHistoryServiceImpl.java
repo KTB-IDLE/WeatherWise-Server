@@ -8,11 +8,11 @@ import com.idle.weather.level.repository.LevelEntity;
 import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
-import com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.missionhistory.repository.MissionTime;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
-import com.idle.weather.mock.MockAuthFastApiService;
+import com.idle.weather.mock.MockFastApiService;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +45,10 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final LevelJpaRepository levelRepository;
 
     // Mock Server
-    private final MockAuthFastApiService mockAuthFastApiService;
+    private final MockFastApiService mockFastApiService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
-    private final String pythonServerUrl = "http://python-server-url/authenticate";
 
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
@@ -73,14 +71,29 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     @Transactional
+    public MissionHistory save(Long userId , Mission mission, MissionTime missionTime) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+
+        return missionHistoryRepository.save(MissionHistory.of(user, mission,missionTime));
+    }
+
+    @Override
+    @Transactional
     public MissionAuthenticate authMission(Long missionHistoryId,
                                            MultipartFile imageFile,
                                            Long userId) throws IOException {
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+        MissionHistoryEntity missionHistoryEntity = missionHistoryRepository.findByIdEntity(missionHistoryId);
+        MissionHistory missionHistory = missionHistoryEntity.toDomain();
+        Mission mission = missionHistory.getMission();
 
-        // 이미지 인증 결과
-        boolean authenticationResult  = sendFastAPIServer(imageFile);
+        // S3 에 저장 후 이미지 URL 받아오기
+        String imageUrl = authMissionAfterSavedS3(imageFile);
+
+        // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
+        boolean authenticationResult  = sendFastAPIServer(imageUrl , mission , user);
 
         // 인증 실패시
         if (!authenticationResult) {
@@ -88,13 +101,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         }
 
         // 인증 성공시
-        MissionHistoryEntity missionHistoryEntity = missionHistoryRepository.findByIdEntity(missionHistoryId);
-        MissionHistory missionHistory = missionHistoryEntity.toDomain();
-        Mission mission = missionHistory.getMission();
-
-        // User 경험치 추가
-
-        // 경험치 추가 할 때 레벨 계산하기
+        // User 경험치 추가 (경험치 추가 할 때 레벨 계산)
         LevelEntity level = levelRepository.findById(user.getLevel())
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_LEVEL));
         int totalPoint = user.getPoint() + mission.getPoint();
@@ -129,39 +136,28 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         return SuccessMissionHistories.from(userSuccessMissionHistories);
     }
 
-    private boolean sendFastAPIServer(MultipartFile imageFile) throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
 
-        // 요청 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    public String authMissionAfterSavedS3(MultipartFile imageFile) throws IOException {
+        //파일의 원본 이름
+        String originalFileName = imageFile.getOriginalFilename();
+        //DB에 저장될 파일 이름
+        String storeFileName = createStoreFileName(originalFileName);
+        //S3에 저장
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(imageFile.getContentType());
+        metadata.setContentLength(imageFile.getSize());
+        amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
+        // 업로드된 파일의 URL 가져오기
+        return amazonS3Client.getUrl(bucket, storeFileName).toString();
+    }
 
-        // Multipart 요청 바디에 파일을 포함
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("imageFile", convertMultipartFileToResource(imageFile));
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        // 파이썬 서버로 이미지 파일 POST 요청 전송
-        /*ResponseEntity<Boolean> responseEntity = restTemplate.postForEntity(
-                pythonServerUrl, requestEntity, Boolean.class
-        );*/
-        // return responseEntity.getBody();
-
+    private boolean sendFastAPIServer(String imageUrl , Mission mission , User user) throws IOException {
         /**
          * 우선 Mock 서버로 대체 (항상 True)
          */
-        return mockAuthFastApiService.send(requestEntity);
+        return mockFastApiService.missionAuthentication();
     }
 
-    private Object convertMultipartFileToResource(MultipartFile file) throws IOException {
-        return new ByteArrayResource(file.getBytes()) {
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        };
-    }
 
     /**
      * 파일명이 겹치는 것을 방지하기위해 중복되지않는 UUID를 생성해서 반환(ext는 확장자)
@@ -180,27 +176,5 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         return originalFilename.substring(post + 1);
     }
 
-    /**
-     * S3 에 저장한 후 Fast API 에 호출
-     * 후순위
-     */
-    public MissionAuthenticate authMissionAfterSavedS3(Long missionHistoryId, Long userId ,
-                                                       MultipartFile imageFile) throws IOException {
-        User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
-        MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
-
-        //파일의 원본 이름
-        String originalFileName = imageFile.getOriginalFilename();
-        //DB에 저장될 파일 이름
-        String storeFileName = createStoreFileName(originalFileName);
-        //S3에 저장
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(imageFile.getContentType());
-        metadata.setContentLength(imageFile.getSize());
-        amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
-
-        return MissionAuthenticate.builder().build();
-    }
 }

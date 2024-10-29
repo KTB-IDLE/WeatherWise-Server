@@ -50,7 +50,6 @@ public class MissionHistoryResponseDto {
                     .missionName(missionHistory.getMission().getName())
                     .nickName(nickName)
                     .isCompleted(missionHistory.isCompleted())
-                    .uploadFileLink(missionHistory.getUploadFileLink())
                     .build();
         }
     }

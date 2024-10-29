@@ -31,4 +31,8 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
         return missionHistoryJpaRepository.findById(id)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MISSION_HISTORY));
     }
+    @Override
+    public MissionHistory save(MissionHistory missionHistory) {
+        return missionHistoryJpaRepository.save(MissionHistoryEntity.toEntity(missionHistory)).toDomain();
+    }
 }

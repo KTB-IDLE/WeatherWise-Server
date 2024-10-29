@@ -31,7 +31,6 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
 
         //없으면 예외처리
         if ("anonymousUser".equals(userIdObj) || userIdObj == null) {
-            log.info("없다");
             throw new BaseException(ErrorCode.ACCESS_DENIED_ERROR);
         }
         //Long 타입으로 변환해 반환

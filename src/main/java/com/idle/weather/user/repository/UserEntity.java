@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @DynamicUpdate
-@Table(name = "users")
+@Table(name = "users") @Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
 
@@ -138,12 +139,30 @@ public class UserEntity {
         this.nickname = nickname;
         this.role = ERole.USER;
     }
+
+    public static UserEntity toEntity(User  user) {
+        return UserEntity.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .level(user.getLevel())
+                .point(user.getPoint())
+                .password(user.getPassword())
+                .provider(user.getProvider())
+                .role(user.getRole())
+                .serialId(user.getSerialId())
+                .isLogin(user.getIsLogin())
+                .build();
+    }
     public User toDomain() {
         return User.builder()
+                .id(id)
                 .nickname(nickname)
                 .level(level)
                 .point(point)
                 .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
+                .runHot(runHot)
+                .runCold(runCold)
+                .runSweat(runSweat)
                 .build();
     }
 
