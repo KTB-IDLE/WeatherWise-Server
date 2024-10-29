@@ -55,12 +55,16 @@ public class UserEntity {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
     private int level;
 
     private int point;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
+
     @Builder
     public UserEntity(Long id, String serialId, String password, String nickname, EProvider provider, ERole role) {
         this.id = id;
@@ -71,6 +75,7 @@ public class UserEntity {
         this.role = role;
         this.createdDate = LocalDate.now();
         this.isLogin = false;
+        this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
     @Builder
@@ -81,6 +86,7 @@ public class UserEntity {
         this.role = role;
         this.createdDate = LocalDate.now();
         this.isLogin = true;
+        this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
     public void updateRefreshToken(String refreshToken) {
@@ -132,6 +138,18 @@ public class UserEntity {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.getId());
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+        this.isLogin = false;
+        this.refreshToken = null;
+    }
+
+    public void reactivate(String newPassword) {
+        this.isDeleted = false;
+        this.password = newPassword;
+        this.isLogin = true;
     }
 }
 
