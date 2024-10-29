@@ -68,7 +68,7 @@ public class BoardController {
         boardService.addVote(userId, boardId, voteType);
     }
 
-    @GetMapping("/{boardId}/vote")
+    @GetMapping("/{boardId}/user")
     public BoardVoteResponse getUserVote(@UserId Long userId, @PathVariable Long boardId) {
         return boardService.getUserVote(userId, boardId);
     }
