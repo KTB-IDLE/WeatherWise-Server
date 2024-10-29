@@ -14,7 +14,7 @@ public record BoardRequest(
         @Schema(description = "게시글 내용", example = "가디건 입기 너무 좋은 날씨에요~!")
         String content,
 
-        @Schema(description = "위치 ID", example = "1")
+        @Schema(description = "위치")
         LocationRequest locationRequest
 ) {
 }

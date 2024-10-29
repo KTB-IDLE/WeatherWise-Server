@@ -4,11 +4,14 @@ import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/boards")
@@ -62,6 +65,11 @@ public class BoardController {
     @PostMapping(path = "/{boardId}/vote")
     public void addVote(@PathVariable Long boardId, @RequestParam Long userId, @RequestParam VoteType voteType) {
         boardService.addVote(boardId, userId, voteType);
+    }
+
+    @GetMapping("/{boardId}/vote/{userId}")
+    public BoardVoteResponse getUserVote(@PathVariable Long boardId, @PathVariable Long userId) {
+        return boardService.getUserVote(boardId, userId);
     }
 
     // 투표 수 조회
