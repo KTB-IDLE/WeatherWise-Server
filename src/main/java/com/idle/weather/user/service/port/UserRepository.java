@@ -4,6 +4,7 @@ import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
+import io.netty.util.AsyncMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,7 +36,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level")
     int findUserRanking(@Param("level") int level);
 
-
     interface UserSecurityForm {
         static UserSecurityForm invoke(UserEntity user) {
             return new UserSecurityForm() {
@@ -62,4 +62,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
         ERole getRole();
     }
+
+    @Query("""
+            SELECT u
+            FROM UserEntity u
+            WHERE u.serialId = :serialId
+            AND u.isDeleted = :isDeleted
+            """)
+    Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
+
 }
