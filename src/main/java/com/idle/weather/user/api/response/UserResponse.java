@@ -6,6 +6,7 @@ import com.idle.weather.user.repository.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record UserResponse(
         @Schema(description = "사용자 ID", example = "1")
@@ -24,7 +25,7 @@ public record UserResponse(
         String nickname,
 
         @Schema(description = "생성 시간")
-        LocalDate createdAt
+        LocalDateTime createdAt
 ) {
         public static UserResponse from(UserEntity userEntity) {
                 return new UserResponse(
@@ -33,8 +34,7 @@ public record UserResponse(
                         userEntity.getProvider(),
                         userEntity.getRole(),
                         userEntity.getNickname(),
-                        userEntity.getCreatedDate()
-
+                        userEntity.getCreatedAt()
                 );
         }
 }

@@ -1,5 +1,6 @@
 package com.idle.weather.user.repository;
 
+import com.idle.weather.global.BaseEntity;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Table(name = "users") @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +43,6 @@ public class UserEntity {
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private ERole role;
-
-    @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
 
     @Column(name = "nickname", length = 12)
     private String nickname;
@@ -86,7 +84,6 @@ public class UserEntity {
         this.nickname = nickname;
         this.provider = provider;
         this.role = role;
-        this.createdDate = LocalDate.now();
         this.isLogin = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
         this.runCold = runCold;
@@ -102,7 +99,6 @@ public class UserEntity {
         this.password = password;
         this.provider = provider;
         this.role = role;
-        this.createdDate = LocalDate.now();
         this.isLogin = true;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
@@ -130,6 +126,7 @@ public class UserEntity {
                 .runCold(authSignUpDto.survey().runCold())
                 .runSweat(authSignUpDto.survey().runSweat())
                 .runHot(authSignUpDto.survey().runHot())
+                .isLogin(Boolean.FALSE)
                 .build();
         user.register(authSignUpDto.nickname());
         return user;
