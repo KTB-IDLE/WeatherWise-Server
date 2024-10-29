@@ -21,10 +21,7 @@ public record UserResponse(
         ERole role,
 
         @Schema(description = "닉네임", example = "카페라떼냥")
-        String nickname,
-
-        @Schema(description = "생성 시간")
-        LocalDate createdAt
+        String nickname
 ) {
         public static UserResponse from(UserEntity userEntity) {
                 return new UserResponse(
@@ -32,9 +29,7 @@ public record UserResponse(
                         userEntity.getSerialId(),
                         userEntity.getProvider(),
                         userEntity.getRole(),
-                        userEntity.getNickname(),
-                        userEntity.getCreatedDate()
-
+                        userEntity.getNickname()
                 );
         }
 }
