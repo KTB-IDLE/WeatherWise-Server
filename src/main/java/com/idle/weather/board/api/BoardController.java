@@ -6,6 +6,7 @@ import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
+import com.idle.weather.common.annotation.UserId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -21,8 +22,8 @@ public class BoardController {
 
     // 게시글 생성
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public BoardResponse createBoard(@RequestBody BoardRequest boardRequest) {
-        return boardService.createBoard(boardRequest);
+    public BoardResponse createBoard(@UserId Long userId, @RequestBody BoardRequest boardRequest) {
+        return boardService.createBoard(userId, boardRequest);
     }
 
     // 게시글 단일 조회
@@ -44,8 +45,8 @@ public class BoardController {
     }
 
     // 사용자가 작성한 게시글 목록 조회
-    @GetMapping(path = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BoardListResponse getUserBoards(@PathVariable Long userId) {
+    @GetMapping(path = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BoardListResponse getUserBoards(@UserId Long userId) {
         return boardService.getUserBoards(userId);
     }
 
@@ -63,13 +64,13 @@ public class BoardController {
 
     // 투표 추가 및 변경
     @PostMapping(path = "/{boardId}/vote")
-    public void addVote(@PathVariable Long boardId, @RequestParam Long userId, @RequestParam VoteType voteType) {
-        boardService.addVote(boardId, userId, voteType);
+    public void addVote(@UserId Long userId, @PathVariable Long boardId, @RequestParam VoteType voteType) {
+        boardService.addVote(userId, boardId, voteType);
     }
 
-    @GetMapping("/{boardId}/vote/{userId}")
-    public BoardVoteResponse getUserVote(@PathVariable Long boardId, @PathVariable Long userId) {
-        return boardService.getUserVote(boardId, userId);
+    @GetMapping("/{boardId}/vote")
+    public BoardVoteResponse getUserVote(@UserId Long userId, @PathVariable Long boardId) {
+        return boardService.getUserVote(userId, boardId);
     }
 
     // 투표 수 조회

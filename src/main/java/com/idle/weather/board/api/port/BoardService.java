@@ -10,7 +10,7 @@ import com.idle.weather.user.domain.User;
 public interface BoardService {
 
     // 게시글 생성
-    BoardResponse createBoard(BoardRequest boardRequest);
+    BoardResponse createBoard(Long userId, BoardRequest boardRequest);
 
     // 게시글 단일 조회
     BoardResponse getBoardById(Long boardId);
@@ -35,8 +35,8 @@ public interface BoardService {
 
     int getDownvoteCount(Long boardId);
 
-    BoardVoteResponse getUserVote(Long boardId, Long userId);
+    BoardVoteResponse getUserVote(Long userId, Long boardId);
 
     // 투표 추가
-    void addVote(Long boardId, Long userId, VoteType voteType);
+    void addVote(Long userId, Long boardId, VoteType voteType);
 }

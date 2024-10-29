@@ -43,8 +43,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponse createBoard(BoardRequest boardRequest) {
-        UserEntity user = userJpaRepository.findById(boardRequest.userId())
+    public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
+        UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Location location = boardRequest.locationRequest().toEntity();
@@ -139,7 +139,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardVoteResponse getUserVote(Long boardId, Long userId) {
+    public BoardVoteResponse getUserVote(Long userId, Long boardId) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
@@ -153,7 +153,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void addVote(Long boardId, Long userId, VoteType voteType) {
+    public void addVote(Long userId, Long boardId, VoteType voteType) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
