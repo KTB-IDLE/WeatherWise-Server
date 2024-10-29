@@ -3,6 +3,8 @@ package com.idle.weather.board.api.response;
 import com.idle.weather.board.repository.BoardEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.LocalDateTime;
+
 public record BoardResponse(
         @Schema(description = "게시글 ID", example = "1")
         Long boardId,
@@ -17,7 +19,10 @@ public record BoardResponse(
         String content,
 
         @Schema(description = "위치 이름", example = "서울")
-        String locationName
+        String locationName,
+
+        @Schema(description = "생성 시간")
+        LocalDateTime createdAt
 ) {
     public static BoardResponse from(BoardEntity board) {
         return new BoardResponse(
@@ -25,7 +30,8 @@ public record BoardResponse(
                 board.getUser().getId(),
                 board.getTitle(),
                 board.getContent(),
-                board.getLocation().getLocationName()
+                board.getLocation().getLocationName(),
+                board.getCreatedAt()
         );
     }
 }
