@@ -4,6 +4,7 @@ import com.idle.weather.global.BaseEntity;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.mission.domain.MissionType;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.missionhistory.repository.MissionTime;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,8 @@ public class MissionEntity extends BaseEntity {
 
     @Enumerated(STRING)
     private MissionType missionType;
+    @Enumerated(STRING)
+    private MissionTime missionTime;
 
     public static MissionEntity toEntity(Mission mission) {
         return MissionEntity.builder()
