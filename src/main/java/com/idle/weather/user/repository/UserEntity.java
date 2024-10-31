@@ -151,18 +151,28 @@ public class UserEntity extends BaseEntity {
                 .role(user.getRole())
                 .serialId(user.getSerialId())
                 .isLogin(user.getIsLogin())
+                .runHot(user.isRunHot())
+                .runSweat(user.isRunSweat())
+                .runCold(user.isRunCold())
+                .refreshToken(user.getRefreshToken())
                 .build();
     }
     public User toDomain() {
         return User.builder()
                 .id(id)
                 .nickname(nickname)
+                .password(password)
                 .level(level)
                 .point(point)
+                .role(role)
+                .provider(provider)
                 .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
                 .runHot(runHot)
                 .runCold(runCold)
+                .isLogin(isLogin)
                 .runSweat(runSweat)
+                .serialId(serialId)
+                .refreshToken(refreshToken)
                 .build();
     }
 

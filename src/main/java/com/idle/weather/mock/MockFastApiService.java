@@ -13,9 +13,9 @@ import org.springframework.util.MultiValueMap;
 public class MockFastApiService {
     public boolean missionAuthentication() {
         // 무조건 성공이라고 가정
-        // return true;
+        return true;
         // 무조건 실패라고 가정
-        return false;
+        // return false;
     }
 
     public CurrentWeatherResponse getCurrentWeatherInfo(int nx , int ny) {

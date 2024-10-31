@@ -47,12 +47,15 @@ public class MissionHistoryResponseDto {
         private String missionName;
         private boolean isCompleted;
         private String uploadFileLink;
+        private String storeFileName;
 
         public static MissionAuthenticationView of(String nickName , MissionHistory missionHistory) {
             return MissionAuthenticationView.builder()
                     .missionName(missionHistory.getMission().getName())
                     .nickName(nickName)
                     .isCompleted(missionHistory.isCompleted())
+                    .uploadFileLink(missionHistory.getUploadFileName())
+                    .storeFileName(missionHistory.getStoreFileName())
                     .build();
         }
     }

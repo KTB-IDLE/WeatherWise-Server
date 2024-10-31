@@ -14,8 +14,10 @@ import com.idle.weather.missionhistory.repository.MissionTime;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.mock.MockFastApiService;
 import com.idle.weather.user.domain.User;
+import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -38,6 +40,7 @@ import static com.idle.weather.missionhistory.api.response.MissionHistoryRespons
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final UserRepository userRepository;
@@ -49,6 +52,9 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    @Value("${cloud.aws.s3.domain-name}")
+    private String domainName;
 
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
@@ -87,10 +93,12 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
                 .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
         MissionHistoryEntity missionHistoryEntity = missionHistoryRepository.findByIdEntity(missionHistoryId);
         MissionHistory missionHistory = missionHistoryEntity.toDomain();
+        missionHistory.settingUser(user);
+
         Mission mission = missionHistory.getMission();
 
         // S3 에 저장 후 이미지 URL 받아오기
-        String imageUrl = authMissionAfterSavedS3(imageFile);
+        String imageUrl = authMissionAfterSavedS3(imageFile , missionHistory);
 
         // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
         boolean authenticationResult  = sendFastAPIServer(imageUrl , mission , user);
@@ -115,7 +123,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         missionHistory.updateCompleted();
 
         // Entity 에 반영하기
-        missionHistoryEntity.updateCompleted(missionHistory);
+        missionHistoryRepository.save(missionHistory);
+        userRepository.save(UserEntity.toEntity(user));
 
         return MissionAuthenticate.of(authenticationResult , mission.getPoint() ,
                 user.getLevel() ,user.getPoint(),level.getMaxExp());
@@ -137,11 +146,12 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     }
 
 
-    public String authMissionAfterSavedS3(MultipartFile imageFile) throws IOException {
+    public String authMissionAfterSavedS3(MultipartFile imageFile , MissionHistory missionHistory) throws IOException {
         //파일의 원본 이름
         String originalFileName = imageFile.getOriginalFilename();
         //DB에 저장될 파일 이름
         String storeFileName = createStoreFileName(originalFileName);
+        missionHistory.updateImageUrl(originalFileName,domainName + storeFileName);
         //S3에 저장
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
