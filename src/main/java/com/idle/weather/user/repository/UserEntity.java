@@ -94,12 +94,13 @@ public class UserEntity extends BaseEntity {
     }
 
     @Builder
-    public UserEntity(String serialId, String password, EProvider provider, ERole role) {
+    public UserEntity(String serialId, String password, EProvider provider, ERole role , String nickname) {
         this.serialId = serialId;
         this.password = password;
         this.provider = provider;
         this.role = role;
         this.isLogin = true;
+        this.nickname = nickname;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 

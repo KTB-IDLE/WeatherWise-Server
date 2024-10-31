@@ -47,7 +47,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             userInfo.getId(),
                             bCryptPasswordEncoder.encode(PasswordUtil.generateRandomPassword()),
                             provider,
-                            ERole.GUEST
+                            ERole.USER,
+                            userInfo.getNickName()
                     ));
                     return UserRepository.UserSecurityForm.invoke(user);
                 });

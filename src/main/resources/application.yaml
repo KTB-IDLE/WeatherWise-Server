@@ -1,5 +1,25 @@
 # dev env setting
 spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}  # 환경 변수로 치환
+            client-secret: ${KAKAO_CLIENT_SECRET}  # 환경 변수로 치환
+            client-authentication-method: client_secret_post
+            redirect-uri: ${KAKAO_REDIRECT_URI}  # 환경 변수로 치환
+            authorization-grant-type: authorization_code
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - profile_image
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -35,3 +55,10 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}
+
+logging:
+  level:
+    root: INFO
+    com.fasterxml.jackson: DEBUG
+    org.springframework.security: DEBUG  # Spring Security 관련 로그를 더 자세히 보기 위해 DEBUG로 변경
+    com.idle.weather: DEBUG  # 프로젝트 패키지 로그를 상세히 보기 위해 DEBUG로 설정

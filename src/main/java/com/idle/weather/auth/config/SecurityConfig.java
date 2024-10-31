@@ -53,8 +53,7 @@ public class SecurityConfig {
         return httpSecurity
                 // .cors(httpSecurityCorsConfigurer ->
                 //         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                //.csrf(AbstractHttpConfigurer::disable) //보호 비활성화
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable) //보호 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable) // 기본 HTTP 기본 인증 비활성화
                 .sessionManagement((sessionManagement) -> //상태를 유지하지 않는 세션 정책 설정
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -74,16 +73,16 @@ public class SecurityConfig {
                                 .passwordParameter("password") //비밀번호 파라미터 이름
                                 .successHandler(defaultSignInSuccessHandler) //로그인 성공 핸들러
                                 .failureHandler(defaultSignInFailureHandler) // 로그인 실패 핸들러
-                )//.userDetailsService(customUserDetailService) //사용자 검색할 서비스 설정
-//                //소셜 로그인
-//                .oauth2Login(configurer ->
-//                        configurer
-//                                .successHandler(oAuth2LoginSuccessHandler)
-//                                .failureHandler(oAuth2LoginFailureHandler)
-//                                .userInfoEndpoint(userInfoEndpoint ->
-//                                        userInfoEndpoint.userService(customOAuth2UserService)
-//                                )
-//                )
+                ).userDetailsService(customUserDetailService) //사용자 검색할 서비스 설정
+                //소셜 로그인
+                .oauth2Login(configurer ->
+                        configurer
+                                .successHandler(oAuth2LoginSuccessHandler)
+                                .failureHandler(oAuth2LoginFailureHandler)
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint.userService(customOAuth2UserService)
+                                )
+                )
                 // 로그아웃 설정
                 .logout(configurer ->
                         configurer
