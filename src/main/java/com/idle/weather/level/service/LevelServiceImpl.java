@@ -22,12 +22,13 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public RankingList getRankingList(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+        // TODO: 10/18/24 UserEntity -> Domain 으로 수정하기
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
         int currentUserRanking = userRepository.findUserRanking(user.getLevel());
 
-        // TODO: 10/18/24 UserEntity -> Domain 으로 수정하기
+
         List<UserEntity> userList = userRepository.findTop10ByOrderByLevelDesc();
         List<SingleRanking> rankingList = userList.stream()
                 .map(SingleRanking::from).toList();

@@ -73,16 +73,16 @@ public class SecurityConfig {
                                 .passwordParameter("password") //비밀번호 파라미터 이름
                                 .successHandler(defaultSignInSuccessHandler) //로그인 성공 핸들러
                                 .failureHandler(defaultSignInFailureHandler) // 로그인 실패 핸들러
-                )//.userDetailsService(customUserDetailService) //사용자 검색할 서비스 설정
-//                //소셜 로그인
-//                .oauth2Login(configurer ->
-//                        configurer
-//                                .successHandler(oAuth2LoginSuccessHandler)
-//                                .failureHandler(oAuth2LoginFailureHandler)
-//                                .userInfoEndpoint(userInfoEndpoint ->
-//                                        userInfoEndpoint.userService(customOAuth2UserService)
-//                                )
-//                )
+                ).userDetailsService(customUserDetailService) //사용자 검색할 서비스 설정
+                //소셜 로그인
+                .oauth2Login(configurer ->
+                        configurer
+                                .successHandler(oAuth2LoginSuccessHandler)
+                                .failureHandler(oAuth2LoginFailureHandler)
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint.userService(customOAuth2UserService)
+                                )
+                )
                 // 로그아웃 설정
                 .logout(configurer ->
                         configurer

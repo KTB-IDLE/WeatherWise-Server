@@ -4,6 +4,7 @@ import com.idle.weather.global.BaseEntity;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
+import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
 import jakarta.persistence.*;
@@ -63,14 +64,14 @@ public class UserEntity extends BaseEntity {
     @Column(name = "point" , nullable = false)
     private int point;
     // 더위
-    @Column(name = "hot" , nullable = false)
-    private boolean runHot;
+    @Column(name = "hot")
+    private Boolean runHot;
     // 추위
-    @Column(name = "cold" , nullable = false)
-    private boolean runCold;
+    @Column(name = "cold")
+    private Boolean runCold;
     // 땀
-    @Column(name = "sweat" , nullable = false)
-    private boolean runSweat;
+    @Column(name = "sweat")
+    private Boolean runSweat;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
@@ -94,12 +95,15 @@ public class UserEntity extends BaseEntity {
     }
 
     @Builder
-    public UserEntity(String serialId, String password, EProvider provider, ERole role) {
+    public UserEntity(String serialId, String password, EProvider provider, ERole role , String nickname) {
         this.serialId = serialId;
         this.password = password;
         this.provider = provider;
         this.role = role;
         this.isLogin = true;
+        this.nickname = nickname;
+        this.level = 1;
+        this.point = 0;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
@@ -123,9 +127,8 @@ public class UserEntity extends BaseEntity {
                 .password(encodedPassword)
                 .provider(EProvider.DEFAULT)
                 .role(ERole.USER)
-                .runCold(authSignUpDto.survey().runCold())
-                .runSweat(authSignUpDto.survey().runSweat())
-                .runHot(authSignUpDto.survey().runHot())
+                .level(1)
+                .point(0)
                 .isLogin(Boolean.FALSE)
                 .build();
         user.register(authSignUpDto.nickname());
@@ -148,18 +151,28 @@ public class UserEntity extends BaseEntity {
                 .role(user.getRole())
                 .serialId(user.getSerialId())
                 .isLogin(user.getIsLogin())
+                .runHot(user.isRunHot())
+                .runSweat(user.isRunSweat())
+                .runCold(user.isRunCold())
+                .refreshToken(user.getRefreshToken())
                 .build();
     }
     public User toDomain() {
         return User.builder()
                 .id(id)
                 .nickname(nickname)
+                .password(password)
                 .level(level)
                 .point(point)
+                .role(role)
+                .provider(provider)
                 .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
                 .runHot(runHot)
                 .runCold(runCold)
+                .isLogin(isLogin)
                 .runSweat(runSweat)
+                .serialId(serialId)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -185,6 +198,12 @@ public class UserEntity extends BaseEntity {
         this.isDeleted = false;
         this.password = newPassword;
         this.isLogin = true;
+    }
+
+    public void applySurveyResult(SurveyDto surveyResult) {
+        this.runHot = surveyResult.runHot();
+        this.runSweat = surveyResult.runSweat();
+        this.runCold = surveyResult.runCold();
     }
 }
 
