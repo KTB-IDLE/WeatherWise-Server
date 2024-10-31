@@ -102,6 +102,8 @@ public class UserEntity extends BaseEntity {
         this.role = role;
         this.isLogin = true;
         this.nickname = nickname;
+        this.level = 1;
+        this.point = 0;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
