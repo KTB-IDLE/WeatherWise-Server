@@ -4,6 +4,7 @@ import com.idle.weather.global.BaseEntity;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
+import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
 import jakarta.persistence.*;
@@ -64,13 +65,13 @@ public class UserEntity extends BaseEntity {
     private int point;
     // 더위
     @Column(name = "hot")
-    private boolean runHot;
+    private Boolean runHot;
     // 추위
     @Column(name = "cold")
-    private boolean runCold;
+    private Boolean runCold;
     // 땀
     @Column(name = "sweat")
-    private boolean runSweat;
+    private Boolean runSweat;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
@@ -185,6 +186,12 @@ public class UserEntity extends BaseEntity {
         this.isDeleted = false;
         this.password = newPassword;
         this.isLogin = true;
+    }
+
+    public void applySurveyResult(SurveyDto surveyResult) {
+        this.runHot = surveyResult.runHot();
+        this.runSweat = surveyResult.runSweat();
+        this.runCold = surveyResult.runCold();
     }
 }
 
