@@ -1,6 +1,7 @@
 package com.idle.weather.missionhistory.api.response;
 
 import com.idle.weather.missionhistory.domain.MissionHistory;
+import com.idle.weather.missionhistory.repository.MissionTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ public class MissionHistoryResponseDto {
         private Long id;
         private String name;
         private boolean isCompleted;
+        private MissionTime missionTime;
         private int point;
 
         public static SingleMissionHistory from(MissionHistory mh) {
@@ -20,6 +22,7 @@ public class MissionHistoryResponseDto {
                     .id(mh.getId())
                     .point(mh.getMission().getPoint())
                     .isCompleted(mh.isCompleted())
+                    .missionTime(mh.getMissionTime())
                     .name(mh.getMission().getName())
                     .build();
         }

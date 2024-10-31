@@ -54,6 +54,7 @@ public class MissionHistoryEntity extends BaseEntity {
                 .id(id)
                 .mission(mission.toDomain())
                 .isCompleted(isCompleted)
+                .missionTime(missionTime)
                 .build();
     }
 
