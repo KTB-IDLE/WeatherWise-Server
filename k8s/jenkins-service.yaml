@@ -1,0 +1,20 @@
+---
+
+# Jenkins Service 설정
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 32000  # 원하는 NodePort 지정
+    - name: agent
+      port: 50000
+      targetPort: 50000
+      nodePort: 32001
+  selector:
+    app: jenkins

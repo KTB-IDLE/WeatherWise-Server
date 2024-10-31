@@ -37,3 +37,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.env
+configmap.yaml
+secret.yaml
+mysql-secret.yaml
+spring-deployment.yaml
