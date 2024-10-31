@@ -32,8 +32,6 @@ public class MissionEntity extends BaseEntity {
 
     @Enumerated(STRING)
     private MissionType missionType;
-    @Enumerated(STRING)
-    private MissionTime missionTime;
 
     public static MissionEntity toEntity(Mission mission) {
         return MissionEntity.builder()
