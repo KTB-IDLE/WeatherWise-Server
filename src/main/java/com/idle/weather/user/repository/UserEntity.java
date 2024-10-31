@@ -63,13 +63,13 @@ public class UserEntity extends BaseEntity {
     @Column(name = "point" , nullable = false)
     private int point;
     // 더위
-    @Column(name = "hot" , nullable = false)
+    @Column(name = "hot")
     private boolean runHot;
     // 추위
-    @Column(name = "cold" , nullable = false)
+    @Column(name = "cold")
     private boolean runCold;
     // 땀
-    @Column(name = "sweat" , nullable = false)
+    @Column(name = "sweat")
     private boolean runSweat;
 
     @OneToMany(mappedBy = "user")
@@ -124,9 +124,8 @@ public class UserEntity extends BaseEntity {
                 .password(encodedPassword)
                 .provider(EProvider.DEFAULT)
                 .role(ERole.USER)
-                .runCold(authSignUpDto.survey().runCold())
-                .runSweat(authSignUpDto.survey().runSweat())
-                .runHot(authSignUpDto.survey().runHot())
+                .level(1)
+                .point(0)
                 .isLogin(Boolean.FALSE)
                 .build();
         user.register(authSignUpDto.nickname());
