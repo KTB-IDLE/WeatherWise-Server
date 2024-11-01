@@ -11,11 +11,13 @@ import org.springframework.util.MultiValueMap;
  */
 @Service
 public class MockFastApiService {
+    private boolean toggle = true;
+
     public boolean missionAuthentication() {
-        // 무조건 성공이라고 가정
-        // return true;
-        // 무조건 실패라고 가정
-        return false;
+        // 우선 번갈아가면서 실패 성공 하도록 추가
+        boolean result = toggle;
+        toggle = !toggle;
+        return result;
     }
 
     public CurrentWeatherResponse getCurrentWeatherInfo(int nx , int ny) {

@@ -29,4 +29,13 @@ public class MissionHistory {
                 .missionTime(missionTime)
                 .build();
     }
+
+    public void updateImageUrl(String uploadFileName , String storeFileName) {
+        this.uploadFileName = uploadFileName;
+        this.storeFileName = storeFileName;
+    }
+
+    public void settingUser(User user) {
+        this.user = user;
+    }
 }

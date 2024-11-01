@@ -1,9 +1,12 @@
 package com.idle.weather.user.service;
 
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.api.port.UserService;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
+import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +71,18 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateRefreshToken(Long userId, String refreshToken, boolean isLogin) {
         userJpaRepository.updateRefreshTokenAndLoginStatus(userId, refreshToken, isLogin);
+    }
+
+    @Override
+    public boolean checkSurvey(Long userId) {
+        return userJpaRepository.checkSurvey(userId);
+    }
+
+    @Override
+    public void applySurveyResult(Long userId, SurveyDto surveyResult) {
+        UserEntity user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        user.applySurveyResult(surveyResult);
     }
 
     @Override

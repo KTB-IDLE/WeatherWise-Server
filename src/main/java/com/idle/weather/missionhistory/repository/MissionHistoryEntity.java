@@ -46,6 +46,8 @@ public class MissionHistoryEntity extends BaseEntity {
                 .mission(MissionEntity.toEntity(missionHistory.getMission()))
                 .user(UserEntity.toEntity(missionHistory.getUser()))
                 .missionTime(missionHistory.getMissionTime())
+                .storeFileName(missionHistory.getStoreFileName())
+                .uploadFileName(missionHistory.getUploadFileName())
                 .build();
     }
 
@@ -54,6 +56,9 @@ public class MissionHistoryEntity extends BaseEntity {
                 .id(id)
                 .mission(mission.toDomain())
                 .isCompleted(isCompleted)
+                .missionTime(missionTime)
+                .storeFileName(storeFileName)
+                .uploadFileName(uploadFileName)
                 .build();
     }
 

@@ -16,10 +16,6 @@ public record AuthSignUpDto(@JsonProperty("serialId")
                             @JsonProperty("password")
                             @NotNull
                             @NotBlank
-                            String password,
-                            @JsonProperty("survey")
-                            @NotNull
-                            @NotBlank
-                            SurveyDto survey
+                            String password
 ) {
 }

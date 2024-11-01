@@ -26,14 +26,14 @@ public class MissionHistoryController {
         return ResponseEntity.ok().body(new BaseResponse<>(missionHistoryService.getMissionList(date,userId)));
     }
 
-    // 미션 수행
+    // 미션 수행 (조회)
     @GetMapping("/mission-histories/{mission-histories-id}")
     public ResponseEntity<BaseResponse<MissionAuthenticationView>> getMission(@UserId Long userId,
                                                                               @PathVariable("mission-histories-id") Long missionHistoryId) {
         return ResponseEntity.ok().body(new BaseResponse<>(missionHistoryService.getMission(missionHistoryId,userId)));
     }
 
-    // 미션 수행
+    // 미션 수행 (인증)
     @PostMapping("/mission-histories/{mission-histories-id}")
     public ResponseEntity<BaseResponse<MissionAuthenticate>> authMission(@UserId Long userId,
                                                                          @PathVariable("mission-histories-id") Long missionHistoryId,

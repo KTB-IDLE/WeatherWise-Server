@@ -1,0 +1,119 @@
+# dev env setting
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}  # Redis 호스트를 환경 변수로 치환
+      port: ${REDIS_PORT}  # Redis 포트를 환경 변수로 치환
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}  # MySQL 데이터베이스 URL
+    username: ${DB_USERNAME}  # MySQL 사용자 이름
+    password: ${DB_PASSWORD}  # MySQL 비밀번호
+    hikari:
+      pool-name: jpa-hikari-pool
+      maximum-pool-size: 5
+      jdbc-url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      driver-class-name: ${spring.datasource.driver-class-name}
+      data-source-properties:
+        rewriteBatchedStatements: true
+      idle-timeout: 300
+      max-lifetime: 300
+  jpa:
+    open-in-view: false
+    database: mysql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        default_batch_fetch_size: ${CHUNK_SIZE:100}  # 기본값 100
+        jdbc.batch_size: 20
+        order_inserts: true
+        order_updates: true
+        format_sql: true
+
+# Security OAuth2 설정
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}  # 환경 변수로 치환
+            client-secret: ${KAKAO_CLIENT_SECRET}  # 환경 변수로 치환
+            client-authentication-method: client_secret_post
+            redirect-uri: ${KAKAO_REDIRECT_URI}  # 환경 변수로 치환
+            authorization-grant-type: authorization_code
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - profile_image
+
+# 로그인 성공 후 리다이렉트할 URL 추가
+after-login:
+  default-success: ${AFTER_LOGIN_DEFAULT_SUCCESS_URL}  # 로그인 성공 URL을 환경 변수로 치환
+  default-fail: ${AFTER_LOGIN_DEFAULT_FAIL_URL}  # 로그인 실패 URL을 환경 변수로 치환
+  oauth2-success: ${AFTER_LOGIN_OAUTH2_SUCCESS_URL}  # OAuth2 로그인 성공 URL 환경 변수
+  oauth2-fail: ${AFTER_LOGIN_OAUTH2_FAIL_URL}  # OAuth2 로그인 실패 URL 환경 변수
+  oauth2-success-guest: ${AFTER_LOGIN_OAUTH2_SUCCESS_GUEST_URL}  # OAuth2 게스트 로그인 성공 URL 환경 변수
+
+client:
+  provider:
+    kakao:
+      authorization-uri: https://kauth.kakao.com/oauth/authorize
+      token-uri: https://kauth.kakao.com/oauth/token
+      user-info-uri: https://kapi.kakao.com/v2/user/me
+  registration:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID}  # 환경 변수로 치환
+      redirect-uri: ${KAKAO_REDIRECT_URI}  # 환경 변수로 치환
+
+logging:
+  level:
+    root: INFO
+    com.fasterxml.jackson: DEBUG
+    org.springframework.security: DEBUG
+    com.idle.weather: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+    display-request-duration: true
+  api-docs:
+    groups:
+      enabled: true
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}  # 환경 변수로 치환
+      domain-name: ${DOMAIN_NAME}
+    region.static: ${AWS_REGION_STATIC}  # 환경 변수로 치환
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}  # 환경 변수로 치환
+      secret-key: ${AWS_SECRET_KEY}  # 환경 변수로 치환
+
+weather:
+  endpoint: ${WEATHER_API_ENDPOINT}  # 환경 변수로 치환
+  serviceKey: ${WEATHER_API_SERVICE_KEY}  # 환경 변수로 치환
+
+jwt:
+  secret-key: fWmf8GOZn1pSnqgAjs+6cfpd2cS4gyE5W5YoXbph1S9Y7i3ymNHIWipaajCkIp3iOnI/s5mlVnxQjogHHkILGg==  # 환경 변수로 치환
+  access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
+  refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
