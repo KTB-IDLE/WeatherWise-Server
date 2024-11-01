@@ -43,3 +43,4 @@ configmap.yaml
 secret.yaml
 mysql-secret.yaml
 spring-deployment.yaml
+application.yaml
