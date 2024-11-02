@@ -18,5 +18,16 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
         return template;
     }
+
+    @Bean
+    public RedisTemplate<String, String> redisLockTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());  // StringSerializer 사용
+        return template;
+    }
+
+
 }
 

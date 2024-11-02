@@ -1,4 +1,4 @@
-package com.idle.weather.test;
+package com.idle.weather.test.redis.lettuce;
 
 import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.boardvote.domain.VoteType;
@@ -7,18 +7,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class OptimisticLockFacade {
+public class LettuceLockFacade {
 
+    private final RedisLockRepository redisLockRepository;
     private final BoardService boardService;
 
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
-        while (true) {
-            try {
-                boardService.addVoteForConcurrencyTest(userId,boardId,voteType);
-                break;
-            } catch (Exception e) {
-                Thread.sleep(50);
-            }
+
+        while (!redisLockRepository.lock(boardId)) {
+            Thread.sleep(100);
+        }
+
+        try {
+            boardService.addVoteForConcurrencyTest(userId,boardId,voteType);
+        } finally {
+            redisLockRepository.unlock(boardId);
         }
     }
 }
