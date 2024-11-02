@@ -64,6 +64,10 @@ dependencies {
 
 	// FeignClient
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// https://mvnrepository.com/artifact/org.redisson/redisson
+	implementation group: 'org.redisson', name: 'redisson', version: '3.34.1'
+
 }
 
 dependencyManagement {
