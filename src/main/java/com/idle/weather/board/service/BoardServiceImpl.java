@@ -27,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -246,7 +249,16 @@ public class BoardServiceImpl implements BoardService {
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardJpaRepository.findById(boardId)
+
+        // 1. 일반 코드
+        /*BoardEntity board = boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+
+        /*// 2. 비관적 락 사용 코드
+        BoardEntity board = boardJpaRepository.findByIdWithPessimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+
+        BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
         Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
@@ -258,6 +270,34 @@ public class BoardServiceImpl implements BoardService {
             if (voteType == VoteType.UPVOTE) board.incrementUpvote();
             else board.decrementDownvote();
         }
+    }
+
+    @Override
+    // @Transactional
+    public void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
+        UserEntity user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        BoardEntity board = boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+        Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i <threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    board.incrementUpvote();
+                    boardJpaRepository.saveAndFlush(board);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
     }
 
 }

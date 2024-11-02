@@ -11,11 +11,22 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
 
     private final BoardService boardService;
-    // 투표 추가 및 변경
+    private final OptimisticLockFacade optimisticLockFacade;
+
+    // 투표 추가 및 변경 (Artillery)
     @PostMapping(path = "/{boardId}/vote/{userId}")
     public void addVote(@PathVariable Long boardId, @PathVariable Long userId ,
-                        @RequestBody TestVoteRequestType voteType) {
-        log.info("1");
-        boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
+                        @RequestBody TestVoteRequestType voteType) throws InterruptedException {
+        log.info("JIWON-CONTROLLER");
+
+        // boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
+        optimisticLockFacade.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
+    }
+
+    // 투표 추가 및 변경 (ExecutorService)
+    @PostMapping(path = "/{boardId}/vote/{userId}/app")
+    public void addVoteInApplication(@PathVariable Long boardId, @PathVariable Long userId ,
+                        @RequestBody TestVoteRequestType voteType) throws InterruptedException {
+        boardService.addVoteForConcurrencyTest2(userId, boardId, voteType.getVoteType());
     }
 }
