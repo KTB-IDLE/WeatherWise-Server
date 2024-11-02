@@ -16,6 +16,6 @@ public class TestController {
     public void addVote(@PathVariable Long boardId, @PathVariable Long userId ,
                         @RequestBody TestVoteRequestType voteType) {
         log.info("1");
-        boardService.addVote(userId, boardId, voteType.getVoteType());
+        boardService.addVoteForTest(userId, boardId, voteType.getVoteType());
     }
 }

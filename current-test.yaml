@@ -1,9 +1,9 @@
 config:
   target: 'http://localhost:8080'
   phases:
-    - duration: 15  # 전체 테스트 시간 15초
-      arrivalRate: 10  # 초당 10개의 요청
-      name: Load Test - 15 seconds, 150 requests
+    - duration: 1  # 테스트 시간 2초
+      arrivalRate: 100  # 초당 100개의 요청
+      name: Load Test - 2 seconds, 200 requests
   # Payload 파일을 사용하여 userId를 로드
   payload:
     path: "user_ids.csv"  # user_ids.csv 파일 경로

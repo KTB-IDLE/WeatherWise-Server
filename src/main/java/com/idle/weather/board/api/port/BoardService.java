@@ -39,4 +39,5 @@ public interface BoardService {
 
     // 투표 추가
     void addVote(Long userId, Long boardId, VoteType voteType);
+    void addVoteForTest(Long userId, Long boardId, VoteType voteType);
 }

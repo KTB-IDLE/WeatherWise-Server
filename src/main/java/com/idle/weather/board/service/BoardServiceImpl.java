@@ -240,4 +240,24 @@ public class BoardServiceImpl implements BoardService {
             throw e; // 예외 다시 발생시켜 트랜잭션 롤백
         }
     }
+
+    @Override
+    @Transactional
+    public void addVoteForTest(Long userId, Long boardId, VoteType voteType) {
+        UserEntity user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        BoardEntity board = boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+        Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+
+        /**
+         * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
+         */
+        if (currentVoteOpt.isEmpty()) {
+            if (voteType == VoteType.UPVOTE) board.incrementUpvote();
+            else board.decrementDownvote();
+        }
+    }
+
 }
