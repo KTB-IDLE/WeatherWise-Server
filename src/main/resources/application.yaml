@@ -9,7 +9,11 @@ spring:
     url: ${DB_URL}  # MySQL 데이터베이스 URL
     username: ${DB_USERNAME}  # MySQL 사용자 이름
     password: ${DB_PASSWORD}  # MySQL 비밀번호
-#    hikari:
+    hikari:
+      jdbc-url: ${JDBC_URL}
+      username: ${JDBC_USERNAME}
+      password: ${JDBC_PASSWORD}
+  #    hikari:
 #      pool-name: jpa-hikari-pool
 #      maximum-pool-size: 5
 #      jdbc-url: ${spring.datasource.url}
