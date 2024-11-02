@@ -68,7 +68,8 @@ public class BoardEntity extends BaseEntity {
     }
 
     // 투표 수 증가 및 감소 메서드
-    public void incrementUpvote() {
+    public synchronized void incrementUpvote() {
+        System.out.println("JIWON");
         this.upvoteCount++;
     }
 

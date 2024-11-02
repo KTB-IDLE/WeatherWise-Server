@@ -243,7 +243,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void addVoteForTest(Long userId, Long boardId, VoteType voteType) {
+    public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)

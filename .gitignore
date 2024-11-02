@@ -44,3 +44,4 @@ secret.yaml
 mysql-secret.yaml
 spring-deployment.yaml
 application.yaml
+application-test.yaml
