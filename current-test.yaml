@@ -3,7 +3,7 @@ config:
   phases:
     - duration: 1  # 테스트 시간 2초
       arrivalRate: 100  # 초당 100개의 요청
-      name: Load Test - 2 seconds, 200 requests
+      name: Load Test - 1 seconds, 100 requests
   # Payload 파일을 사용하여 userId를 로드
   payload:
     path: "user_ids.csv"  # user_ids.csv 파일 경로
