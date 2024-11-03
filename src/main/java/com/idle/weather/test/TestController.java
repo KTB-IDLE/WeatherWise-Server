@@ -1,6 +1,7 @@
 package com.idle.weather.test;
 
 import com.idle.weather.board.api.port.BoardService;
+import com.idle.weather.test.Isolation.IsolationFacade;
 import com.idle.weather.test.named.NamedLockFacade;
 import com.idle.weather.test.optimistic.OptimisticLockFacade;
 import com.idle.weather.test.redis.lettuce.LettuceLockFacade;
@@ -19,6 +20,7 @@ public class TestController {
     private final NamedLockFacade namedLockFacade;
     private final LettuceLockFacade lettuceLockFacade;
     private final RedissonLockStockFacade redissonLockStockFacade;
+    private final IsolationFacade isolationFacade;
 
 
     // 투표 추가 및 변경 (Artillery)
@@ -28,7 +30,8 @@ public class TestController {
         // boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
         // optimisticLockFacade.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
         // lettuceLockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
-        redissonLockStockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
+        // redissonLockStockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
+        isolationFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
     }
 
     // 투표 추가 및 변경 (ExecutorService)

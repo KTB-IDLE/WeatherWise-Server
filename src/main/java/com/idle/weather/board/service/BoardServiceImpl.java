@@ -21,8 +21,10 @@ import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardServiceImpl implements BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
@@ -246,21 +249,27 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional
+    // @Transactional(isolation = Isolation.DEFAULT)
+    // @Transactional(isolation = Isolation.READ_COMMITTED)
+    // @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    // @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
+
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 1. 일반 코드
-        /*BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
-
-        /*// 2. 비관적 락 사용 코드
-        BoardEntity board = boardJpaRepository.findByIdWithPessimisticLock(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
-
-        BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
+        BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+
+        // 2. 비관적 락 사용 코드
+        /*BoardEntity board = boardJpaRepository.findByIdWithPessimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+
+        // 3. 낙관적 락 사용 코드
+        /*BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
 
         Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
