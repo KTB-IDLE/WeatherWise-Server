@@ -46,7 +46,7 @@ public class DefaultSignInSuccessHandler implements AuthenticationSuccessHandler
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(userPrincipal.getId(), userPrincipal.getRole());
         userRepository.updateRefreshTokenAndLoginStatus(userPrincipal.getId(), jwtTokenDto.getRefreshToken(), true);
-        String nickname = userRepository.findById(userPrincipal.getId())
+        String nickname = userRepository.findByIdForLegacy(userPrincipal.getId())
                 .map(user -> StringUtils.hasText(user.getNickname()) ? user.getNickname() : user.getSerialId())
                 .orElseThrow();
 

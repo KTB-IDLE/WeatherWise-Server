@@ -43,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Location location = boardRequest.locationRequest().toEntity();
@@ -80,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardListResponse getUserBoards(Long userId) {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<BoardEntity> userBoards = boardJpaRepository.findByUser(user);
         return BoardListResponse.from(userBoards);
@@ -139,7 +139,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardVoteResponse getUserVote(Long userId, Long boardId) {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
@@ -153,7 +153,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void addVote(Long userId, Long boardId, VoteType voteType) {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
@@ -249,7 +249,7 @@ public class BoardServiceImpl implements BoardService {
     // @Transactional(isolation = Isolation.SERIALIZABLE)
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
 
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 1. 일반 코드
@@ -278,7 +278,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     // @Transactional
     public void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));

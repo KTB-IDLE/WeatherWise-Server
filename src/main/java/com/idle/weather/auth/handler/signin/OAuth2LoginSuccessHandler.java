@@ -42,7 +42,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(userPrincipal.getId(), userPrincipal.getRole());
         userRepository.updateRefreshTokenAndLoginStatus(userPrincipal.getId(), jwtTokenDto.getRefreshToken(), true);
-        String nickname = userRepository.findById(userPrincipal.getId()).map(UserEntity::getNickname).orElse("");
+        String nickname = userRepository.findByIdForLegacy(userPrincipal.getId()).map(UserEntity::getNickname).orElse("");
 
         CookieUtil.addSecureCookie(response, "refreshToken", jwtTokenDto.getRefreshToken(), jwtUtil.getWebRefreshTokenExpirationSecond());
         CookieUtil.addCookie(response, "accessToken", jwtTokenDto.getAccessToken());

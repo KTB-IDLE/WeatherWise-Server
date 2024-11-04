@@ -1,5 +1,8 @@
 package com.idle.weather.user.repository;
 
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
+import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -56,12 +59,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findById(Long id) {
-        return userJpaRepository.findById(id);
+    public User findById(Long id) {
+        return userJpaRepository.findById(id).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
     }
 
     @Override
-    public UserEntity save(UserEntity user) {
-        return userJpaRepository.save(user);
+    public User save(User user) {
+        return userJpaRepository.save(UserEntity.toEntity(user)).toDomain();
+    }
+
+    @Override
+    public Optional<UserEntity> findByIdForLegacy(Long id) {
+        return userJpaRepository.findById(id);
     }
 }

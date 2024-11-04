@@ -53,7 +53,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
         User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+                .findByIdForLegacy(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         List<MissionHistory> missionHistoryByDate = missionHistoryRepository.findMissionHistoryByDate(user.getId(), date);
         // Domain -> DTO 변환
@@ -64,7 +64,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Override
     public MissionAuthenticationView getMission(Long missionHistoryId , Long userId) {
         User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+                .findByIdForLegacy(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
         return MissionAuthenticationView.of(user.getNickname() , missionHistory);
     }
@@ -72,7 +72,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Override
     @Transactional
     public MissionHistory save(Long userId , Mission mission, MissionTime missionTime) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         return missionHistoryRepository.save(MissionHistory.of(user, mission,missionTime));
@@ -84,7 +84,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
                                            MultipartFile imageFile,
                                            Long userId) throws IOException {
         User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+                .findByIdForLegacy(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
         MissionHistoryEntity missionHistoryEntity = missionHistoryRepository.findByIdEntity(missionHistoryId);
         MissionHistory missionHistory = missionHistoryEntity.toDomain();
         missionHistory.settingUser(user);
@@ -118,7 +118,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
         // Entity 에 반영하기
         missionHistoryRepository.save(missionHistory);
-        userRepository.save(UserEntity.toEntity(user));
+        userRepository.save(user);
 
         return MissionAuthenticate.of(authenticationResult , mission.getPoint() ,
                 user.getLevel() ,user.getPoint(),level.getMaxExp());
@@ -128,7 +128,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     public SuccessMissionHistories getSuccessMissions(Long userId) {
 
         User user = userRepository
-                .findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+                .findByIdForLegacy(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
         List<MissionHistory> userMissionHistories = user.getMissionHistories();
         List<SingleMissionHistory> userSuccessMissionHistories = userMissionHistories.stream()

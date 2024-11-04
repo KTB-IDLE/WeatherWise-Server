@@ -1,5 +1,6 @@
 package com.idle.weather.user.service.port;
 
+import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
@@ -22,35 +23,11 @@ public interface UserRepository {
     List<UserEntity> findTop10ByOrderByLevelDesc();
     int findUserRanking(@Param("level") int level);
     boolean checkSurvey(@Param("userId") Long userId);
-    interface UserSecurityForm {
-        static UserJpaRepository.UserSecurityForm invoke(UserEntity user) {
-            return new UserJpaRepository.UserSecurityForm() {
-                @Override
-                public Long getId() {
-                    return user.getId();
-                }
-
-                @Override
-                public String getPassword() {
-                    return user.getPassword();
-                }
-
-                @Override
-                public ERole getRole() {
-                    return user.getRole();
-                }
-            };
-        }
-
-        Long getId();
-
-        String getPassword();
-
-        ERole getRole();
-    }
     Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
 
-    Optional<UserEntity> findById(Long id);
+    User findById(Long id);
 
-    UserEntity save(UserEntity user);
+    User save(User user);
+
+    Optional<UserEntity> findByIdForLegacy(Long id);
 }
