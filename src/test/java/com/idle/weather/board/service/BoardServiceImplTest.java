@@ -3,7 +3,7 @@ package com.idle.weather.board.service;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.boardvote.domain.BoardVote;
-import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
+import com.idle.weather.boardvote.repository.BoardVoteRepository;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * 동시성 테스트
+ */
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application.yaml")
 class BoardServiceImplTest {
@@ -26,9 +29,9 @@ class BoardServiceImplTest {
     private UserRepository userRepository;
 
     @Autowired
-    private BoardJpaRepository boardRepository;
+    private BoardJpaRepository boardJpaRepository;
     @Autowired
-    private BoardVoteJpaRepository boardVoteRepository;
+    private BoardVoteRepository boardVoteRepository;
 
     @Test
     void addVoteForConcurrencyTest() {
@@ -45,7 +48,7 @@ class BoardServiceImplTest {
 
         UserEntity user = userRepository.findByIdForLegacy(atomicLong.getAndIncrement())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardRepository.findById(1L)
+        BoardEntity board = boardJpaRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
         Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);

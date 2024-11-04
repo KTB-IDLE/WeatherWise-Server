@@ -73,6 +73,7 @@ class MissionHistoryServiceTest {
     @Test
     public void image_를_첨부시켜_미션_인증을_받을_수_있고_인증_성공시_경험치를_얻는다() throws Exception
     {
+        // TODO: 11/4/24 Mock 을 사용하는건가? DIP 를 사용해서 해결할 수 있는건가? 
         //given
         // 가짜 이미지 파일 생성
         MockMultipartFile imageFile = new MockMultipartFile(

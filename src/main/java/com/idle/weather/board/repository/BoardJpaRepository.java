@@ -1,6 +1,5 @@
 package com.idle.weather.board.repository;
 
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;

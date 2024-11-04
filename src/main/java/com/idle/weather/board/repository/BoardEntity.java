@@ -1,6 +1,8 @@
 package com.idle.weather.board.repository;
 
+import com.idle.weather.board.domain.Board;
 import com.idle.weather.boardvote.domain.BoardVote;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.user.domain.User;
@@ -10,6 +12,7 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -38,7 +41,7 @@ public class BoardEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private Set<BoardVote> votes = new HashSet<>();
+    private Set<BoardVoteEntity> votes = new HashSet<>();
 
     @Column(nullable = false)  // 명시적으로 컬럼 추가
     private Integer upvoteCount = 0;   // Upvote count 추가
@@ -86,5 +89,31 @@ public class BoardEntity extends BaseEntity {
         if (this.downvoteCount > 0) {
             this.downvoteCount--;
         }
+    }
+
+    public Board toDomain() {
+        return Board.builder()
+                .boardId(boardId)
+                .user(user.toDomain())
+                .votes(new HashSet<>())
+                .upvoteCount(upvoteCount)
+                .downvoteCount(downvoteCount)
+                .location(location)
+                .content(content)
+                .title(title)
+                .build();
+    }
+
+    public static BoardEntity toEntity(Board board) {
+        return BoardEntity.builder()
+                .boardId(board.getBoardId())
+                .upvoteCount(board.getUpvoteCount())
+                .downvoteCount(board.getDownvoteCount())
+                .user(UserEntity.toEntity(board.getUser()))
+                .title(board.getTitle())
+                .location(board.getLocation())
+                .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(Collectors.toSet()))
+                .title(board.getTitle())
+                .build();
     }
 }

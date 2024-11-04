@@ -9,11 +9,12 @@ import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
-import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
+import com.idle.weather.boardvote.repository.BoardVoteRepository;
 import com.idle.weather.location.domain.Location;
-import com.idle.weather.location.repository.LocationJpaRepository;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,13 +29,12 @@ import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Slf4j @Builder
 public class BoardServiceImpl implements BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
-    private final BoardVoteJpaRepository boardVoteJpaRepository;
+    private final BoardVoteRepository boardVoteRepository;
     private final UserRepository userRepository;
-    private final LocationJpaRepository locationJpaRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
 
     private static final String UPVOTE_KEY = "board:upvote";
@@ -144,7 +144,7 @@ public class BoardServiceImpl implements BoardService {
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentUserVote = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVote> currentUserVote = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
         return currentUserVote
                 .map(BoardVoteResponse::from)
                 .orElse(null);
@@ -161,7 +161,7 @@ public class BoardServiceImpl implements BoardService {
         String upvoteKey = UPVOTE_KEY + boardId;
         String downvoteKey = DOWNVOTE_KEY + boardId;
 
-        Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         try {
             if (currentVoteOpt.isPresent()) {
@@ -190,7 +190,7 @@ public class BoardServiceImpl implements BoardService {
                             throw new IllegalStateException("Cannot decrease downvote count below zero.");
                         }
                     }
-                    boardVoteJpaRepository.delete(currentVote); // 데이터베이스에서 삭제
+                    boardVoteRepository.delete(BoardVoteEntity.toEntity(currentVote)); // 데이터베이스에서 삭제
                 } else {
                     // 다른 투표 타입으로 변경
                     if (currentVote.getVoteType() == VoteType.UPVOTE) {
@@ -207,7 +207,7 @@ public class BoardServiceImpl implements BoardService {
                         boardJpaRepository.save(board);
                     }
                     currentVote.updateVoteType(voteType);
-                    boardVoteJpaRepository.save(currentVote); // 데이터베이스 업데이트
+                    boardVoteRepository.save(BoardVoteEntity.toEntity(currentVote)); // 데이터베이스 업데이트
                 }
             } else {
                 // 새로운 투표 추가
@@ -222,12 +222,12 @@ public class BoardServiceImpl implements BoardService {
                 }
 
                 BoardVote newVote = BoardVote.builder()
-                        .user(user)
-                        .board(board)
+                        .user(user.toDomain())
+                        .board(board.toDomain())
                         .voteType(voteType)
                         .build();
 
-                boardVoteJpaRepository.save(newVote); // 데이터베이스에 새로운 투표 저장
+                boardVoteRepository.save(BoardVoteEntity.toEntity(newVote)); // 데이터베이스에 새로운 투표 저장
             }
         } catch (Exception e) {
             // 예외 발생 시 Redis에서 카운트를 롤백 (optional)
@@ -264,7 +264,7 @@ public class BoardServiceImpl implements BoardService {
         /*BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
 
-        Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         /**
          * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
@@ -283,7 +283,7 @@ public class BoardServiceImpl implements BoardService {
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentVoteOpt = boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
