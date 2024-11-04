@@ -36,21 +36,21 @@ public class InitMissionData {
                     .point(20)
                     .name("날씨가 더우니 양산을 챙기세요!")
                     .build();
-            missionRepository.save(hot1);
+            missionRepository.save(hot1.toDomain());
 
             MissionEntity hot2 = MissionEntity.builder()
                     .missionType(MissionType.HOT)
                     .point(40)
                     .name("날씨가 더우니 물을 챙기세요!")
                     .build();
-            missionRepository.save(hot2);
+            missionRepository.save(hot2.toDomain());
 
             MissionEntity hot3 = MissionEntity.builder()
                     .missionType(MissionType.HOT)
                     .point(30)
                     .name("날씨가 더우니 손풍기를 챙기세요!")
                     .build();
-            missionRepository.save(hot3);
+            missionRepository.save(hot3.toDomain());
         }
         public void coldMissionInit() {
             MissionEntity cold1 = MissionEntity.builder()
@@ -58,21 +58,21 @@ public class InitMissionData {
                     .point(70)
                     .name("날씨가 추우니 목도리를 챙기세요!")
                     .build();
-            missionRepository.save(cold1);
+            missionRepository.save(cold1.toDomain());
 
             MissionEntity cold2 = MissionEntity.builder()
                     .missionType(MissionType.COLD)
                     .point(90)
                     .name("날씨가 추우니 핫팩을 챙기세요!")
                     .build();
-            missionRepository.save(cold2);
+            missionRepository.save(cold2.toDomain());
 
             MissionEntity cold3 = MissionEntity.builder()
                     .missionType(MissionType.COLD)
                     .point(10)
                     .name("날씨가 추우니 장갑을 챙기세요!")
                     .build();
-            missionRepository.save(cold3);
+            missionRepository.save(cold3.toDomain());
         }
 
         public void rainMissionInit() {
@@ -81,21 +81,21 @@ public class InitMissionData {
                     .point(50)
                     .name("비가 오고 있으니 우산을 챙기세요!")
                     .build();
-            missionRepository.save(rain1);
+            missionRepository.save(rain1.toDomain());
 
             MissionEntity rain2 = MissionEntity.builder()
                     .missionType(MissionType.RAIN)
                     .point(60)
                     .name("비가 오고 있으니 우비를 챙기세요!")
                     .build();
-            missionRepository.save(rain2);
+            missionRepository.save(rain2.toDomain());
 
             MissionEntity rain3 = MissionEntity.builder()
                     .missionType(MissionType.RAIN)
                     .point(10)
                     .name("비가 오고 있으니 장화를 챙기세요!")
                     .build();
-            missionRepository.save(rain3);
+            missionRepository.save(rain3.toDomain());
         }
     }
 }

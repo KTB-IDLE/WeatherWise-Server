@@ -9,7 +9,11 @@ import com.idle.weather.mission.service.port.MissionRepository;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionTime;
+import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.mock.MockFastApiService;
+import com.idle.weather.user.domain.User;
+import com.idle.weather.user.service.port.UserRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +23,20 @@ import java.util.Random;
 import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 import static com.idle.weather.mission.api.response.MissionResponseDto.*;
 
-@Service
+@Service @Builder
 @RequiredArgsConstructor
 public class MissionServiceImpl implements MissionService {
     private final MissionRepository missionRepository;
+    private final MissionHistoryRepository missionHistoryRepository;
+    private final UserRepository userRepository;
     private final MockFastApiService fastApiService;
-    private final MissionHistoryService missionHistoryService;
     private final Random random = new Random();
     @Override
     public SingleMission createMission(Long userId, CreateMission createMission) {
         CurrentWeatherResponse currentWeatherInfo = fastApiService
                 .getCurrentWeatherInfo(createMission.getNx(),createMission.getNy());
+
+        User user = userRepository.findById(userId);
 
         // currentWeatherInfo.missionType 을 통해 MissionRepository 에서 미션 리스트들을 가지고 온다.
         List<Mission> missions = missionRepository.findByMissionType(currentWeatherInfo.getMissionType());
@@ -42,7 +49,7 @@ public class MissionServiceImpl implements MissionService {
         MissionTime missionTime = MissionTime.fromValue(createMission.getMissionTime());
 
         // MissionHistory 에 저장
-        MissionHistory missionHistory = missionHistoryService.save(userId, mission, missionTime);
+        MissionHistory missionHistory = missionHistoryRepository.save(MissionHistory.of(user , mission , missionTime));
 
         return SingleMission.of(mission , missionHistory.getId());
     }

@@ -27,9 +27,6 @@ public class MissionEntity extends BaseEntity {
     private String name;
     private int point;
 
-    @OneToMany(mappedBy = "mission")
-    private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
-
     @Enumerated(STRING)
     private MissionType missionType;
 
