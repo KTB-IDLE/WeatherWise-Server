@@ -12,7 +12,7 @@ class BoardServiceTest {
     void init() {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
         this.boardService = BoardServiceImpl.builder()
-                .boardJpaRepository()
+                .boardRepository()
                 .boardVoteRepository()
                 .redisTemplate()
                 .userRepository(fakeUserRepository)

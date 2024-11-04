@@ -4,8 +4,8 @@ import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
-import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.board.service.port.BoardRepository;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
@@ -31,10 +31,9 @@ import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j @Builder
+@Slf4j @Builder @Transactional
 public class BoardServiceImpl implements BoardService {
 
-    private final BoardJpaRepository boardJpaRepository;
     private final BoardRepository boardRepository;
     private final BoardVoteJpaRepository boardVoteRepository;
     private final UserRepository userRepository;
@@ -44,7 +43,6 @@ public class BoardServiceImpl implements BoardService {
     private static final String DOWNVOTE_KEY = "board:downvote";
 
     @Override
-    @Transactional
     public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -58,27 +56,24 @@ public class BoardServiceImpl implements BoardService {
                 boardRequest.content()
         );
 
-        return BoardResponse.from(boardJpaRepository.save(newBoard));
+        return BoardResponse.from(boardRepository.save(newBoard.toDomain()));
     }
 
     @Override
     public BoardResponse getBoardById(Long boardId) {
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
-
+        Board board = boardRepository.findById(boardId);
         return BoardResponse.from(board);
     }
 
     @Override
     public BoardListResponse getBoardsWithRadius(double latitude, double longitude) {
-        List<BoardEntity> boards = boardJpaRepository.findByLocationWithinRadius(latitude, longitude);
-        System.out.println("JIWON " + boards.size());
+        List<Board> boards = boardRepository.findByLocationWithinRadius(latitude, longitude);
         return BoardListResponse.from(boards);
     }
 
     @Override
     public BoardListResponse getAllBoards() {
-        List<BoardEntity> boards = boardJpaRepository.findAll();
+        List<Board> boards = boardRepository.findAll();
         return BoardListResponse.from(boards);
     }
 
@@ -86,29 +81,27 @@ public class BoardServiceImpl implements BoardService {
     public BoardListResponse getUserBoards(Long userId) {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        List<BoardEntity> userBoards = boardJpaRepository.findByUser(user);
+        List<Board> userBoards = boardRepository.findByUser(user.toDomain());
         return BoardListResponse.from(userBoards);
     }
 
     @Override
     @Transactional
     public BoardResponse updateBoard(Long boardId, BoardRequest boardRequest) {
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Board board = boardRepository.findById(boardId);
 
         Location updatedLocation = boardRequest.locationRequest().toDomain();
 
-        board.updateBoard(LocationEntity.toEntity(updatedLocation), boardRequest.title(), boardRequest.content());
-        return BoardResponse.from(boardJpaRepository.save(board));
+        board.updateBoard(updatedLocation, boardRequest.title(), boardRequest.content());
+        boardRepository.save(board);
+        return BoardResponse.from(boardRepository.save(board));
     }
 
     @Override
     @Transactional
     public void deleteBoard(Long boardId) {
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
-
-        boardJpaRepository.delete(board);
+        Board board = boardRepository.findById(boardId);
+        boardRepository.delete(board);
     }
 
     @Override
@@ -117,8 +110,7 @@ public class BoardServiceImpl implements BoardService {
         Integer upvoteCount = redisTemplate.opsForValue().get(upvoteKey);
 
         if (upvoteCount == null) {
-            BoardEntity board = boardJpaRepository.findById(boardId)
-                    .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+            Board board = boardRepository.findById(boardId);
             upvoteCount = board.getUpvoteCount();
             redisTemplate.opsForValue().set(upvoteKey, upvoteCount);
         }
@@ -132,8 +124,7 @@ public class BoardServiceImpl implements BoardService {
         Integer downvoteCount = redisTemplate.opsForValue().get(downvoteKey);
 
         if (downvoteCount == null) {
-            BoardEntity board = boardJpaRepository.findById(boardId)
-                    .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+            Board board = boardRepository.findById(boardId);
 
             downvoteCount = board.getDownvoteCount();
             redisTemplate.opsForValue().set(downvoteKey, downvoteCount);
@@ -145,10 +136,10 @@ public class BoardServiceImpl implements BoardService {
     public BoardVoteResponse getUserVote(Long userId, Long boardId) {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Board board = boardRepository.findById(boardId);
 
-        Optional<BoardVoteEntity> currentUserVote = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentUserVote = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoard(user, BoardEntity.toEntity(board));
         return currentUserVote
                 .map(BoardVoteResponse::from)
                 .orElse(null);
@@ -159,13 +150,13 @@ public class BoardServiceImpl implements BoardService {
     public void addVote(Long userId, Long boardId, VoteType voteType) {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Board board = boardRepository.findById(boardId);
 
         String upvoteKey = UPVOTE_KEY + boardId;
         String downvoteKey = DOWNVOTE_KEY + boardId;
 
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoard(user, BoardEntity.toEntity(board));
 
         try {
             if (currentVoteOpt.isPresent()) {
@@ -179,7 +170,7 @@ public class BoardServiceImpl implements BoardService {
                         if (upvoteCount > 0) {
                             redisTemplate.opsForValue().decrement(upvoteKey); // Redis에서 감소
                             board.decrementUpvote();
-                            boardJpaRepository.save(board);
+                            boardRepository.save(board);
                         } else {
                             throw new IllegalStateException("Cannot decrease upvote count below zero.");
                         }
@@ -189,7 +180,7 @@ public class BoardServiceImpl implements BoardService {
                         if (downvoteCount > 0) {
                             redisTemplate.opsForValue().decrement(downvoteKey); // Redis에서 감소
                             board.decrementDownvote();
-                            boardJpaRepository.save(board);
+                            boardRepository.save(board);
                         } else {
                             throw new IllegalStateException("Cannot decrease downvote count below zero.");
                         }
@@ -202,13 +193,13 @@ public class BoardServiceImpl implements BoardService {
                         redisTemplate.opsForValue().increment(downvoteKey);
                         board.decrementUpvote();
                         board.incrementDownvote();
-                        boardJpaRepository.save(board);
+                        boardRepository.save(board);
                     } else if (currentVote.getVoteType() == VoteType.DOWNVOTE) {
                         redisTemplate.opsForValue().decrement(downvoteKey);
                         redisTemplate.opsForValue().increment(upvoteKey);
                         board.decrementDownvote();
                         board.incrementUpvote();
-                        boardJpaRepository.save(board);
+                        boardRepository.save(board);
                     }
                     currentVote.updateVoteType(voteType);
                     boardVoteRepository.save(currentVote); // 데이터베이스 업데이트
@@ -218,16 +209,16 @@ public class BoardServiceImpl implements BoardService {
                 if (voteType == VoteType.UPVOTE) {
                     redisTemplate.opsForValue().increment(upvoteKey);
                     board.incrementUpvote();
-                    boardJpaRepository.save(board);
+                    boardRepository.save(board);
                 } else if (voteType == VoteType.DOWNVOTE) {
                     redisTemplate.opsForValue().increment(downvoteKey);
                     board.incrementDownvote();
-                    boardJpaRepository.save(board);
+                    boardRepository.save(board);
                 }
 
                 BoardVote newVote = BoardVote.builder()
                         .user(user.toDomain())
-                        .board(board.toDomain())
+                        .board(board)
                         .voteType(voteType)
                         .build();
 
@@ -257,8 +248,7 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 1. 일반 코드
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Board board = boardRepository.findById(boardId);
 
         // 2. 비관적 락 사용 코드
         /*BoardEntity board = boardJpaRepository.findByIdWithPessimisticLock(boardId)
@@ -268,7 +258,8 @@ public class BoardServiceImpl implements BoardService {
         /*BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
 
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoard(user, BoardEntity.toEntity(board));
 
         /**
          * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
@@ -277,6 +268,7 @@ public class BoardServiceImpl implements BoardService {
             if (voteType == VoteType.UPVOTE) board.incrementUpvote();
             else board.decrementDownvote();
         }
+        boardRepository.save(board);
     }
 
     @Override
@@ -284,10 +276,10 @@ public class BoardServiceImpl implements BoardService {
     public void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
+        Board board = boardRepository.findById(boardId);
 
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoard(user, BoardEntity.toEntity(board));
 
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
@@ -297,7 +289,7 @@ public class BoardServiceImpl implements BoardService {
             executorService.submit(() -> {
                 try {
                     board.incrementUpvote();
-                    boardJpaRepository.saveAndFlush(board);
+                    // boardRepository.saveAndFlush(board);
                 } finally {
                     latch.countDown();
                 }

@@ -115,6 +115,7 @@ public class BoardEntity extends BaseEntity {
                 .location(LocationEntity.toEntity(board.getLocation()))
                 .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(Collectors.toSet()))
                 .title(board.getTitle())
+                .content(board.getContent())
                 .build();
     }
 }

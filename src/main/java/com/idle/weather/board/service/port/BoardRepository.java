@@ -18,4 +18,8 @@ public interface BoardRepository {
 
     Optional<Board> findByIdWithPessimisticLock(Long boardId);
     Optional<Board> findByIdWithOptimisticLock(Long boardId);
+    Board save(Board board);
+    Board findById(Long id);
+    List<Board> findAll();
+    void delete(Board board);
 }

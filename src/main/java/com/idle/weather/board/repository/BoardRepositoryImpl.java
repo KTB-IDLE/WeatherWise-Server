@@ -2,6 +2,8 @@ package com.idle.weather.board.repository;
 
 import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.service.port.BoardRepository;
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +40,26 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public Optional<Board> findByIdWithOptimisticLock(Long boardId) {
         return boardJpaRepository.findByIdWithOptimisticLock(boardId).map(BoardEntity::toDomain);
+    }
+
+    @Override
+    public Board save(Board board) {
+        return boardJpaRepository.save(BoardEntity.toEntity(board)).toDomain();
+    }
+
+    @Override
+    public Board findById(Long id) {
+        return boardJpaRepository.findById(id)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_BOARD)).toDomain();
+    }
+
+    @Override
+    public List<Board> findAll() {
+        return boardJpaRepository.findAll().stream().map(BoardEntity::toDomain).collect(toList());
+    }
+
+    @Override
+    public void delete(Board board) {
+        boardJpaRepository.delete(BoardEntity.toEntity(board));
     }
 }

@@ -1,5 +1,6 @@
 package com.idle.weather.board.api.response;
 
+import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -24,7 +25,7 @@ public record BoardResponse(
         @Schema(description = "생성 시간")
         LocalDateTime createdAt
 ) {
-    public static BoardResponse from(BoardEntity board) {
+    public static BoardResponse from(Board board) {
         return new BoardResponse(
                 board.getBoardId(),
                 board.getUser().getId(),
