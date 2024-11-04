@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface BoardVoteRepository {
-    Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(@Param("user") User user, @Param("board") Board board);
+    BoardVote findCurrentVoteTypeByUserAndBoard(@Param("user") User user, @Param("board") Board board);
     void removeVote(@Param("user") User user, @Param("board") Board board);
 }

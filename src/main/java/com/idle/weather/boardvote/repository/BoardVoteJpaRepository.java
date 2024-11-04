@@ -16,7 +16,7 @@ public interface BoardVoteJpaRepository extends JpaRepository<BoardVoteEntity, L
             FROM BoardVoteEntity v
             WHERE v.user = :user AND v.board = :board
             """)
-    Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(@Param("user") UserEntity user, @Param("board") BoardEntity board);
+    Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoard(@Param("user") UserEntity user, @Param("board") BoardEntity board);
 
     @Query("""
             DELETE

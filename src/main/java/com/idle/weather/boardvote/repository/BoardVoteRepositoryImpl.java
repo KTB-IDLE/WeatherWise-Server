@@ -5,6 +5,8 @@ import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.service.port.BoardVoteRepository;
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,10 @@ public class BoardVoteRepositoryImpl implements BoardVoteRepository {
 
 
     @Override
-    public Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(User user, Board board) {
+    public BoardVote findCurrentVoteTypeByUserAndBoard(User user, Board board) {
         return boardVoteJpaRepository
-                .findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user) , BoardEntity.toEntity(board));
+                .findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user) , BoardEntity.toEntity(board))
+                .orElseThrow(() -> new RuntimeException("in method findCurrentVoteTypeByUserAndBoard")).toDomain();
     }
 
     @Override

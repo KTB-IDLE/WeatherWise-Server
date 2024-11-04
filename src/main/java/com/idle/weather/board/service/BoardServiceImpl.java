@@ -148,7 +148,7 @@ public class BoardServiceImpl implements BoardService {
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentUserVote = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentUserVote = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
         return currentUserVote
                 .map(BoardVoteResponse::from)
                 .orElse(null);
@@ -165,11 +165,11 @@ public class BoardServiceImpl implements BoardService {
         String upvoteKey = UPVOTE_KEY + boardId;
         String downvoteKey = DOWNVOTE_KEY + boardId;
 
-        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         try {
             if (currentVoteOpt.isPresent()) {
-                BoardVote currentVote = currentVoteOpt.get();
+                BoardVoteEntity currentVote = currentVoteOpt.get();
 
                 // 동일한 투표 타입을 클릭하여 취소하는 경우
                 if (currentVote.getVoteType() == voteType) {
@@ -194,7 +194,7 @@ public class BoardServiceImpl implements BoardService {
                             throw new IllegalStateException("Cannot decrease downvote count below zero.");
                         }
                     }
-                    boardVoteRepository.delete(BoardVoteEntity.toEntity(currentVote)); // 데이터베이스에서 삭제
+                    boardVoteRepository.delete(currentVote); // 데이터베이스에서 삭제
                 } else {
                     // 다른 투표 타입으로 변경
                     if (currentVote.getVoteType() == VoteType.UPVOTE) {
@@ -211,7 +211,7 @@ public class BoardServiceImpl implements BoardService {
                         boardJpaRepository.save(board);
                     }
                     currentVote.updateVoteType(voteType);
-                    boardVoteRepository.save(BoardVoteEntity.toEntity(currentVote)); // 데이터베이스 업데이트
+                    boardVoteRepository.save(currentVote); // 데이터베이스 업데이트
                 }
             } else {
                 // 새로운 투표 추가
@@ -268,7 +268,7 @@ public class BoardServiceImpl implements BoardService {
         /*BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
 
-        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         /**
          * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
@@ -287,7 +287,7 @@ public class BoardServiceImpl implements BoardService {
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
