@@ -43,7 +43,7 @@ class BoardServiceImplTest {
 
         AtomicLong atomicLong = new AtomicLong();
 
-        UserEntity user = userRepository.findById(atomicLong.getAndIncrement())
+        UserEntity user = userRepository.findByIdForLegacy(atomicLong.getAndIncrement())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));

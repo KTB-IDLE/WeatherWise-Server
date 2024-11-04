@@ -36,6 +36,7 @@ public class User {
     private boolean easilyCold;
     private boolean easilySweat;
     private boolean isDeleted;
+    private boolean isCompletedSurvey;
 
     public void updatedExperience(int point) {
         this.point = this.point + point;
@@ -56,6 +57,7 @@ public class User {
         this.easilyHot = surveyResult.runHot();
         this.easilySweat = surveyResult.runSweat();
         this.easilyCold = surveyResult.runCold();
+        this.isCompletedSurvey = true;
     }
     public void delete() {
         this.isDeleted = true;

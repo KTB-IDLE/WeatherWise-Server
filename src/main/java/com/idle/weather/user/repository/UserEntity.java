@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @ToString
 @Entity
 @Getter
@@ -71,13 +73,16 @@ public class UserEntity extends BaseEntity {
     // 땀
     @Column(name = "sweat")
     private Boolean easilySweat;
+    @Column(name = "is_completed_survey")
+    private Boolean isCompletedSurvey;
 
     @OneToMany(mappedBy = "user")
-    private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
+    private List<MissionHistoryEntity> missionHistories;
 
     @Builder
     public UserEntity(Long id, String serialId, String password, String nickname,
-                      EProvider provider, ERole role, boolean easilyHot, boolean easilyCold, boolean easilySweat) {
+                      EProvider provider, ERole role, boolean easilyHot, boolean easilyCold, boolean easilySweat,
+                      Boolean isCompletedSurvey) {
         this.id = id;
         this.serialId = serialId;
         this.password = password;
@@ -89,6 +94,7 @@ public class UserEntity extends BaseEntity {
         this.easilyCold = easilyCold;
         this.easilyHot = easilyHot;
         this.easilySweat = easilySweat;
+        this.isCompletedSurvey = isCompletedSurvey;
         this.level = 1;
         this.point = 0;
     }
@@ -129,6 +135,13 @@ public class UserEntity extends BaseEntity {
                 .level(1)
                 .point(0)
                 .isLogin(Boolean.FALSE)
+                .missionHistories(new ArrayList<>())
+                // 회원가입 할 때는 모두 FALSE 로 초기화
+                .easilyCold(Boolean.FALSE)
+                .easilySweat(Boolean.FALSE)
+                .easilyHot(Boolean.FALSE)
+                // 설문조사 여부
+                .isCompletedSurvey(Boolean.FALSE)
                 .build();
         user.register(authSignUpDto.nickname());
         return user;
@@ -154,6 +167,8 @@ public class UserEntity extends BaseEntity {
                 .easilySweat(user.isEasilySweat())
                 .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
+                .isCompletedSurvey(user.isCompletedSurvey())
+                .missionHistories(user.getMissionHistories().stream().map(MissionHistoryEntity::toEntity).collect(toList()))
                 .build();
     }
     public User toDomain() {
@@ -165,13 +180,14 @@ public class UserEntity extends BaseEntity {
                 .point(point)
                 .role(role)
                 .provider(provider)
-                .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
+                .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(toList()))
                 .easilyHot(easilyHot)
                 .easilyCold(easilyCold)
                 .isLogin(isLogin)
                 .easilySweat(easilySweat)
                 .serialId(serialId)
                 .refreshToken(refreshToken)
+                .isCompletedSurvey(isCompletedSurvey)
                 .build();
     }
 

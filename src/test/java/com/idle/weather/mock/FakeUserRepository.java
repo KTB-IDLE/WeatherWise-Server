@@ -1,5 +1,7 @@
 package com.idle.weather.mock;
 
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.repository.UserEntity;
@@ -9,25 +11,44 @@ import com.idle.weather.user.service.port.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * InMemory DB (H2 사용 X)
  */
-public class FakeUserJpaRepository implements UserRepository {
+public class FakeUserRepository implements UserRepository {
     private static Long id = 0L;
     private final List<User> data = new ArrayList<>();
 
     @Override
-    public Optional<UserEntity> findById(Long id) {
-        return Optional.empty();
+    public User findById(Long id) {
+        return data.stream().filter(item -> item.getId().equals(id)).findAny()
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
     }
 
     @Override
-    public UserEntity save(UserEntity user) {
-        return null;
+    public User save(User user) {
+        if (user.getId() == null || user.getId() == 0) {
+            User newUser = User.builder()
+                    .id(id++)
+                    .serialId(user.getSerialId())
+                    .nickname(user.getNickname())
+                    .role(user.getRole())
+                    .password(user.getPassword())
+                    .missionHistories(new ArrayList<>())
+                    .provider(user.getProvider())
+                    .build();
+            data.add(newUser);
+            return newUser;
+        } else {
+            // 같은 User 라면 기존에 것을 삭제하고 새로 추가
+            data.removeIf(item -> Objects.equals(item.getId() , user.getId()));
+            data.add(user);
+            return user;
+        }
     }
+
 
     @Override
     public Optional<UserJpaRepository.UserSecurityForm> findUserIdAndRoleBySerialId(String userId) {
@@ -70,4 +91,9 @@ public class FakeUserJpaRepository implements UserRepository {
     }
 
 
+
+    @Override
+    public Optional<UserEntity> findByIdForLegacy(Long id) {
+        return Optional.empty();
+    }
 }

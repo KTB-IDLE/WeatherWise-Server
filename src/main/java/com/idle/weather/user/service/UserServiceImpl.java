@@ -9,6 +9,7 @@ import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j; // 로그를 위한 추가
 
 
 @Slf4j // 로그 어노테이션 추가
-@Service
+@Service @Builder
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 

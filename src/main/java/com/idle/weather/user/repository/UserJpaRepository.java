@@ -33,8 +33,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level")
     int findUserRanking(@Param("level") int level);
 
-    @Query("SELECT CASE WHEN u.easilySweat IS NULL OR u.easilyCold IS NULL OR u.easilyHot IS NULL THEN FALSE ELSE TRUE END " +
-            "FROM UserEntity u WHERE u.id = :userId")
+    @Query("SELECT u.isCompletedSurvey FROM UserEntity u WHERE u.id = :userId")
     boolean checkSurvey(@Param("userId") Long userId);
 
     interface UserSecurityForm {
