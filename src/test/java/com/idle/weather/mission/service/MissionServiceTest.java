@@ -50,41 +50,7 @@ class MissionServiceTest {
                 .build();
         fakeUserRepository.save(user);
 
-        Mission hotMission = Mission.builder()
-                .id(1L)
-                .missionType(MissionType.HOT)
-                .point(50)
-                .name("HOT 테스트")
-                .description("HOT 테스트")
-                .build();
-        fakeMissionRepository.save(hotMission);
 
-        Mission coldMission = Mission.builder()
-                .id(2L)
-                .missionType(MissionType.COLD)
-                .point(50)
-                .name("COLD 테스트")
-                .description("COLD 테스트")
-                .build();
-        fakeMissionRepository.save(coldMission);
-
-        Mission rainMission = Mission.builder()
-                .id(3L)
-                .missionType(MissionType.RAIN)
-                .point(50)
-                .name("RAIN 테스트")
-                .description("RAIN 테스트")
-                .build();
-        fakeMissionRepository.save(rainMission);
-
-        Mission snowMission = Mission.builder()
-                .id(4L)
-                .missionType(MissionType.SNOW)
-                .point(50)
-                .name("SNOW 테스트")
-                .description("SNOW 테스트")
-                .build();
-        fakeMissionRepository.save(snowMission);
     }
 
     @Test

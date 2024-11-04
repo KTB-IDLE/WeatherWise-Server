@@ -28,6 +28,44 @@ public class FakeMissionRepository implements MissionRepository {
     private static Long id = 0L;
     private final List<Mission> data = new ArrayList<>();
 
+    public FakeMissionRepository() {
+        Mission hotMission = Mission.builder()
+                .id(1L)
+                .missionType(MissionType.HOT)
+                .point(50)
+                .name("HOT 테스트")
+                .description("HOT 테스트")
+                .build();
+        data.add(hotMission);
+
+        Mission coldMission = Mission.builder()
+                .id(2L)
+                .missionType(MissionType.COLD)
+                .point(50)
+                .name("COLD 테스트")
+                .description("COLD 테스트")
+                .build();
+        data.add(coldMission);
+
+        Mission rainMission = Mission.builder()
+                .id(3L)
+                .missionType(MissionType.RAIN)
+                .point(50)
+                .name("RAIN 테스트")
+                .description("RAIN 테스트")
+                .build();
+        data.add(rainMission);
+
+        Mission snowMission = Mission.builder()
+                .id(4L)
+                .missionType(MissionType.SNOW)
+                .point(50)
+                .name("SNOW 테스트")
+                .description("SNOW 테스트")
+                .build();
+        data.add(snowMission);
+    }
+
     @Override
     public Mission findById(Long id) {
         return data.stream().filter(item -> item.getId().equals(id)).findAny()
