@@ -249,11 +249,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     // @Transactional(isolation = Isolation.DEFAULT)
     // @Transactional(isolation = Isolation.READ_COMMITTED)
     // @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     // @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    // @Transactional(isolation = Isolation.SERIALIZABLE)
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
 
         UserEntity user = userJpaRepository.findById(userId)

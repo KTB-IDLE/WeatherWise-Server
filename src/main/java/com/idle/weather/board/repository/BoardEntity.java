@@ -47,7 +47,7 @@ public class BoardEntity extends BaseEntity {
     private Integer downvoteCount = 0; // Downvote count 추가
 
     /*@Version
-    private int version;  // Optimistic Locking을 위한 버전 필드 추가*/
+    private int version;*/  // Optimistic Locking을 위한 버전 필드 추가
 
     public static BoardEntity createNewBoard(UserEntity user, Location location, String title, String content) {
         return BoardEntity.builder()
@@ -68,8 +68,7 @@ public class BoardEntity extends BaseEntity {
     }
 
     // 투표 수 증가 및 감소 메서드
-    public synchronized void incrementUpvote() {
-        System.out.println("JIWON");
+    public void incrementUpvote() {
         this.upvoteCount++;
     }
 

@@ -1,9 +1,14 @@
 package com.idle.weather.mission.api.request;
 
+import com.idle.weather.mission.domain.Mission;
+import com.idle.weather.user.api.request.UserRequestDto;
+import com.idle.weather.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.idle.weather.user.api.request.UserRequestDto.*;
 
 public class MissionRequestDto {
     @Builder @Getter
@@ -16,4 +21,21 @@ public class MissionRequestDto {
         // 미션 타임
         private String missionTime;
     }
+
+
+    @Builder @Getter
+    @NoArgsConstructor @AllArgsConstructor
+    public static class MissionAuth {
+        private String missionName;
+        private UserInfo userInfo;
+
+        public static MissionAuth of(Mission mission , User user) {
+            return MissionAuth.builder()
+                    .missionName(mission.getName())
+                    .userInfo(UserInfo.from(user))
+                    .build();
+        }
+    }
+
+
 }

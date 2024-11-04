@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,20 +64,20 @@ public class UserEntity extends BaseEntity {
     private int point;
     // 더위
     @Column(name = "hot")
-    private Boolean runHot;
+    private Boolean easilyHot;
     // 추위
     @Column(name = "cold")
-    private Boolean runCold;
+    private Boolean easilyCold;
     // 땀
     @Column(name = "sweat")
-    private Boolean runSweat;
+    private Boolean easilySweat;
 
     @OneToMany(mappedBy = "user")
     private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
 
     @Builder
     public UserEntity(Long id, String serialId, String password, String nickname,
-                      EProvider provider, ERole role, boolean runHot , boolean runCold , boolean runSweat) {
+                      EProvider provider, ERole role, boolean easilyHot, boolean easilyCold, boolean easilySweat) {
         this.id = id;
         this.serialId = serialId;
         this.password = password;
@@ -87,9 +86,9 @@ public class UserEntity extends BaseEntity {
         this.role = role;
         this.isLogin = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
-        this.runCold = runCold;
-        this.runHot = runHot;
-        this.runSweat = runSweat;
+        this.easilyCold = easilyCold;
+        this.easilyHot = easilyHot;
+        this.easilySweat = easilySweat;
         this.level = 1;
         this.point = 0;
     }
@@ -151,9 +150,9 @@ public class UserEntity extends BaseEntity {
                 .role(user.getRole())
                 .serialId(user.getSerialId())
                 .isLogin(user.getIsLogin())
-                .runHot(user.isRunHot())
-                .runSweat(user.isRunSweat())
-                .runCold(user.isRunCold())
+                .easilyHot(user.isEasilyHot())
+                .easilySweat(user.isEasilySweat())
+                .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
                 .build();
     }
@@ -167,10 +166,10 @@ public class UserEntity extends BaseEntity {
                 .role(role)
                 .provider(provider)
                 .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
-                .runHot(runHot)
-                .runCold(runCold)
+                .easilyHot(easilyHot)
+                .easilyCold(easilyCold)
                 .isLogin(isLogin)
-                .runSweat(runSweat)
+                .easilySweat(easilySweat)
                 .serialId(serialId)
                 .refreshToken(refreshToken)
                 .build();
@@ -201,9 +200,9 @@ public class UserEntity extends BaseEntity {
     }
 
     public void applySurveyResult(SurveyDto surveyResult) {
-        this.runHot = surveyResult.runHot();
-        this.runSweat = surveyResult.runSweat();
-        this.runCold = surveyResult.runCold();
+        this.easilyHot = surveyResult.runHot();
+        this.easilySweat = surveyResult.runSweat();
+        this.easilyCold = surveyResult.runCold();
     }
 }
 
