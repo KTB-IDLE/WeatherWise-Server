@@ -16,6 +16,7 @@ import com.idle.weather.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
@@ -25,6 +26,7 @@ import static com.idle.weather.mission.api.response.MissionResponseDto.*;
 
 @Service @Builder
 @RequiredArgsConstructor
+@Transactional
 public class MissionServiceImpl implements MissionService {
     private final MissionRepository missionRepository;
     private final MissionHistoryRepository missionHistoryRepository;
@@ -49,7 +51,7 @@ public class MissionServiceImpl implements MissionService {
         MissionTime missionTime = MissionTime.fromValue(createMission.getMissionTime());
 
         // MissionHistory 에 저장
-        MissionHistory missionHistory = missionHistoryRepository.save(MissionHistory.of(user , mission , missionTime));
+        MissionHistory missionHistory = missionHistoryRepository.save(MissionHistory.of(user,mission , missionTime));
 
         return SingleMission.of(mission , missionHistory.getId());
     }

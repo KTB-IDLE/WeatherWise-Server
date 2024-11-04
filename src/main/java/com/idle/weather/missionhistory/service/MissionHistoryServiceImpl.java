@@ -38,12 +38,12 @@ import static com.idle.weather.missionhistory.api.response.MissionHistoryRespons
 @Transactional(readOnly = true)
 @Slf4j
 public class MissionHistoryServiceImpl implements MissionHistoryService {
-    private MissionHistoryRepository missionHistoryRepository;
-    private UserRepository userRepository;
-    private AmazonS3Client amazonS3Client;
-    private LevelRepository levelRepository;
+    private final MissionHistoryRepository missionHistoryRepository;
+    private final UserRepository userRepository;
+    private final AmazonS3Client amazonS3Client;
+    private final LevelRepository levelRepository;
     // Mock Server
-    private MockFastApiService mockFastApiService;
+    private final MockFastApiService mockFastApiService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -51,7 +51,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Value("${cloud.aws.s3.domain-name}")
     private String domainName;
 
-    public MissionHistoryServiceImpl(
+/*    public MissionHistoryServiceImpl(
             MissionHistoryRepository missionHistoryRepository,
             UserRepository userRepository,
             AmazonS3Client amazonS3Client,
@@ -67,7 +67,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         this.mockFastApiService = mockFastApiService;
         this.bucket = bucket;
         this.domainName = domainName;
-    }
+    }*/
 
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
@@ -94,7 +94,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         User user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
 
-        return missionHistoryRepository.save(MissionHistory.of(user, mission,missionTime));
+        return missionHistoryRepository.save(MissionHistory.of(user,mission,missionTime));
     }
 
     @Override
@@ -104,7 +104,6 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
                                            Long userId) throws IOException {
         User user = userRepository.findById(userId);
         MissionHistory missionHistory = missionHistoryRepository.findById(missionHistoryId);
-        missionHistory.settingUser(user);
 
         Mission mission = missionHistory.getMission();
 

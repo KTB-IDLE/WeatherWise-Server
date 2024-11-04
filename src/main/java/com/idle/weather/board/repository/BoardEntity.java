@@ -5,6 +5,7 @@ import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.location.domain.Location;
+import com.idle.weather.location.repository.LocationEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
@@ -31,7 +32,7 @@ public class BoardEntity extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    private LocationEntity location;
 
     @Column(nullable = false)
     private String title;
@@ -52,7 +53,7 @@ public class BoardEntity extends BaseEntity {
     /*@Version
     private int version;*/  // Optimistic Locking을 위한 버전 필드 추가
 
-    public static BoardEntity createNewBoard(UserEntity user, Location location, String title, String content) {
+    public static BoardEntity createNewBoard(UserEntity user, LocationEntity location, String title, String content) {
         return BoardEntity.builder()
                 .user(user)
                 .location(location)
@@ -63,7 +64,7 @@ public class BoardEntity extends BaseEntity {
                 .build();
     }
 
-    public BoardEntity updateBoard(Location location, String title, String content) {
+    public BoardEntity updateBoard(LocationEntity location, String title, String content) {
         this.location = location;
         this.title = title;
         this.content = content;
@@ -98,7 +99,7 @@ public class BoardEntity extends BaseEntity {
                 .votes(new HashSet<>())
                 .upvoteCount(upvoteCount)
                 .downvoteCount(downvoteCount)
-                .location(location)
+                .location(location.toDomain())
                 .content(content)
                 .title(title)
                 .build();
@@ -111,7 +112,7 @@ public class BoardEntity extends BaseEntity {
                 .downvoteCount(board.getDownvoteCount())
                 .user(UserEntity.toEntity(board.getUser()))
                 .title(board.getTitle())
-                .location(board.getLocation())
+                .location(LocationEntity.toEntity(board.getLocation()))
                 .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(Collectors.toSet()))
                 .title(board.getTitle())
                 .build();

@@ -11,6 +11,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
@@ -26,13 +27,14 @@ public class MissionHistoryEntity extends BaseEntity {
     private LocalDateTime completedAt;
     private boolean isCompleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name ="mission_id")
+    private MissionEntity mission;
+
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="mission_id")
-    private MissionEntity mission;
 
     @Enumerated(STRING)
     private MissionTime missionTime;
@@ -44,10 +46,11 @@ public class MissionHistoryEntity extends BaseEntity {
                 .id(missionHistory.getId())
                 .isCompleted(missionHistory.isCompleted())
                 .mission(MissionEntity.toEntity(missionHistory.getMission()))
-                .user(UserEntity.toEntity(missionHistory.getUser()))
                 .missionTime(missionHistory.getMissionTime())
                 .storeFileName(missionHistory.getStoreFileName())
                 .uploadFileName(missionHistory.getUploadFileName())
+                .user(UserEntity.toEntity(missionHistory.getUser()))
+                .isCompleted(missionHistory.isCompleted())
                 .build();
     }
 
@@ -59,6 +62,7 @@ public class MissionHistoryEntity extends BaseEntity {
                 .missionTime(missionTime)
                 .storeFileName(storeFileName)
                 .uploadFileName(uploadFileName)
+                .user(user.toDomain())
                 .build();
     }
 

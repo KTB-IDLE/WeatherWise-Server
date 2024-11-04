@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface BoardVoteRepository extends JpaRepository<BoardVoteEntity, Long> {
+public interface BoardVoteJpaRepository extends JpaRepository<BoardVoteEntity, Long> {
 
     @Query("""
             SELECT v

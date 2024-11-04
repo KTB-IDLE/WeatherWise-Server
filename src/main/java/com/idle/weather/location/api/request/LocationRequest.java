@@ -1,6 +1,7 @@
 package com.idle.weather.location.api.request;
 
 import com.idle.weather.location.domain.Location;
+import com.idle.weather.location.repository.LocationEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record LocationRequest(
@@ -13,7 +14,7 @@ public record LocationRequest(
         @Schema(description = "경도", example = "")
         Double longitude
 ) {
-        public Location toEntity() {
+        public Location toDomain() {
                 return Location.createNewLocation(
                         locationName,
                         latitude,

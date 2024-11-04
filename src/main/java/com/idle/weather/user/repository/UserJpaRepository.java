@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(value = "SELECT u.id as id, u.password as password, u.role as role" +

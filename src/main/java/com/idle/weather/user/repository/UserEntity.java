@@ -76,9 +76,6 @@ public class UserEntity extends BaseEntity {
     @Column(name = "is_completed_survey")
     private Boolean isCompletedSurvey;
 
-    @OneToMany(mappedBy = "user")
-    private List<MissionHistoryEntity> missionHistories;
-
     @Builder
     public UserEntity(Long id, String serialId, String password, String nickname,
                       EProvider provider, ERole role, boolean easilyHot, boolean easilyCold, boolean easilySweat,
@@ -109,6 +106,10 @@ public class UserEntity extends BaseEntity {
         this.nickname = nickname;
         this.level = 1;
         this.point = 0;
+        this.isCompletedSurvey = false;
+        this.easilyCold = false;
+        this.easilySweat = false;
+        this.easilyHot = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
@@ -135,13 +136,13 @@ public class UserEntity extends BaseEntity {
                 .level(1)
                 .point(0)
                 .isLogin(Boolean.FALSE)
-                .missionHistories(new ArrayList<>())
                 // 회원가입 할 때는 모두 FALSE 로 초기화
                 .easilyCold(Boolean.FALSE)
                 .easilySweat(Boolean.FALSE)
                 .easilyHot(Boolean.FALSE)
                 // 설문조사 여부
                 .isCompletedSurvey(Boolean.FALSE)
+                .isDeleted(false)
                 .build();
         user.register(authSignUpDto.nickname());
         return user;
@@ -168,7 +169,6 @@ public class UserEntity extends BaseEntity {
                 .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
                 .isCompletedSurvey(user.isCompletedSurvey())
-                .missionHistories(user.getMissionHistories().stream().map(MissionHistoryEntity::toEntity).collect(toList()))
                 .build();
     }
     public User toDomain() {
@@ -180,7 +180,6 @@ public class UserEntity extends BaseEntity {
                 .point(point)
                 .role(role)
                 .provider(provider)
-                .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(toList()))
                 .easilyHot(easilyHot)
                 .easilyCold(easilyCold)
                 .isLogin(isLogin)

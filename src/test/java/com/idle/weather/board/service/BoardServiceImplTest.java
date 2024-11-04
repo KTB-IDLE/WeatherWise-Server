@@ -3,7 +3,7 @@ package com.idle.weather.board.service;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.boardvote.domain.BoardVote;
-import com.idle.weather.boardvote.repository.BoardVoteRepository;
+import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +31,7 @@ class BoardServiceImplTest {
     @Autowired
     private BoardJpaRepository boardJpaRepository;
     @Autowired
-    private BoardVoteRepository boardVoteRepository;
+    private BoardVoteJpaRepository boardVoteRepository;
 
     @Test
     void addVoteForConcurrencyTest() {

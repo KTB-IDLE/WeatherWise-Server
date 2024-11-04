@@ -6,12 +6,14 @@ import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
+import com.idle.weather.board.service.port.BoardRepository;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.boardvote.repository.BoardVoteEntity;
-import com.idle.weather.boardvote.repository.BoardVoteRepository;
+import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
 import com.idle.weather.location.domain.Location;
+import com.idle.weather.location.repository.LocationEntity;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.Builder;
@@ -33,7 +35,8 @@ import java.util.concurrent.Executors;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
-    private final BoardVoteRepository boardVoteRepository;
+    private final BoardRepository boardRepository;
+    private final BoardVoteJpaRepository boardVoteRepository;
     private final UserRepository userRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
 
@@ -46,11 +49,11 @@ public class BoardServiceImpl implements BoardService {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Location location = boardRequest.locationRequest().toEntity();
+        Location location = boardRequest.locationRequest().toDomain();
 
         BoardEntity newBoard = BoardEntity.createNewBoard(
                 user,
-                location,
+                LocationEntity.toEntity(location),
                 boardRequest.title(),
                 boardRequest.content()
         );
@@ -69,6 +72,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardListResponse getBoardsWithRadius(double latitude, double longitude) {
         List<BoardEntity> boards = boardJpaRepository.findByLocationWithinRadius(latitude, longitude);
+        System.out.println("JIWON " + boards.size());
         return BoardListResponse.from(boards);
     }
 
@@ -92,9 +96,9 @@ public class BoardServiceImpl implements BoardService {
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Location updatedLocation = boardRequest.locationRequest().toEntity();
+        Location updatedLocation = boardRequest.locationRequest().toDomain();
 
-        board.updateBoard(updatedLocation, boardRequest.title(), boardRequest.content());
+        board.updateBoard(LocationEntity.toEntity(updatedLocation), boardRequest.title(), boardRequest.content());
         return BoardResponse.from(boardJpaRepository.save(board));
     }
 

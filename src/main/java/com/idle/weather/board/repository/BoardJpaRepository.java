@@ -23,7 +23,7 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
     @Query(value = """
         SELECT b.*
         FROM board_entity b
-        JOIN location l ON b.location_id = l.location_id
+        JOIN location_entity l ON b.location_id = l.location_id
         WHERE ST_Distance_Sphere(
             point(l.longitude, l.latitude),  -- 경도, 위도 순으로 수정
             point(:longitude, :latitude)     -- 경도, 위도 순으로 수정
