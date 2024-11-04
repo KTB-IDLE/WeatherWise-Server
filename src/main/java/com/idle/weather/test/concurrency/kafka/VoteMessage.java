@@ -1,4 +1,4 @@
-package com.idle.weather.test.kafka;
+package com.idle.weather.test.concurrency.kafka;
 
 import com.idle.weather.boardvote.domain.VoteType;
 import lombok.AllArgsConstructor;

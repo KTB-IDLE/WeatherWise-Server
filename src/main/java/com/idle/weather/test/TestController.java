@@ -1,13 +1,13 @@
 package com.idle.weather.test;
 
 import com.idle.weather.board.api.port.BoardService;
-import com.idle.weather.test.Isolation.IsolationFacade;
-import com.idle.weather.test.javalock.ReentrantLockFacade;
-import com.idle.weather.test.kafka.producer.KafkaProducerFacade;
-import com.idle.weather.test.named.NamedLockFacade;
-import com.idle.weather.test.optimistic.OptimisticLockFacade;
-import com.idle.weather.test.redis.lettuce.LettuceLockFacade;
-import com.idle.weather.test.redis.redisson.RedissonLockStockFacade;
+import com.idle.weather.test.concurrency.Isolation.IsolationFacade;
+import com.idle.weather.test.concurrency.javalock.ReentrantLockFacade;
+import com.idle.weather.test.concurrency.kafka.producer.KafkaProducerFacade;
+import com.idle.weather.test.concurrency.named.NamedLockFacade;
+import com.idle.weather.test.concurrency.optimistic.OptimisticLockFacade;
+import com.idle.weather.test.concurrency.redis.lettuce.LettuceLockFacade;
+import com.idle.weather.test.concurrency.redis.redisson.RedissonLockStockFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

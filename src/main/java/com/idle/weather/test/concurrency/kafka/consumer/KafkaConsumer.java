@@ -1,7 +1,7 @@
-package com.idle.weather.test.kafka.consumer;
+package com.idle.weather.test.concurrency.kafka.consumer;
 
 import com.idle.weather.board.api.port.BoardService;
-import com.idle.weather.test.kafka.VoteMessage;
+import com.idle.weather.test.concurrency.kafka.VoteMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

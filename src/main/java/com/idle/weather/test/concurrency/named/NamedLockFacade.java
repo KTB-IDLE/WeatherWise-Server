@@ -1,4 +1,4 @@
-package com.idle.weather.test.named;
+package com.idle.weather.test.concurrency.named;
 
 import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.boardvote.domain.VoteType;

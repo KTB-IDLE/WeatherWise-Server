@@ -1,7 +1,7 @@
-package com.idle.weather.test.kafka.producer;
+package com.idle.weather.test.concurrency.kafka.producer;
 
 import com.idle.weather.boardvote.domain.VoteType;
-import com.idle.weather.test.kafka.VoteMessage;
+import com.idle.weather.test.concurrency.kafka.VoteMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;

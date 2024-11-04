@@ -1,4 +1,4 @@
-package com.idle.weather.test.named;
+package com.idle.weather.test.concurrency.named;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

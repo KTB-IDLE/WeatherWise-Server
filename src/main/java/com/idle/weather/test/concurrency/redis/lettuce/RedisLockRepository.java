@@ -1,8 +1,7 @@
-package com.idle.weather.test.redis.lettuce;
+package com.idle.weather.test.concurrency.redis.lettuce;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;

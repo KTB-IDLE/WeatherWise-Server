@@ -1,11 +1,10 @@
-package com.idle.weather.test.redis.redisson;
+package com.idle.weather.test.concurrency.redis.redisson;
 
 import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.boardvote.domain.VoteType;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
