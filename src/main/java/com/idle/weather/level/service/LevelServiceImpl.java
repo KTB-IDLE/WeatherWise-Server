@@ -3,10 +3,8 @@ package com.idle.weather.level.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.api.port.LevelService;
-import com.idle.weather.level.api.response.LevelResponseDto;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
-import com.idle.weather.user.service.port.UserRepository;
+import com.idle.weather.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,7 @@ import static com.idle.weather.level.api.response.LevelResponseDto.*;
 @RequiredArgsConstructor
 public class LevelServiceImpl implements LevelService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
 
     @Override
     public RankingList getRankingList(Long userId) {

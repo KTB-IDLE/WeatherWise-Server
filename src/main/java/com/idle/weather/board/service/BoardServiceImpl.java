@@ -4,28 +4,20 @@ import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
-import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
-import com.idle.weather.board.service.port.BoardRepository;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
-import com.idle.weather.boardvote.service.port.BoardVoteRepository;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.location.repository.LocationJpaRepository;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
-import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -41,7 +33,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
     private final BoardVoteJpaRepository boardVoteJpaRepository;
-    private final UserRepository userJpaRepository;
+    private final UserRepository userRepository;
     private final LocationJpaRepository locationJpaRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
 
@@ -51,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Location location = boardRequest.locationRequest().toEntity();
@@ -88,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardListResponse getUserBoards(Long userId) {
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<BoardEntity> userBoards = boardJpaRepository.findByUser(user);
         return BoardListResponse.from(userBoards);
@@ -147,7 +139,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardVoteResponse getUserVote(Long userId, Long boardId) {
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
@@ -161,7 +153,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void addVote(Long userId, Long boardId, VoteType voteType) {
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
@@ -257,7 +249,7 @@ public class BoardServiceImpl implements BoardService {
     // @Transactional(isolation = Isolation.SERIALIZABLE)
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
 
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 1. 일반 코드
@@ -286,7 +278,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     // @Transactional
     public void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
-        UserEntity user = userJpaRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));

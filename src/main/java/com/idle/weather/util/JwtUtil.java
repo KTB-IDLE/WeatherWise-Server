@@ -4,7 +4,6 @@ import com.idle.weather.common.constant.Constants;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.auth.dto.JwtTokenDto;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;

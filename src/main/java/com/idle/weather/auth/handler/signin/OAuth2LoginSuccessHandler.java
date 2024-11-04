@@ -2,7 +2,6 @@ package com.idle.weather.auth.handler.signin;
 
 import com.idle.weather.auth.CustomUserDetails;
 import com.idle.weather.auth.dto.JwtTokenDto;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;

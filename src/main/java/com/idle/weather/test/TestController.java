@@ -46,4 +46,5 @@ public class TestController {
                         @RequestBody TestVoteRequestType voteType) throws InterruptedException {
         boardService.addVoteForConcurrencyTest2(userId, boardId, voteType.getVoteType());
     }
+    
 }

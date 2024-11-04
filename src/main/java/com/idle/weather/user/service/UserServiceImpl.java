@@ -4,25 +4,23 @@ import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.api.port.UserService;
 import com.idle.weather.user.api.response.UserResponse;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.repository.UserEntity;
-import com.idle.weather.user.service.port.UserRepository;
+import com.idle.weather.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j; // 로그를 위한 추가
 
-import java.util.Optional;
 
 @Slf4j // 로그 어노테이션 추가
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override

@@ -6,22 +6,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class UserRequestDto {
+public record UserRequestDto(UserInfo userInfo) {
 
-    @NoArgsConstructor @AllArgsConstructor
-    @Builder @Getter
-    public static class UserInfo {
-        private boolean easilyHot;
-        private boolean easilyCold;
-        private boolean easilySweat;
-
+    public record UserInfo(boolean easilyHot, boolean easilyCold, boolean easilySweat) {
         public static UserInfo from(User user) {
-            return UserInfo.builder()
-                    .easilyCold(user.isEasilyCold())
-                    .easilyHot(user.isEasilyHot())
-                    .easilySweat(user.isEasilySweat())
-                    .build();
-
+            return new UserInfo(
+                    user.isEasilyHot(),
+                    user.isEasilyCold(),
+                    user.isEasilySweat()
+            );
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.idle.weather.auth;
 
 import com.idle.weather.user.dto.type.ERole;
-import com.idle.weather.user.service.port.UserRepository;
+import com.idle.weather.user.repository.UserJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,14 @@ public class CustomUserDetails implements OAuth2User, OidcUser, UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes; //소셜에서 추가
 
-    public static CustomUserDetails create(UserRepository.UserSecurityForm user, Map<String, Object> attributes) {
+    public static CustomUserDetails create(UserJpaRepository.UserSecurityForm user, Map<String, Object> attributes) {
         CustomUserDetails userPrincipal = create(user);
         userPrincipal.setAttributes(attributes);
 
         return userPrincipal;
     }
 
-    public static CustomUserDetails create(UserRepository.UserSecurityForm user) {
+    public static CustomUserDetails create(UserJpaRepository.UserSecurityForm user) {
 
         return new CustomUserDetails(
                 user.getId(),

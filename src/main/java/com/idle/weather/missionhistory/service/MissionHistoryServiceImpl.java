@@ -6,7 +6,6 @@ import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.repository.LevelEntity;
 import com.idle.weather.level.repository.LevelJpaRepository;
-import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
@@ -20,15 +19,8 @@ import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -103,7 +95,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         String imageUrl = authMissionAfterSavedS3(imageFile , missionHistory);
 
         // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
-        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(mission, user));
+        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(imageUrl,mission, user));
 
         // 인증 실패시
         if (!authenticationResult) {

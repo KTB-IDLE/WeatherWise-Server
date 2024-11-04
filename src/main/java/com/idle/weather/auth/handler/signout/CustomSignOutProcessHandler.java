@@ -1,11 +1,7 @@
 package com.idle.weather.auth.handler.signout;
 
 import com.idle.weather.auth.CustomUserDetails;
-import com.idle.weather.common.constant.Constants;
-import com.idle.weather.exception.BaseException;
-import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.service.port.UserRepository;
-import com.idle.weather.util.HeaderUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
