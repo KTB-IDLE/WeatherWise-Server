@@ -74,10 +74,14 @@ public class FakeBoardRepository implements BoardRepository {
     }
 
     @Override
-    public Optional<Board> findByIdWithOptimisticLock(Long boardId) {
+    public Optional<BoardEntity> findByIdWithOptimisticLock(Long boardId) {
         return Optional.empty();
     }
 
+    @Override
+    public void saveForOptimisticLock(BoardEntity board) {
+
+    }
 
 
     @Override

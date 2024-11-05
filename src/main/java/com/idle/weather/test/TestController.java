@@ -35,8 +35,8 @@ public class TestController {
     public void addVote(@PathVariable Long boardId, @PathVariable Long userId ,
                         @RequestBody TestVoteRequestType voteType) throws InterruptedException {
         // 기존 방법 (Sunny)
-        optimisticLockFacadeOrigin.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
-        // boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
+        // optimisticLockFacadeOrigin.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
+        boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
         // optimisticLockFacade.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
         // lettuceLockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
         // redissonLockStockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());

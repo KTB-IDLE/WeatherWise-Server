@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,8 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findTop10ByOrderByLevelDesc() {
-        return userJpaRepository.findTop10ByOrderByLevelDesc();
+    public List<User> findTop10ByOrderByLevelDesc() {
+        return userJpaRepository.findTop10ByOrderByLevelDesc().stream().map(UserEntity::toDomain).collect(toList());
     }
 
     @Override

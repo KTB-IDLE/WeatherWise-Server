@@ -38,8 +38,13 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public Optional<Board> findByIdWithOptimisticLock(Long boardId) {
-        return boardJpaRepository.findByIdWithOptimisticLock(boardId).map(BoardEntity::toDomain);
+    public Optional<BoardEntity> findByIdWithOptimisticLock(Long boardId) {
+        return boardJpaRepository.findByIdWithOptimisticLock(boardId);
+    }
+
+    @Override
+    public void saveForOptimisticLock(BoardEntity board) {
+        boardJpaRepository.save(board);
     }
 
     @Override

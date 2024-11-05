@@ -245,22 +245,24 @@ public class BoardServiceImpl implements BoardService {
     // @Transactional(isolation = Isolation.REPEATABLE_READ)
     // @Transactional(isolation = Isolation.SERIALIZABLE)
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
-
         User user = userRepository.findById(userId);
 
         // 1. 일반 코드
-        Board board = boardRepository.findById(boardId);
+         /*Board board = boardRepository.findById(boardId);*/
 
         // 2. 비관적 락 사용 코드
-        /*BoardEntity board = boardJpaRepository.findByIdWithPessimisticLock(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+        Board board = boardRepository.findByIdWithPessimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
         // 3. 낙관적 락 사용 코드
-        /*BoardEntity board = boardJpaRepository.findByIdWithOptimisticLock(boardId)
+        /*BoardEntity board = boardRepository.findByIdWithOptimisticLock(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+        /*Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoardForAddVote(user, board.toDomain());*/
 
         Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
                 .findCurrentVoteTypeByUserAndBoardForAddVote(user, board);
+
 
         /**
          * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
@@ -269,6 +271,8 @@ public class BoardServiceImpl implements BoardService {
             if (voteType == VoteType.UPVOTE) board.incrementUpvote();
             else board.decrementDownvote();
         }
+        // 비관적 락
+        // boardRepository.saveForOptimisticLock(board);
         boardRepository.save(board);
     }
 

@@ -50,8 +50,8 @@ public class BoardEntity extends BaseEntity {
     @Column(nullable = false)  // 명시적으로 컬럼 추가
     private Integer downvoteCount = 0; // Downvote count 추가
 
-    @Version
-    private int version;  // Optimistic Locking을 위한 버전 필드 추가
+    /*@Version
+    private int version;*/  // Optimistic Locking을 위한 버전 필드 추가
 
     public static BoardEntity createNewBoard(UserEntity user, LocationEntity location, String title, String content) {
         return BoardEntity.builder()

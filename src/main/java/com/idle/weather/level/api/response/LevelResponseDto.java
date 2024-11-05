@@ -31,7 +31,7 @@ public class LevelResponseDto {
     public static class SingleRanking {
         private String nickName;
         private int level;
-        public static SingleRanking from(UserEntity user) {
+        public static SingleRanking from(User user) {
             return SingleRanking.builder()
                     .level(user.getLevel())
                     .nickName(user.getNickname())

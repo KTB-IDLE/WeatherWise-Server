@@ -9,10 +9,8 @@ import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * InMemory DB (H2 사용 X)
@@ -38,6 +36,8 @@ public class FakeUserRepository implements UserRepository {
                     .password(user.getPassword())
                     .missionHistories(new ArrayList<>())
                     .provider(user.getProvider())
+                    .level(user.getLevel())
+                    .point(user.getPoint())
                     .build();
             data.add(newUser);
             return newUser;
@@ -47,6 +47,14 @@ public class FakeUserRepository implements UserRepository {
             data.add(user);
             return user;
         }
+    }
+
+    @Override
+    public List<User> findTop10ByOrderByLevelDesc() {
+        return data.stream()
+                .sorted(Comparator.comparingInt(User::getLevel).reversed()) // level을 기준으로 내림차순 정렬
+                .limit(10) // 상위 10명 선택
+                .collect(Collectors.toList());
     }
 
 
@@ -70,10 +78,7 @@ public class FakeUserRepository implements UserRepository {
 
     }
 
-    @Override
-    public List<UserEntity> findTop10ByOrderByLevelDesc() {
-        return null;
-    }
+
 
     @Override
     public int findUserRanking(int level) {
@@ -95,5 +100,13 @@ public class FakeUserRepository implements UserRepository {
     @Override
     public Optional<UserEntity> findByIdForLegacy(Long id) {
         return Optional.empty();
+    }
+
+    public void clear() {
+        data.clear();
+    }
+
+    public int getDataSize() {
+        return data.size();
     }
 }

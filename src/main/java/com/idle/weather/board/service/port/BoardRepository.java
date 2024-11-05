@@ -17,12 +17,16 @@ public interface BoardRepository {
     List<Board> findByLocationWithinRadius(@Param("latitude") double latitude, @Param("longitude") double longitude);
 
     Optional<Board> findByIdWithPessimisticLock(Long boardId);
-    Optional<Board> findByIdWithOptimisticLock(Long boardId);
+
+    // 낙관적 락은 Entity
+    Optional<BoardEntity> findByIdWithOptimisticLock(Long boardId);
+    void saveForOptimisticLock(BoardEntity board);
     Board save(Board board);
     Board findById(Long id);
     Optional<BoardEntity> findByIdForLegacy(Long id);
     List<Board> findAll();
     void delete(Board board);
+
 
     /**
      * Domain 객체로 변환하기

@@ -20,7 +20,7 @@ public interface UserRepository {
     void updateRefreshTokenAndLoginStatus(@Param("userId") Long userId, @Param("refreshToken") String refreshToken, @Param("isLogin") Boolean isLogin);
 
     // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리
-    List<UserEntity> findTop10ByOrderByLevelDesc();
+    List<User> findTop10ByOrderByLevelDesc();
     int findUserRanking(@Param("level") int level);
     boolean checkSurvey(@Param("userId") Long userId);
     Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
