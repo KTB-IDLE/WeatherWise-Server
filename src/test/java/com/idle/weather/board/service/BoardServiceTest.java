@@ -1,5 +1,7 @@
 package com.idle.weather.board.service;
 
+import com.idle.weather.mock.FakeBoardRepository;
+import com.idle.weather.mock.FakeBoardVoteRepository;
 import com.idle.weather.mock.FakeUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,12 +13,14 @@ class BoardServiceTest {
     @BeforeEach
     void init() {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
+        FakeBoardRepository fakeBoardRepository = new FakeBoardRepository();
+        FakeBoardVoteRepository fakeBoardVoteRepository = new FakeBoardVoteRepository();
         this.boardService = BoardServiceImpl.builder()
-                .boardRepository()
-                .boardVoteRepository()
-                .redisTemplate()
+                .boardRepository(fakeBoardRepository)
                 .userRepository(fakeUserRepository)
-                .build();
+                .boardVoteRepository(fakeBoardVoteRepository)
+
+
     }
 
     @Test

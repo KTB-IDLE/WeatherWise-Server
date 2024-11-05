@@ -45,6 +45,7 @@ public class BoardVoteEntity {
 
     public static BoardVoteEntity toEntity(BoardVote boardVote) {
         return BoardVoteEntity.builder()
+                .voteId(boardVote.getVoteId())
                 .board(BoardEntity.toEntity(boardVote.getBoard()))
                 .user(UserEntity.toEntity(boardVote.getUser()))
                 .voteId(boardVote.getVoteId())

@@ -26,8 +26,7 @@ public interface UserRepository {
     Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
 
     User findById(Long id);
+    Optional<UserEntity> findByIdForLegacy(Long id);
 
     User save(User user);
-
-    Optional<UserEntity> findByIdForLegacy(Long id);
 }

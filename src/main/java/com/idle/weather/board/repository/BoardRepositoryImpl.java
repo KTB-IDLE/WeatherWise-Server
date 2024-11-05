@@ -54,6 +54,11 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
+    public Optional<BoardEntity> findByIdForLegacy(Long id) {
+        return boardJpaRepository.findById(id);
+    }
+
+    @Override
     public List<Board> findAll() {
         return boardJpaRepository.findAll().stream().map(BoardEntity::toDomain).collect(toList());
     }
@@ -62,4 +67,20 @@ public class BoardRepositoryImpl implements BoardRepository {
     public void delete(Board board) {
         boardJpaRepository.delete(BoardEntity.toEntity(board));
     }
+
+    @Override
+    public List<BoardEntity> findByLocationWithinRadiusForLegacy(double latitude, double longitude) {
+        return null;
+    }
+
+    @Override
+    public List<BoardEntity> findByUserForLegacy(UserEntity user) {
+        return boardJpaRepository.findByUser(user);
+    }
+
+    @Override
+    public void saveForLegacy(BoardEntity board) {
+        boardJpaRepository.save(board);
+    }
+
 }

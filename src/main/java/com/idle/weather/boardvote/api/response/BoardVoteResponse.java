@@ -20,7 +20,7 @@ public record BoardVoteResponse(
         @Schema(description = "투표 타입", example = "UPVOTE")
         VoteType voteType
 ) {
-        public static BoardVoteResponse from(BoardVoteEntity boardVote) {
+        public static BoardVoteResponse from(BoardVote boardVote) {
                 return new BoardVoteResponse(
                         boardVote.getVoteId(),
                         boardVote.getBoard().getBoardId(),

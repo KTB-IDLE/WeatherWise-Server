@@ -32,6 +32,7 @@ class MissionHistoryServiceTest {
         fakeUserRepository = new FakeUserRepository();
         FakeLevelRepository fakeLevelRepository = new FakeLevelRepository();
         FakeMissionRepository fakeMissionRepository = new FakeMissionRepository();
+/*
         this.missionHistoryService = new MissionHistoryServiceImpl(
                 fakeMissionHistoryRepository,
                 fakeUserRepository,
@@ -41,6 +42,7 @@ class MissionHistoryServiceTest {
                 "test-bucket",
                 "test-domain"
         );
+*/
 
 
         // mission 으로 부터 만들어진 MissionHistory

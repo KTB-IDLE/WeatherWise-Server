@@ -39,4 +39,6 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
     @Query("select b from BoardEntity b where b.boardId = :boardId")
     Optional<BoardEntity> findByIdWithOptimisticLock(Long boardId);
 
+
+
 }

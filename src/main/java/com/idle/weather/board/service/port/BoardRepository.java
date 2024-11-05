@@ -20,6 +20,14 @@ public interface BoardRepository {
     Optional<Board> findByIdWithOptimisticLock(Long boardId);
     Board save(Board board);
     Board findById(Long id);
+    Optional<BoardEntity> findByIdForLegacy(Long id);
     List<Board> findAll();
     void delete(Board board);
+
+    /**
+     * Domain 객체로 변환하기
+     */
+    List<BoardEntity> findByLocationWithinRadiusForLegacy(@Param("latitude") double latitude, @Param("longitude") double longitude);
+    List<BoardEntity> findByUserForLegacy(@Param("user") UserEntity user);
+    void saveForLegacy(BoardEntity board);
 }

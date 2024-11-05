@@ -51,7 +51,11 @@ class BoardServiceImplTest {
         BoardEntity board = boardJpaRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board)
+
+
+
+
 
         if (currentVoteOpt.isEmpty()) {
             for (int i = 0; i < threadCount; i++) {

@@ -20,16 +20,47 @@ public class BoardVoteRepositoryImpl implements BoardVoteRepository {
 
     private final BoardVoteJpaRepository boardVoteJpaRepository;
 
+    @Override
+    public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForAddVote(User user, Board board) {
+        return boardVoteJpaRepository
+                .findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user) , BoardEntity.toEntity(board));
+    }
 
     @Override
-    public BoardVote findCurrentVoteTypeByUserAndBoard(User user, Board board) {
-        return boardVoteJpaRepository
-                .findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user) , BoardEntity.toEntity(board))
-                .orElseThrow(() -> new RuntimeException("in method findCurrentVoteTypeByUserAndBoard")).toDomain();
+    public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForLegacy(UserEntity user, BoardEntity board) {
+        return boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user,board);
+    }
+
+
+    @Override
+    public Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(User user, Board board) {
+        return boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user), BoardEntity.toEntity(board))
+                .map(BoardVoteEntity::toDomain);
     }
 
     @Override
     public void removeVote(User user, Board board) {
         boardVoteJpaRepository.removeVote(UserEntity.toEntity(user) , BoardEntity.toEntity(board));
+    }
+
+    @Override
+    public void delete(BoardVote boardVote) {
+        boardVoteJpaRepository.delete(BoardVoteEntity.toEntity(boardVote));
+    }
+
+    @Override
+    public void save(BoardVote boardVote) {
+        boardVoteJpaRepository.save(BoardVoteEntity.toEntity(boardVote));
+    }
+
+
+    @Override
+    public void saveForLegacy(BoardVoteEntity boardVote) {
+        boardVoteJpaRepository.save(boardVote);
+    }
+
+    @Override
+    public void deleteForLegacy(BoardVoteEntity boardVote) {
+        boardVoteJpaRepository.delete(boardVote);
     }
 }
