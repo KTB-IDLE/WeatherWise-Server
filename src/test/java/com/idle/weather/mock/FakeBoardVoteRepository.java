@@ -55,13 +55,12 @@ public class FakeBoardVoteRepository implements BoardVoteRepository {
     }
 
     @Override
-    public void removeVoteForLegacy(UserEntity user, BoardEntity board) {
+    public void saveForLegacy(BoardVoteEntity boardVote) {
 
     }
 
-
     @Override
-    public void saveForLegacy(BoardVoteEntity boardVote) {
+    public void deleteForLegacy(BoardVoteEntity boardVote) {
 
     }
 }

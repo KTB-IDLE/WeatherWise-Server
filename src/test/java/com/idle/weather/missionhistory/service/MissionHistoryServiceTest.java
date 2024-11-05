@@ -32,17 +32,12 @@ class MissionHistoryServiceTest {
         fakeUserRepository = new FakeUserRepository();
         FakeLevelRepository fakeLevelRepository = new FakeLevelRepository();
         FakeMissionRepository fakeMissionRepository = new FakeMissionRepository();
-/*
-        this.missionHistoryService = new MissionHistoryServiceImpl(
-                fakeMissionHistoryRepository,
-                fakeUserRepository,
-                new AmazonS3Client(),
-                fakeLevelRepository,
-                new MockFastApiService(),
-                "test-bucket",
-                "test-domain"
-        );
-*/
+        this.missionHistoryService = MissionHistoryServiceImpl.builder()
+                .missionHistoryRepository(fakeMissionHistoryRepository)
+                .mockFastApiService(new MockFastApiService())
+                .amazonS3Client(new AmazonS3Client())
+                .build();
+
 
 
         // mission 으로 부터 만들어진 MissionHistory
@@ -101,16 +96,36 @@ class MissionHistoryServiceTest {
         // 현재 User 의 포인트 = 기존 포인트 + 미션 포인트
         assertThat(user.getPoint()).isEqualTo(beforePoint + missionAuthenticate.getMissionExp());
     }
-/*    @Test
+    @Test
     public void image_를_첨부시켜_미션_인증을_받을_수_있고_실패시_다시_이미지를_첨부_할_수_있다() throws Exception
     {
         //given
-        MissionAuthenticate missionAuthenticate = missionHistoryService.authMission(1L, , 1L);
+        // MissionAuthenticate missionAuthenticate = missionHistoryService.authMission(1L, , 1L);
+
+        //when
+
+    }
+    //then
+
+    @Test
+    public void 유저가_성공한_미션들을_확인_할_수_있다() throws Exception
+    {
+        //given
 
         //when
 
         //then
-    }*/
+    }
+
+    @Test
+    public void 유저가_작성한_게시글들을_확인_할_수_있다() throws Exception
+    {
+        //given
+
+        //when
+
+        //then
+    }
 
 
 }

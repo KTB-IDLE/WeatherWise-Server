@@ -35,8 +35,6 @@ class UserServiceTest {
         //when
         UserResponse userResponse = userService.signUp(signUp);
 
-        System.out.println(userResponse);
-
         //then
         assertThat(userResponse.userId()).isNotNull();
         assertThat(userResponse.nickname()).isEqualTo("cian.kim");

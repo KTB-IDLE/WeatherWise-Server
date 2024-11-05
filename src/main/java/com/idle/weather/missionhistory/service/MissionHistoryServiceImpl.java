@@ -36,38 +36,17 @@ import static com.idle.weather.missionhistory.api.response.MissionHistoryRespons
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
+@Slf4j @Builder
 public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final UserRepository userRepository;
-    private final AmazonS3Client amazonS3Client;
     private final LevelRepository levelRepository;
     // Mock Server
     private final MockFastApiService mockFastApiService;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
-    @Value("${cloud.aws.s3.domain-name}")
-    private String domainName;
-
-/*    public MissionHistoryServiceImpl(
-            MissionHistoryRepository missionHistoryRepository,
-            UserRepository userRepository,
-            AmazonS3Client amazonS3Client,
-            LevelRepository levelRepository,
-            MockFastApiService mockFastApiService,
-            @Value("${cloud.aws.s3.bucket}") String bucket,
-            @Value("${cloud.aws.s3.domain-name}") String domainName
-    ) {
-        this.missionHistoryRepository = missionHistoryRepository;
-        this.userRepository = userRepository;
-        this.amazonS3Client = amazonS3Client;
-        this.levelRepository = levelRepository;
-        this.mockFastApiService = mockFastApiService;
-        this.bucket = bucket;
-        this.domainName = domainName;
-    }*/
+    // S3
+    private final AmazonS3Client amazonS3Client;
+    private final String s3Bucket;
+    private final String s3DomainName;
 
     @Override
     public MissionHistoriesInfo getMissionList(LocalDate date , Long userId) {
@@ -160,14 +139,14 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         String originalFileName = imageFile.getOriginalFilename();
         //DB에 저장될 파일 이름
         String storeFileName = createStoreFileName(originalFileName);
-        missionHistory.updateImageUrl(originalFileName,domainName + storeFileName);
+        missionHistory.updateImageUrl(originalFileName,s3DomainName + storeFileName);
         //S3에 저장
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
         metadata.setContentLength(imageFile.getSize());
-        amazonS3Client.putObject(bucket, storeFileName, imageFile.getInputStream(), metadata);
+        amazonS3Client.putObject(s3Bucket, storeFileName, imageFile.getInputStream(), metadata);
         // 업로드된 파일의 URL 가져오기
-        return amazonS3Client.getUrl(bucket, storeFileName).toString();
+        return amazonS3Client.getUrl(s3Bucket, storeFileName).toString();
     }
 
     private boolean sendFastAPIServer(MissionAuth missionAuthDto) throws IOException {

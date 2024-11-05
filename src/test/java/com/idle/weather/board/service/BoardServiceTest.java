@@ -15,12 +15,6 @@ class BoardServiceTest {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
         FakeBoardRepository fakeBoardRepository = new FakeBoardRepository();
         FakeBoardVoteRepository fakeBoardVoteRepository = new FakeBoardVoteRepository();
-        this.boardService = BoardServiceImpl.builder()
-                .boardRepository(fakeBoardRepository)
-                .userRepository(fakeUserRepository)
-                .boardVoteRepository(fakeBoardVoteRepository)
-
-
     }
 
     @Test
@@ -32,5 +26,35 @@ class BoardServiceTest {
 
         //then
     }
+
+    @Test
+    public void BoardRequest_를_이용하여_게시물을_수정할_수_있다() throws Exception
+    {
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
+    public void VoteType_를_이용하여_게시글에_좋아요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
+    {
+        //given
+
+        //when
+
+        //then
+    }
+    @Test
+    public void VoteType_를_이용하여_게시글에_싫어요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
+    {
+        //given
+
+        //when
+
+        //then
+    }
+
 
 }

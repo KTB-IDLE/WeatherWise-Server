@@ -104,9 +104,4 @@ public class FakeBoardRepository implements BoardRepository {
     public void saveForLegacy(BoardEntity board) {
 
     }
-
-    @Override
-    public List<BoardEntity> findByUser(UserEntity user) {
-        return null;
-    }
 }

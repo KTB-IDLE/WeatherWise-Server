@@ -3,6 +3,7 @@ package com.idle.weather.board.service;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.boardvote.domain.BoardVote;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
@@ -51,11 +52,7 @@ class BoardServiceImplTest {
         BoardEntity board = boardJpaRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board)
-
-
-
-
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         if (currentVoteOpt.isEmpty()) {
             for (int i = 0; i < threadCount; i++) {
