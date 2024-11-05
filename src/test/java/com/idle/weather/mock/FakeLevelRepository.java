@@ -1,5 +1,7 @@
 package com.idle.weather.mock;
 
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.domain.Level;
 import com.idle.weather.level.service.port.LevelRepository;
 import com.idle.weather.mission.domain.Mission;
@@ -35,6 +37,8 @@ public class FakeLevelRepository implements LevelRepository {
 
     @Override
     public Level findById(int level) {
-        return null;
+        return data.stream().filter(l -> l.getLevel() == level)
+                .findFirst()
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_LEVEL));
     }
 }

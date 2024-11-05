@@ -100,6 +100,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         // 인증 성공시
         // User 경험치 추가 (경험치 추가 할 때 레벨 계산)
         Level level = levelRepository.findById(user.getLevel());
+
         int totalPoint = user.getPoint() + mission.getPoint();
         if (totalPoint >= level.getMaxExp()) {
             user.levelUp(totalPoint-level.getMaxExp());
