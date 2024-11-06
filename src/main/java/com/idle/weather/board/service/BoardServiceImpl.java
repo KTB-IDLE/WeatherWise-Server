@@ -149,101 +149,9 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void addVote(Long userId, Long boardId, VoteType voteType) {
-        UserEntity user = userRepository.findByIdForLegacy(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardRepository.findByIdForLegacy(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        String upvoteKey = UPVOTE_KEY + boardId;
-        String downvoteKey = DOWNVOTE_KEY + boardId;
-
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoardForLegacy(user, board);
-
-        try {
-            if (currentVoteOpt.isPresent()) {
-                BoardVoteEntity currentVote = currentVoteOpt.get();
-
-                // 동일한 투표 타입을 클릭하여 취소하는 경우
-                if (currentVote.getVoteType() == voteType) {
-                    if (voteType == VoteType.UPVOTE) {
-                        Integer upvoteCount = redisTemplate.opsForValue().get(upvoteKey); // NullPointException 처리
-                        upvoteCount = (upvoteCount == null) ? 0 : upvoteCount; // null 체크
-                        if (upvoteCount > 0) {
-                            redisTemplate.opsForValue().decrement(upvoteKey); // Redis에서 감소
-                            board.decrementUpvote();
-                            boardRepository.saveForLegacy(board);
-                        } else {
-                            throw new IllegalStateException("Cannot decrease upvote count below zero.");
-                        }
-                    } else if (voteType == VoteType.DOWNVOTE) {
-                        Integer downvoteCount = redisTemplate.opsForValue().get(downvoteKey);
-                        downvoteCount = (downvoteCount == null) ? 0 : downvoteCount;
-                        if (downvoteCount > 0) {
-                            redisTemplate.opsForValue().decrement(downvoteKey); // Redis에서 감소
-                            board.decrementDownvote();
-                            boardRepository.saveForLegacy(board);
-                        } else {
-                            throw new IllegalStateException("Cannot decrease downvote count below zero.");
-                        }
-                    }
-                    boardVoteRepository.deleteForLegacy(currentVote); // 데이터베이스에서 삭제
-                } else {
-                    // 다른 투표 타입으로 변경
-                    if (currentVote.getVoteType() == VoteType.UPVOTE) {
-                        redisTemplate.opsForValue().decrement(upvoteKey);
-                        redisTemplate.opsForValue().increment(downvoteKey);
-                        board.decrementUpvote();
-                        board.incrementDownvote();
-                        boardRepository.saveForLegacy(board);
-                    } else if (currentVote.getVoteType() == VoteType.DOWNVOTE) {
-                        redisTemplate.opsForValue().decrement(downvoteKey);
-                        redisTemplate.opsForValue().increment(upvoteKey);
-                        board.decrementDownvote();
-                        board.incrementUpvote();
-                        boardRepository.saveForLegacy(board);
-                    }
-                    currentVote.updateVoteType(voteType);
-                    boardVoteRepository.saveForLegacy(currentVote); // 데이터베이스 업데이트
-                }
-            } else {
-                // 새로운 투표 추가
-                if (voteType == VoteType.UPVOTE) {
-                    redisTemplate.opsForValue().increment(upvoteKey);
-                    board.incrementUpvote();
-                    boardRepository.saveForLegacy(board);
-                } else if (voteType == VoteType.DOWNVOTE) {
-                    redisTemplate.opsForValue().increment(downvoteKey);
-                    board.incrementDownvote();
-                    boardRepository.saveForLegacy(board);
-                }
-
-                BoardVoteEntity newVote = BoardVoteEntity.builder()
-                        .user(user)
-                        .board(board)
-                        .voteType(voteType)
-                        .build();
-
-                boardVoteRepository.saveForLegacy(newVote); // 데이터베이스에 새로운 투표 저장
-            }
-        } catch (Exception e) {
-            // 예외 발생 시 Redis에서 카운트를 롤백 (optional)
-            if (voteType == VoteType.UPVOTE) {
-                redisTemplate.opsForValue().decrement(upvoteKey);
-            } else if (voteType == VoteType.DOWNVOTE) {
-                redisTemplate.opsForValue().decrement(downvoteKey);
-            }
-            throw e; // 예외 다시 발생시켜 트랜잭션 롤백
-        }
-    }
-
-    // TODO: 11/6/24 여기 안 되는거 확인하고 수정하기
-    @Override
-    @Transactional
-    public void addVoteForTemp(Long userId, Long boardId, VoteType voteType) {
         User user = userRepository.findById(userId);
         Board board = boardRepository.findById(boardId);
-
-        System.out.println("voteType = " + voteType);
 
         String upvoteKey = UPVOTE_KEY + boardId;
         String downvoteKey = DOWNVOTE_KEY + boardId;
@@ -295,12 +203,7 @@ public class BoardServiceImpl implements BoardService {
                         boardRepository.save(board);
                     }
                     currentVote.updateVoteType(voteType);
-                    log.info("다른 투표 타입으로 변경 하기전 voteType = {} " , currentVote.getVoteType());
-                    log.info("다른 투표 타입으로 변경 할 voteTpye = {} " , voteType);
-                    log.info("다른 투표 타입으로 변경 save 전");
                     boardVoteRepository.save(currentVote); // 데이터베이스 업데이트
-                    log.info("다른 투표 타입으로 변경 save 후");
-
                 }
             } else {
                 // 새로운 투표 추가
@@ -333,75 +236,10 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    @Override
-    @Transactional
-    // @Transactional(isolation = Isolation.DEFAULT)
-    // @Transactional(isolation = Isolation.READ_COMMITTED)
-    // @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    // @Transactional(isolation = Isolation.REPEATABLE_READ)
-    // @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
-        User user = userRepository.findById(userId);
-
-        // 1. 일반 코드
-         /*Board board = boardRepository.findById(boardId);*/
-
-        // 2. 비관적 락 사용 코드
-        Board board = boardRepository.findByIdWithPessimisticLock(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));
-
-        // 3. 낙관적 락 사용 코드
-        /*BoardEntity board = boardRepository.findByIdWithOptimisticLock(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
-        /*Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
-                .findCurrentVoteTypeByUserAndBoardForAddVote(user, board.toDomain());*/
-
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
-                .findCurrentVoteTypeByUserAndBoardForAddVote(user, board);
-
-
-        /**
-         * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
-         */
-        if (currentVoteOpt.isEmpty()) {
-            if (voteType == VoteType.UPVOTE) board.incrementUpvote();
-            else board.decrementDownvote();
-        }
-        // 비관적 락
-        // boardRepository.saveForOptimisticLock(board);
-        boardRepository.save(board);
-    }
-
-    @Override
-    // @Transactional
-    public void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
-        User user = userRepository.findById(userId);
-        Board board = boardRepository.findById(boardId);
-
-        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
-                .findCurrentVoteTypeByUserAndBoardForAddVote(user, board);
-
-        int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-
-        for (int i = 0; i <threadCount; i++) {
-            executorService.submit(() -> {
-                try {
-                    board.incrementUpvote();
-                    // boardRepository.saveAndFlush(board);
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-        latch.await();
-
-    }
 
     @Override
     @Transactional
-    public void addVoteForConcurrencyTestOrigin(Long userId, Long boardId, VoteType voteType) {
+    public void addVoteForLegacy(Long userId, Long boardId, VoteType voteType) {
         UserEntity user = userRepository.findByIdForLegacy(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BoardEntity board = boardRepository.findByIdForLegacy(boardId)
@@ -487,6 +325,43 @@ public class BoardServiceImpl implements BoardService {
             }
             throw e; // 예외 다시 발생시켜 트랜잭션 롤백
         }
+    }
+
+    @Override
+    @Transactional
+    // @Transactional(isolation = Isolation.DEFAULT)
+    // @Transactional(isolation = Isolation.READ_COMMITTED)
+    // @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    // @Transactional(isolation = Isolation.REPEATABLE_READ)
+    // @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) {
+        User user = userRepository.findById(userId);
+
+        // 1. 일반 코드
+         Board board = boardRepository.findById(boardId);
+
+        // 2. 비관적 락 사용 코드
+        /*Board board = boardRepository.findByIdWithPessimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+
+        // 3. 낙관적 락 사용 코드
+        /*BoardEntity board = boardRepository.findByIdWithOptimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Board not found"));*/
+        /*Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository
+                .findCurrentVoteTypeByUserAndBoardForAddVote(user, board.toDomain());*/
+
+        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+
+        /**
+         * Race Condition 문제를 위한 테스트이기 때문에 간단하게 로직 작성
+         */
+        if (currentVoteOpt.isEmpty()) {
+            if (voteType == VoteType.UPVOTE) board.incrementUpvote();
+            else board.decrementDownvote();
+        }
+        // 비관적 락
+        // boardRepository.saveForOptimisticLock(board);
+        boardRepository.save(board);
     }
 
 }

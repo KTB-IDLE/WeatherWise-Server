@@ -21,12 +21,6 @@ public class BoardVoteRepositoryImpl implements BoardVoteRepository {
     private final BoardVoteJpaRepository boardVoteJpaRepository;
 
     @Override
-    public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForAddVote(User user, Board board) {
-        return boardVoteJpaRepository
-                .findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user) , BoardEntity.toEntity(board));
-    }
-
-    @Override
     public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForLegacy(UserEntity user, BoardEntity board) {
         return boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(user,board);
     }
@@ -34,6 +28,7 @@ public class BoardVoteRepositoryImpl implements BoardVoteRepository {
 
     @Override
     public Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(User user, Board board) {
+        System.out.println("BoardVoteRepositoryImpl.findCurrentVoteTypeByUserAndBoard");
         return boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user), BoardEntity.toEntity(board))
                 .map(BoardVoteEntity::toDomain);
     }

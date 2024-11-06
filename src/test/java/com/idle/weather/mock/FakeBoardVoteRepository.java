@@ -20,14 +20,10 @@ import java.util.Optional;
  * InMemory DB (H2 사용 X)
  */
 public class FakeBoardVoteRepository implements BoardVoteRepository {
+
+
     private static Long id = 0L;
     private final List<BoardVote> data = new ArrayList<>();
-
-
-    @Override
-    public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForAddVote(User user, Board board) {
-        return Optional.empty();
-    }
 
     @Override
     public Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForLegacy(UserEntity user, BoardEntity board) {
@@ -36,7 +32,9 @@ public class FakeBoardVoteRepository implements BoardVoteRepository {
 
     @Override
     public Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(User user, Board board) {
-        return Optional.empty();
+        Optional<BoardVote> boardVote = data.stream().filter(bv -> bv.getBoard().getBoardId().equals(board.getBoardId()) &&
+                bv.getUser().getId().equals(user.getId())).findAny();
+        return boardVote;
     }
 
     @Override

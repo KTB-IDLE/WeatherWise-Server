@@ -108,4 +108,8 @@ public class FakeUserRepository implements UserRepository {
     public int getDataSize() {
         return data.size();
     }
+
+    public List<User> getData() {
+        return data;
+    }
 }

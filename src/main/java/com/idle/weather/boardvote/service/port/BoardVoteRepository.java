@@ -20,7 +20,6 @@ public interface BoardVoteRepository {
     /**
      * Domain 객체로 바꾸기
      */
-    Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForAddVote(@Param("user") User user, @Param("board") Board board);
     Optional<BoardVoteEntity> findCurrentVoteTypeByUserAndBoardForLegacy(@Param("user") UserEntity user, @Param("board") BoardEntity board);
     void saveForLegacy(BoardVoteEntity boardVote);
     void deleteForLegacy(BoardVoteEntity boardVote);

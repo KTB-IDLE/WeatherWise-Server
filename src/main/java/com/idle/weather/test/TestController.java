@@ -44,12 +44,4 @@ public class TestController {
         // reentrantLockFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
         // kafkaProducerFacade.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
     }
-
-    // 투표 추가 및 변경 (ExecutorService)
-    @PostMapping(path = "/{boardId}/vote/{userId}/app")
-    public void addVoteInApplication(@PathVariable Long boardId, @PathVariable Long userId ,
-                        @RequestBody TestVoteRequestType voteType) throws InterruptedException {
-        boardService.addVoteForConcurrencyTest2(userId, boardId, voteType.getVoteType());
-    }
-    
 }

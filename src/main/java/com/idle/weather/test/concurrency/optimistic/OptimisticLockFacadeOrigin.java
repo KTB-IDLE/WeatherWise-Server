@@ -23,7 +23,7 @@ public class OptimisticLockFacadeOrigin {
         int backoffTime = 50;
         while (true) {
             try {
-                boardService.addVoteForConcurrencyTestOrigin(userId,boardId,voteType);
+                boardService.addVoteForConcurrencyTest(userId,boardId,voteType);
                 break;
             } catch (Exception e) {
                 retryCount++;
@@ -49,7 +49,7 @@ public class OptimisticLockFacadeOrigin {
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
     public void addVoteForConcurrencyTestLegacy(Long userId, Long boardId, VoteType voteType) {
-        boardService.addVoteForConcurrencyTestOrigin(userId, boardId, voteType);
+        boardService.addVoteForConcurrencyTest(userId, boardId, voteType);
     }
 
 

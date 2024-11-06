@@ -38,10 +38,7 @@ public interface BoardService {
     BoardVoteResponse getUserVote(Long userId, Long boardId);
 
     // 투표 추가
+    void addVoteForLegacy(Long userId, Long boardId, VoteType voteType);
     void addVote(Long userId, Long boardId, VoteType voteType);
-    void addVoteForTemp(Long userId, Long boardId, VoteType voteType);
     void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType);
-    void addVoteForConcurrencyTestOrigin(Long userId, Long boardId, VoteType voteType);
-    void addVoteForConcurrencyTest2(Long userId, Long boardId, VoteType voteType) throws InterruptedException;
-
 }
