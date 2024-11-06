@@ -11,6 +11,7 @@ import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.missionhistory.repository.MissionTime;
+import com.idle.weather.missionhistory.service.port.AIServerClient;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.mock.MockFastApiService;
 import com.idle.weather.user.domain.User;
@@ -42,7 +43,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final UserRepository userRepository;
     private final LevelRepository levelRepository;
     // Mock Server
-    private final MockFastApiService mockFastApiService;
+    private final AIServerClient aiServerClient;
     // S3
     private final AmazonS3Client amazonS3Client;
     private final String s3Bucket;
@@ -94,6 +95,8 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
         // 인증 실패시
         if (!authenticationResult) {
+            // 실패시 ImageUrl 에 Null 로 지정
+            missionHistory.updateImageUrl(null , null);
             return MissionAuthenticate.fail();
         }
 
@@ -151,10 +154,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     }
 
     private boolean sendFastAPIServer(MissionAuth missionAuthDto) throws IOException {
-        /**
-         * 우선 Mock 서버로 대체 (항상 True)
-         */
-        return mockFastApiService.missionAuthentication(missionAuthDto);
+        return aiServerClient.missionAuthentication(missionAuthDto);
     }
 
 

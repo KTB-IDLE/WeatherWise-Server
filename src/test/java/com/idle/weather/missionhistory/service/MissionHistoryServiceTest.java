@@ -3,6 +3,7 @@ package com.idle.weather.missionhistory.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto;
 import com.idle.weather.missionhistory.domain.MissionHistory;
@@ -40,9 +41,10 @@ class MissionHistoryServiceTest {
 
     private MissionHistoryServiceImpl missionHistoryService;
     private FakeUserRepository fakeUserRepository;
-
     @Mock
     private AmazonS3Client amazonS3Client;
+    @Mock
+    private MockFastApiService mockFastApiService;
     private FakeMissionHistoryRepository fakeMissionHistoryRepository;
     private MockMultipartFile imageFile;
     private URL mockUrl;
@@ -71,7 +73,7 @@ class MissionHistoryServiceTest {
         FakeMissionRepository fakeMissionRepository = new FakeMissionRepository();
         this.missionHistoryService = MissionHistoryServiceImpl.builder()
                 .missionHistoryRepository(fakeMissionHistoryRepository)
-                .mockFastApiService(new MockFastApiService())
+                .mockFastApiService(mockFastApiService)
                 .userRepository(fakeUserRepository)
                 .amazonS3Client(amazonS3Client)
                 .levelRepository(fakeLevelRepository)
@@ -124,9 +126,15 @@ class MissionHistoryServiceTest {
         int beforePoint = user.getPoint();
         MissionHistory missionHistory = fakeMissionHistoryRepository.findById(1L);
 
+        // AI 서버 전송 로직은 무조건 True 가 반환되도록 한다.
+
+
         //when
         MissionAuthenticate missionAuthenticate =
                 missionHistoryService.authMission(missionHistory.getId(), imageFile, user.getId());
+
+
+
 
         //then
         // 인증 성공시에는 인증 완료
@@ -138,10 +146,32 @@ class MissionHistoryServiceTest {
     public void image_를_첨부시켜_미션_인증을_받을_수_있고_실패시_다시_이미지를_첨부_할_수_있다() throws Exception
     {
         //given
-        // MissionAuthenticate missionAuthenticate = missionHistoryService.authMission(1L, , 1L);
+        // mockito 사용 법 amazonS3Client 의 어떤 함수가 호출됐을 때 어떤 값을 Return 할지 정할 수 있다.
+        // when(amazonS3Client.doesObjectExist("bucket-name", "object-key")).thenReturn(true);
+
+        // amazonS3 에 관련된 코드는 모두 Mocking
+        // Mock 설정에서 anyString()으로 유연하게 설정
+        when(amazonS3Client.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class)))
+                .thenReturn(mockResult);
+        // getUrl()의 인자도 anyString()을 사용하여 일치시키기
+        when(amazonS3Client.getUrl(anyString(), anyString())).thenReturn(mockUrl);
+
+        User user = fakeUserRepository.findById(1L);
+        int beforePoint = user.getPoint();
+        MissionHistory missionHistory = fakeMissionHistoryRepository.findById(1L);
+
+        // TODO: 11/5/24 AI 서버 보내는 로직 public 으로 바꾸고 테스트 코드 작성
+        // TODO: 11/5/24 Mocking 하는 부분 ImageURL 확인하기
 
         //when
+        MissionAuthenticate missionAuthenticate =
+                missionHistoryService.authMission(missionHistory.getId(), imageFile, user.getId());
 
+        //then
+        // 인증 실패시에는 False
+        assertThat(missionAuthenticate.isAuthenticated()).isFalse();
+        // 인증 실패시에는 이미지 경로가 Null
+        assertThat(missionHistory.getStoreFileName()).isNull();
     }
     //then
 
