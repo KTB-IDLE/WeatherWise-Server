@@ -3,14 +3,15 @@ package com.idle.weather.missionhistory.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.Mission;
-import com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionTime;
+import com.idle.weather.missionhistory.service.port.AIServerClient;
 import com.idle.weather.mock.*;
+import com.idle.weather.user.api.request.UserRequestDto;
 import com.idle.weather.user.domain.User;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,18 +20,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 import static com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -40,11 +39,12 @@ import static org.mockito.Mockito.when;
 class MissionHistoryServiceTest {
 
     private MissionHistoryServiceImpl missionHistoryService;
-    private FakeUserRepository fakeUserRepository;
+    private FakeUserRepository fakeUserRepository = new FakeUserRepository();
+    private FakeMissionRepository fakeMissionRepository = new FakeMissionRepository();
     @Mock
     private AmazonS3Client amazonS3Client;
     @Mock
-    private MockFastApiService mockFastApiService;
+    private AIServerClient aiServerClient;
     private FakeMissionHistoryRepository fakeMissionHistoryRepository;
     private MockMultipartFile imageFile;
     private URL mockUrl;
@@ -66,16 +66,16 @@ class MissionHistoryServiceTest {
         mockObjectMetadata.setContentType(imageFile.getContentType());
         mockObjectMetadata.setContentLength(imageFile.getSize());
         mockResult = new PutObjectResult();
-
         fakeMissionHistoryRepository = new FakeMissionHistoryRepository();
-        fakeUserRepository = new FakeUserRepository();
         FakeLevelRepository fakeLevelRepository = new FakeLevelRepository();
         FakeMissionRepository fakeMissionRepository = new FakeMissionRepository();
+
         this.missionHistoryService = MissionHistoryServiceImpl.builder()
                 .missionHistoryRepository(fakeMissionHistoryRepository)
-                .mockFastApiService(mockFastApiService)
+                .aiServerClient(aiServerClient)
                 .userRepository(fakeUserRepository)
                 .amazonS3Client(amazonS3Client)
+                .missionHistoryRepository(fakeMissionHistoryRepository)
                 .levelRepository(fakeLevelRepository)
                 .s3Bucket("test-bucket")
                 .s3DomainName("test-domain-name")
@@ -107,6 +107,11 @@ class MissionHistoryServiceTest {
         fakeUserRepository.save(user);
     }
 
+    @AfterEach
+    void clear() {
+        fakeUserRepository.clear();
+    }
+
 
     @Test
     public void  image_를_첨부시켜_미션_인증을_받을_수_있고_인증_성공시_경험치를_얻는다() throws Exception
@@ -127,14 +132,13 @@ class MissionHistoryServiceTest {
         MissionHistory missionHistory = fakeMissionHistoryRepository.findById(1L);
 
         // AI 서버 전송 로직은 무조건 True 가 반환되도록 한다.
-
+        // Mockito 의 when 은 정확히 동일한 인스턴스로 호출될 때만 동작하기 때문에 any() 를 사용해서 해결
+        // when(mockAiserverClient.missionAuthentication(missionAuth)).thenReturn(true);
+        when(aiServerClient.missionAuthentication(any(MissionAuth.class))).thenReturn(true);
 
         //when
         MissionAuthenticate missionAuthenticate =
                 missionHistoryService.authMission(missionHistory.getId(), imageFile, user.getId());
-
-
-
 
         //then
         // 인증 성공시에는 인증 완료
@@ -146,31 +150,20 @@ class MissionHistoryServiceTest {
     public void image_를_첨부시켜_미션_인증을_받을_수_있고_실패시_다시_이미지를_첨부_할_수_있다() throws Exception
     {
         //given
-        // mockito 사용 법 amazonS3Client 의 어떤 함수가 호출됐을 때 어떤 값을 Return 할지 정할 수 있다.
-        // when(amazonS3Client.doesObjectExist("bucket-name", "object-key")).thenReturn(true);
-
-        // amazonS3 에 관련된 코드는 모두 Mocking
-        // Mock 설정에서 anyString()으로 유연하게 설정
         when(amazonS3Client.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class)))
                 .thenReturn(mockResult);
-        // getUrl()의 인자도 anyString()을 사용하여 일치시키기
         when(amazonS3Client.getUrl(anyString(), anyString())).thenReturn(mockUrl);
 
         User user = fakeUserRepository.findById(1L);
-        int beforePoint = user.getPoint();
         MissionHistory missionHistory = fakeMissionHistoryRepository.findById(1L);
-
-        // TODO: 11/5/24 AI 서버 보내는 로직 public 으로 바꾸고 테스트 코드 작성
-        // TODO: 11/5/24 Mocking 하는 부분 ImageURL 확인하기
+        when(aiServerClient.missionAuthentication(any(MissionAuth.class))).thenReturn(false);
 
         //when
         MissionAuthenticate missionAuthenticate =
                 missionHistoryService.authMission(missionHistory.getId(), imageFile, user.getId());
 
         //then
-        // 인증 실패시에는 False
         assertThat(missionAuthenticate.isAuthenticated()).isFalse();
-        // 인증 실패시에는 이미지 경로가 Null
         assertThat(missionHistory.getStoreFileName()).isNull();
     }
     //then
@@ -179,10 +172,34 @@ class MissionHistoryServiceTest {
     public void 유저가_성공한_미션들을_확인_할_수_있다() throws Exception
     {
         //given
+        User user = fakeUserRepository.findById(1L);
+        // 반드시 성공한다고 가정
+        when(aiServerClient.missionAuthentication(any(MissionAuth.class))).thenReturn(true);
+        when(amazonS3Client.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class)))
+                .thenReturn(mockResult);
+        when(amazonS3Client.getUrl(anyString(), anyString())).thenReturn(mockUrl);
+
+        Mission mission1 = fakeMissionRepository.findById(1L);
+        MissionHistory missionHistory1 = fakeMissionHistoryRepository.save(MissionHistory.of(user, mission1, MissionTime.MORNING));
+
+        Mission mission2 = fakeMissionRepository.findById(2L);
+        MissionHistory missionHistory2 = fakeMissionHistoryRepository.save(MissionHistory.of(user, mission2, MissionTime.AFTERNOON));
+
+        Mission mission3 = fakeMissionRepository.findById(3L);
+        MissionHistory missionHistory3 = fakeMissionHistoryRepository.save(MissionHistory.of(user, mission3, MissionTime.EVENING));
+
+        // 인증 로직
+        missionHistoryService.authMission(missionHistory1.getId(),imageFile,user.getId());
+        missionHistoryService.authMission(missionHistory2.getId(),imageFile,user.getId());
+        missionHistoryService.authMission(missionHistory3.getId(),imageFile,user.getId());
 
         //when
 
+        SuccessMissionHistories successMissions = missionHistoryService.getSuccessMissions(user.getId());
+
         //then
+        assertThat(successMissions.getMissionList().size()).isEqualTo(3);
+        assertThat(successMissions.getMissionList().get(0).isCompleted()).isTrue();
     }
 
     @Test

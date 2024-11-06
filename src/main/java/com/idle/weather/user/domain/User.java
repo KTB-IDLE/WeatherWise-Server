@@ -1,6 +1,7 @@
 package com.idle.weather.user.domain;
 
 import com.idle.weather.missionhistory.domain.MissionHistory;
+import com.idle.weather.missionhistory.domain.SuccessMissionHistory;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;

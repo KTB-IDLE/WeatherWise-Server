@@ -9,6 +9,7 @@ import com.idle.weather.level.service.port.LevelRepository;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
+import com.idle.weather.missionhistory.domain.SuccessMissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
 import com.idle.weather.missionhistory.repository.MissionTime;
 import com.idle.weather.missionhistory.service.port.AIServerClient;
@@ -114,6 +115,10 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         // MissionHistory 인증 성공으로 업데이트
         missionHistory.updateCompleted();
 
+        // 성공
+        // User 도메인에 성공한 미션 내역에 추가
+        user.getMissionHistories().add(missionHistory);
+
         // Entity 에 반영하기
         missionHistoryRepository.save(missionHistory);
         userRepository.save(user);
@@ -125,11 +130,11 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     @Override
     public SuccessMissionHistories getSuccessMissions(Long userId) {
 
-        User user = userRepository
-                .findByIdForLegacy(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+        User user = userRepository.findById(userId);
 
-        List<MissionHistory> userMissionHistories = user.getMissionHistories();
-        List<SingleMissionHistory> userSuccessMissionHistories = userMissionHistories.stream()
+        List<MissionHistory> missionHistories = user.getMissionHistories();
+
+        List<SingleMissionHistory> userSuccessMissionHistories = missionHistories.stream()
                 .filter(MissionHistory::isCompleted)
                 .map(SingleMissionHistory::from)
                 .toList();
