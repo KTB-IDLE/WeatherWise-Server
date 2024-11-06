@@ -46,13 +46,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
-        UserEntity user = userRepository.findByIdForLegacy(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId);
 
         Location location = boardRequest.locationRequest().toDomain();
 
         BoardEntity newBoard = BoardEntity.createNewBoard(
-                user,
+                UserEntity.toEntity(user),
                 LocationEntity.toEntity(location),
                 boardRequest.title(),
                 boardRequest.content()

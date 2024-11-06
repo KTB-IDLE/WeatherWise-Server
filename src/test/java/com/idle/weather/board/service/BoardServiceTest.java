@@ -1,7 +1,10 @@
 package com.idle.weather.board.service;
 
+import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
+import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.board.domain.Board;
+import com.idle.weather.location.api.request.LocationRequest;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.mock.FakeBoardRepository;
 import com.idle.weather.mock.FakeBoardVoteRepository;
@@ -18,6 +21,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.*;
 
 class BoardServiceTest {
 
@@ -60,6 +65,33 @@ class BoardServiceTest {
     }
 
     @Test
+    public void BoardRequest_를_이용하여_게시물을_생성할_수_있다() throws Exception
+    {
+        //given
+        User user = fakeUserRepository.findById(1L);
+        LocationRequest locationRequest = new LocationRequest("test" , 99.99 , 99.99);
+        BoardRequest boardRequest = new BoardRequest("test board" , "test board" , locationRequest);
+
+        //when
+        BoardResponse createBoard = boardService.createBoard(user.getId(), boardRequest);
+
+        //then
+        assertThat(createBoard.userId()).isEqualTo(user.getId());
+        assertThat(createBoard.title()).isEqualTo("test board");
+        assertThat(createBoard.content()).isEqualTo("test board");
+    }
+
+    @Test
+    public void BoardRequest_를_이용하여_게시물을_수정할_수_있다() throws Exception
+    {
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
     public void 유저가_작성한_게시글들을_확인_할_수_있다() throws Exception
     {
         //given
@@ -94,28 +126,10 @@ class BoardServiceTest {
         BoardListResponse userBoards = boardService.getUserBoards(user.getId());
 
         //then
-        Assertions.assertThat(userBoards.boards().size()).isEqualTo(2);
+        assertThat(userBoards.boards().size()).isEqualTo(2);
     }
 
-    @Test
-    public void BoardRequest_를_이용하여_게시물을_생성할_수_있다() throws Exception
-    {
-        //given
 
-        //when
-
-        //then
-    }
-
-    @Test
-    public void BoardRequest_를_이용하여_게시물을_수정할_수_있다() throws Exception
-    {
-        //given
-
-        //when
-
-        //then
-    }
 
     @Test
     public void VoteType_를_이용하여_게시글에_좋아요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
