@@ -1,5 +1,6 @@
 package com.idle.weather.board.service;
 
+import com.idle.weather.board.api.BoardController;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
@@ -85,10 +86,29 @@ class BoardServiceTest {
     public void BoardRequest_를_이용하여_게시물을_수정할_수_있다() throws Exception
     {
         //given
+        User user = fakeUserRepository.findById(1L);
+        Board board = Board.builder()
+                .upvoteCount(0)
+                .downvoteCount(0)
+                .title("test title")
+                .content("test content")
+                .createdAt(LocalDateTime.now())
+                .votes(new HashSet<>())
+                .location(fakeLocationRepository.getTestLocation())
+                .user(user)
+                .build();
+        Board savedBoard = fakeBoardRepository.save(board);
+
+        // 수정할 BoardRequest
+        LocationRequest locationRequest = new LocationRequest("수정된 location" , 99.99,99.99);
+        BoardRequest boardRequest = new BoardRequest("수정된 test title" , "수정된 test content",locationRequest);
 
         //when
+        BoardResponse boardResponse = boardService.updateBoard(savedBoard.getBoardId(), boardRequest);
 
         //then
+        assertThat(boardResponse.content()).isEqualTo("수정된 test content");
+        assertThat(boardResponse.title()).isEqualTo("수정된 test title");
     }
 
     @Test
