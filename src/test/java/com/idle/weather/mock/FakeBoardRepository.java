@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * InMemory DB (H2 사용 X)
@@ -26,7 +29,7 @@ public class FakeBoardRepository implements BoardRepository {
     @Override
     public Board save(Board board) {
         if (board.getBoardId() == null || board.getBoardId() == 0) {
-            Board newUser = Board.builder()
+            Board newBoard = Board.builder()
                     .boardId(id++)
                     .user(board.getUser())
                     .title(board.getTitle())
@@ -37,10 +40,9 @@ public class FakeBoardRepository implements BoardRepository {
                     .downvoteCount(board.getDownvoteCount())
                     .upvoteCount(board.getUpvoteCount())
                     .build();
-            data.add(newUser);
-            return newUser;
+            data.add(newBoard);
+            return newBoard;
         } else {
-            // 같은 User 라면 기존에 것을 삭제하고 새로 추가
             data.removeIf(item -> Objects.equals(item.getBoardId() , board.getBoardId()));
             data.add(board);
             return board;
@@ -54,14 +56,16 @@ public class FakeBoardRepository implements BoardRepository {
     }
 
     @Override
+    public List<Board> findByUser(User user) {
+        return data.stream().filter(board -> board.getUser().getId().equals(user.getId())).collect(toList());
+    }
+
+    @Override
     public Optional<BoardEntity> findByIdForLegacy(Long id) {
         return Optional.empty();
     }
 
-    @Override
-    public List<Board> findByUser(User user) {
-        return null;
-    }
+
 
     @Override
     public List<Board> findByLocationWithinRadius(double latitude, double longitude) {
@@ -107,5 +111,9 @@ public class FakeBoardRepository implements BoardRepository {
     @Override
     public void saveForLegacy(BoardEntity board) {
 
+    }
+
+    public int getDataSize() {
+        return data.size();
     }
 }

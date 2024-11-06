@@ -3,6 +3,8 @@ package com.idle.weather.missionhistory.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.idle.weather.board.domain.Board;
+import com.idle.weather.location.domain.Location;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionTime;
@@ -25,7 +27,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 import static com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto.*;
@@ -75,7 +79,6 @@ class MissionHistoryServiceTest {
                 .aiServerClient(aiServerClient)
                 .userRepository(fakeUserRepository)
                 .amazonS3Client(amazonS3Client)
-                .missionHistoryRepository(fakeMissionHistoryRepository)
                 .levelRepository(fakeLevelRepository)
                 .s3Bucket("test-bucket")
                 .s3DomainName("test-domain-name")
@@ -201,16 +204,4 @@ class MissionHistoryServiceTest {
         assertThat(successMissions.getMissionList().size()).isEqualTo(3);
         assertThat(successMissions.getMissionList().get(0).isCompleted()).isTrue();
     }
-
-    @Test
-    public void 유저가_작성한_게시글들을_확인_할_수_있다() throws Exception
-    {
-        //given
-
-        //when
-
-        //then
-    }
-
-
 }

@@ -81,9 +81,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardListResponse getUserBoards(Long userId) {
-        UserEntity user = userRepository.findByIdForLegacy(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        List<Board> userBoards = boardRepository.findByUser(user.toDomain());
+        User user = userRepository.findById(userId);
+        List<Board> userBoards = boardRepository.findByUser(user);
         return BoardListResponse.from(userBoards);
     }
 

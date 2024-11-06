@@ -69,4 +69,6 @@ class BoardServiceImplTest {
         // 예상 : 100명의 사용자가 "좋아요" 버튼을 누르면 해당 Board 의 좋아요 개수는 100개
         Assertions.assertEquals(100 , board.getUpvoteCount());
     }
+
+
 }

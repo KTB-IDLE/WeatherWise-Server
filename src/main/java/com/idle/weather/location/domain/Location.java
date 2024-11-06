@@ -11,13 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Location {
     private Long locationId;
-
-
     private String locationName;
-
-
     private Double latitude;
-
     private Double longitude;
 
     public Location(String locationName, Double latitude, Double longitude) {
