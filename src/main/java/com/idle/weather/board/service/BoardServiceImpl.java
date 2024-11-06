@@ -149,19 +149,20 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void addVote(Long userId, Long boardId, VoteType voteType) {
-
+        System.out.println("BoardServiceImpl.addVote");
         User user = userRepository.findById(userId);
         Board board = boardRepository.findById(boardId);
 
         String upvoteKey = UPVOTE_KEY + boardId;
         String downvoteKey = DOWNVOTE_KEY + boardId;
 
-        // 기존에 있었더는 Up 인거지
         Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         try {
+            System.out.println("BoardServiceImpl.addVote.try");
             if (currentVoteOpt.isPresent()) {
                 BoardVote currentVote = currentVoteOpt.get();
+                System.out.println(1);
 
                 // 동일한 투표 타입을 클릭하여 취소하는 경우
                 if (currentVote.getVoteType() == voteType) {
@@ -188,6 +189,7 @@ public class BoardServiceImpl implements BoardService {
                     }
                     boardVoteRepository.delete(currentVote); // 데이터베이스에서 삭제
                 } else {
+
                     // 다른 투표 타입으로 변경
                     if (currentVote.getVoteType() == VoteType.UPVOTE) {
                         redisTemplate.opsForValue().decrement(upvoteKey);
@@ -206,6 +208,7 @@ public class BoardServiceImpl implements BoardService {
                     boardVoteRepository.save(currentVote); // 데이터베이스 업데이트
                 }
             } else {
+                System.out.println(2);
                 // 새로운 투표 추가
                 if (voteType == VoteType.UPVOTE) {
                     redisTemplate.opsForValue().increment(upvoteKey);
@@ -216,6 +219,7 @@ public class BoardServiceImpl implements BoardService {
                     board.incrementDownvote();
                     boardRepository.save(board);
                 }
+                System.out.println(2);
 
                 BoardVote newVote = BoardVote.builder()
                         .user(user)

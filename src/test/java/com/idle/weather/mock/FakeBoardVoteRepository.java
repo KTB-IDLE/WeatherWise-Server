@@ -49,6 +49,8 @@ public class FakeBoardVoteRepository implements BoardVoteRepository {
 
     @Override
     public void save(BoardVote boardVote) {
+        // TODO: 11/6/24 여기부터 채우면서 동시성 테스트 코드 작성하기
+        // TODO: 11/6/24 모든 코드 다 한 번씩 테스트 코드 작성해보기
 
     }
 

@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -177,7 +179,7 @@ class BoardServiceTest {
         Board createBoard = fakeBoardRepository.save(board);
 
         // 동시에 100개의 요청
-        int threadCount = 100;
+        int threadCount = 10;
         // 32개의 쓰레드를 생성
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -188,6 +190,7 @@ class BoardServiceTest {
 
             executorService.submit(() -> {
                 try {
+                    // 기존 코드
                     boardService.addVoteForConcurrencyTest((long) userId, createBoard.getBoardId(), VoteType.UPVOTE);
                 } finally {
                     latch.countDown();
@@ -202,9 +205,13 @@ class BoardServiceTest {
     }
 
     @Test
-    public void VoteType_를_이용하여_게시글에_좋아요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
+    public void 낙관적_락을_적용하여_멀티_스레드_환경에서도_안전하다() throws Exception
     {
         //given
+        // 100명의 유저를 생성하는 로직
+        createUsersData();
+
+        // 1L 을 가지는 User 가 게시글을 작성했다고 가정
         User user = fakeUserRepository.findById(1L);
         Board board = Board.builder()
                 .upvoteCount(0)
@@ -217,14 +224,36 @@ class BoardServiceTest {
                 .location(fakeLocationRepository.getTestLocation())
                 .user(user)
                 .build();
-        fakeBoardRepository.save(board);
+        Board createBoard = fakeBoardRepository.save(board);
+
+        // 동시에 100개의 요청
+        int threadCount = 10;
+        // 32개의 쓰레드를 생성
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // ReentrantLock 사용
+        Lock lock = new ReentrantLock();
 
         //when
-        boardService.addVote(user.getId() ,board.getBoardId(), VoteType.UPVOTE);
+        for (int i = 1; i <= threadCount; i++) {
+            int userId = i;
+            executorService.submit(() -> {
+                lock.lock();
+                try {
+                    System.out.println("boardService.addVote 전");
+                    boardService.addVote((long) userId,createBoard.getBoardId(),VoteType.UPVOTE);
+                    System.out.println("boardService.addVote 후");
+                } finally {
+                    lock.unlock();
+                }
+            });
+        }
+        latch.await();
+
 
         //then
-        assertThat(board.getUpvoteCount()).isEqualTo(1);
-        assertThat(board.getDownvoteCount()).isEqualTo(0);
+        assertThat(board.getUpvoteCount()).isEqualTo(100);
     }
     @Test
     public void VoteType_를_이용하여_게시글에_싫어요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception

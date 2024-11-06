@@ -15,13 +15,13 @@ public class ReentrantLockFacade {
 
     // Java 에서 제공하는 Lock 사용
     private final Lock lock = new ReentrantLock();
-    public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
+    public void addVote(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
 
         // ReentrantLock 을 이용하여 Lock 걸기
         lock.lock();
 
         try {
-            boardService.addVoteForConcurrencyTest(userId,boardId,voteType);
+            boardService.addVote(userId,boardId,voteType);
         } finally {
             // Lock 반납
             lock.unlock();
