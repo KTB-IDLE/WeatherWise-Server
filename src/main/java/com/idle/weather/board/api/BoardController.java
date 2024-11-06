@@ -65,7 +65,8 @@ public class BoardController {
     // 투표 추가 및 변경
     @PostMapping(path = "/{boardId}/vote")
     public void addVote(@UserId Long userId, @PathVariable Long boardId, @RequestParam VoteType voteType) {
-        boardService.addVote(userId, boardId, voteType);
+        // boardService.addVote(userId, boardId, voteType);
+        boardService.addVoteForTemp(userId, boardId, voteType);
     }
 
     @GetMapping("/{boardId}/user")

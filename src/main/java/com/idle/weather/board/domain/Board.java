@@ -36,6 +36,9 @@ public class Board {
     private Integer downvoteCount = 0; // Downvote count 추가
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // OptimisticLocking 전용 Version
+    private int version;
     public void updateBoard(Location location, String title, String content) {
         this.location = location;
         this.title = title;

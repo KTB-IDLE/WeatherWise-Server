@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,9 +42,9 @@ public class BoardEntity extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+/*    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private Set<BoardVoteEntity> votes = new HashSet<>();
+    private Set<BoardVoteEntity> votes = new HashSet<>();*/
 
     @Column(nullable = false)  // 명시적으로 컬럼 추가
     private Integer upvoteCount = 0;   // Upvote count 추가
@@ -96,12 +98,13 @@ public class BoardEntity extends BaseEntity {
         return Board.builder()
                 .boardId(boardId)
                 .user(user.toDomain())
-                .votes(new HashSet<>())
+                // .votes(votes.stream().map(BoardVoteEntity::toDomain).collect(toSet()))
                 .upvoteCount(upvoteCount)
                 .downvoteCount(downvoteCount)
                 .location(location.toDomain())
                 .content(content)
                 .title(title)
+                .version(version)
                 .build();
     }
 
@@ -113,9 +116,10 @@ public class BoardEntity extends BaseEntity {
                 .user(UserEntity.toEntity(board.getUser()))
                 .title(board.getTitle())
                 .location(LocationEntity.toEntity(board.getLocation()))
-                .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(Collectors.toSet()))
+                // .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(toSet()))
                 .title(board.getTitle())
                 .content(board.getContent())
+                .version(board.getVersion())
                 .build();
     }
 }

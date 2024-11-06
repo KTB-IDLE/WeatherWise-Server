@@ -96,7 +96,6 @@ public class FakeUserRepository implements UserRepository {
     }
 
 
-
     @Override
     public Optional<UserEntity> findByIdForLegacy(Long id) {
         return Optional.empty();

@@ -5,6 +5,7 @@ import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.board.domain.Board;
+import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.location.api.request.LocationRequest;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.mock.FakeBoardRepository;
@@ -155,10 +156,26 @@ class BoardServiceTest {
     public void VoteType_를_이용하여_게시글에_좋아요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
     {
         //given
+        User user = fakeUserRepository.findById(1L);
+        Board board = Board.builder()
+                .upvoteCount(0)
+                .downvoteCount(0)
+                .title("test board1")
+                .content("test board1")
+                .location(new Location())
+                .votes(new HashSet<>())
+                .createdAt(LocalDateTime.now())
+                .location(fakeLocationRepository.getTestLocation())
+                .user(user)
+                .build();
+        fakeBoardRepository.save(board);
 
         //when
+        boardService.addVote(user.getId() ,board.getBoardId(), VoteType.UPVOTE);
 
         //then
+        assertThat(board.getUpvoteCount()).isEqualTo(1);
+        assertThat(board.getDownvoteCount()).isEqualTo(0);
     }
     @Test
     public void VoteType_를_이용하여_게시글에_싫어요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
