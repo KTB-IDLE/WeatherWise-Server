@@ -3,6 +3,7 @@ package com.idle.weather.user.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.response.UserInfoResponse;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+
     public UserResponse findById(Long userId) {
         User user = userRepository.findById(userId);
         return UserResponse.from(UserEntity.toEntity(user));

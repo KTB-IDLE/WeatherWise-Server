@@ -21,6 +21,7 @@ import static com.idle.weather.level.api.response.LevelResponseDto.*;
 public class LevelServiceImpl implements LevelService {
 
     private final UserRepository userRepository;
+    private final LevelJpaRepository levelJpaRepository;
 
     @Override
     public RankingList getRankingList(Long userId) {
@@ -38,6 +39,11 @@ public class LevelServiceImpl implements LevelService {
             isTopLevelUser = true;
         }
         return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel(),isTopLevelUser);
+    }
+
+    @Override
+    public ExpByLevelResponse getExpByLevel(int level) {
+        return ExpByLevelResponse.from(levelJpaRepository.findByLevel(level));
     }
 }
 

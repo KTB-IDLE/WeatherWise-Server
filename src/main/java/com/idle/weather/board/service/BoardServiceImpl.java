@@ -57,7 +57,10 @@ public class BoardServiceImpl implements BoardService {
                 boardRequest.title(),
                 boardRequest.content()
         );
-
+        String upvoteKey = UPVOTE_KEY + savedBoard.getBoardId();
+        String downvoteKey = DOWNVOTE_KEY + savedBoard.getBoardId();
+        redisTemplate.opsForValue().set(upvoteKey, 0);
+        redisTemplate.opsForValue().set(downvoteKey, 0);
         return BoardResponse.from(boardRepository.save(newBoard.toDomain()));
     }
 
