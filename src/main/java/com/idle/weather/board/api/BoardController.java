@@ -32,7 +32,7 @@ public class BoardController {
         return boardService.getBoardById(boardId);
     }
 
-    // 특정 위치 반경 25km 이내 게시글 조회
+    // 특정 위치 반경 5km 이내 게시글 조회
     @GetMapping(path = "/radius", produces = MediaType.APPLICATION_JSON_VALUE)
     public BoardListResponse getBoardsWithRadius(@RequestParam double latitude, @RequestParam double longitude) {
         return boardService.getBoardsWithRadius(latitude, longitude);
