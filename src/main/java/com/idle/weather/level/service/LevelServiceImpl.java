@@ -3,7 +3,10 @@ package com.idle.weather.level.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.api.port.LevelService;
+import com.idle.weather.level.api.response.ExpByLevelResponse;
 import com.idle.weather.level.api.response.LevelResponseDto;
+import com.idle.weather.level.repository.LevelEntity;
+import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
@@ -19,6 +22,7 @@ import static com.idle.weather.level.api.response.LevelResponseDto.*;
 public class LevelServiceImpl implements LevelService {
 
     private final UserRepository userRepository;
+    private final LevelJpaRepository levelJpaRepository;
 
     @Override
     public RankingList getRankingList(Long userId) {
@@ -34,6 +38,11 @@ public class LevelServiceImpl implements LevelService {
                 .map(SingleRanking::from).toList();
 
         return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel());
+    }
+
+    @Override
+    public ExpByLevelResponse getExpByLevel(int level) {
+        return ExpByLevelResponse.from(levelJpaRepository.findByLevel(level));
     }
 }
 

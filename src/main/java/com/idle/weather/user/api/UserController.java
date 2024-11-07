@@ -3,6 +3,7 @@ package com.idle.weather.user.api;
 import com.idle.weather.common.annotation.UserId;
 import com.idle.weather.user.api.port.UserService;
 import com.idle.weather.user.api.request.ReActivateRequest;
+import com.idle.weather.user.api.response.UserInfoResponse;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserResponse getUserById(@UserId Long userId) {
+    public UserInfoResponse getUserById(@UserId Long userId) {
         return userService.findById(userId);
     }
 
