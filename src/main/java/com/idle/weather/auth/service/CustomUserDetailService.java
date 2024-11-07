@@ -27,7 +27,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     public UserDetails loadUserById(Long userId) throws BaseException {
         UserRepository.UserSecurityForm user = userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(userId, true)
-                .orElseThrow(() -> new UsernameNotFoundException("Not Found UserId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
         return CustomUserDetails.create(user);
     }
 }
