@@ -99,6 +99,43 @@ class LevelServiceTest {
         assertThat(rankingList.getRankingList().get(1).getNickName()).isEqualTo("REAL CIAN1");
     }
 
+    @Test
+    public void 해당_유저가_상위_10위_안에_든다면_isTopLevelUser_가_true_이다() {
+        //given
+        User user1 = User.builder()
+                .missionHistories(new ArrayList<>())
+                .nickname("REAL CIAN1")
+                .password("!234")
+                .isCompletedSurvey(true)
+                .easilyCold(true)
+                .easilyHot(false)
+                .easilySweat(true)
+                .level(3)
+                .point(10)
+                .build();
+
+        User user2 = User.builder()
+                .missionHistories(new ArrayList<>())
+                .nickname("REAL CIAN2")
+                .password("!234")
+                .isCompletedSurvey(true)
+                .easilyCold(true)
+                .easilyHot(false)
+                .easilySweat(true)
+                .level(3)
+                .point(20)
+                .build();
+        User createUser1 = fakeUserRepository.save(user1);
+        User createUser2 = fakeUserRepository.save(user2);
+
+        //when
+        RankingList rankingList = levelService.getRankingList(createUser1.getId());
+
+        //then
+        assertThat(rankingList.isTopLevelUser()).isTrue();
+        assertThat(rankingList.getCurrentUserRanking()).isLessThanOrEqualTo(10);
+    }
+
     private static void initUser(FakeUserRepository fakeUserRepository) {
         for (int i = 1; i <= 20; i++) {
             User user1 = User.builder()

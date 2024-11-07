@@ -33,7 +33,11 @@ public class LevelServiceImpl implements LevelService {
         List<SingleRanking> rankingList = userList.stream()
                 .map(SingleRanking::from).toList();
 
-        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel());
+        boolean isTopLevelUser = false;
+        if (user.getLevel() <= 10) {
+            isTopLevelUser = true;
+        }
+        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel(),isTopLevelUser);
     }
 }
 

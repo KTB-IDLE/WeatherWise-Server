@@ -15,14 +15,17 @@ public class LevelResponseDto {
         private int currentUserRanking;
         private String currentUserNickName;
         private int currentUserLevel;
+        private boolean isTopLevelUser;
 
         public static RankingList of(List<SingleRanking> rankingList,
-                                     int currentUserRanking , String currentUserNickName , int currentUserLevel) {
+                                     int currentUserRanking , String currentUserNickName , int currentUserLevel,
+                                     boolean isTopLevelUser) {
             return RankingList.builder()
                     .rankingList(rankingList)
                     .currentUserRanking(currentUserRanking)
                     .currentUserNickName(currentUserNickName)
                     .currentUserLevel(currentUserLevel)
+                    .isTopLevelUser(isTopLevelUser)
                     .build();
         }
     }
