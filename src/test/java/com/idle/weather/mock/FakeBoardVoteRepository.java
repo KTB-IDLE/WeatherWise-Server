@@ -20,8 +20,6 @@ import java.util.Optional;
  * InMemory DB (H2 사용 X)
  */
 public class FakeBoardVoteRepository implements BoardVoteRepository {
-
-
     private static Long id = 0L;
     private final List<BoardVote> data = new ArrayList<>();
 

@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LevelServiceTest {
-
     private LevelServiceImpl levelService;
     private FakeUserRepository fakeUserRepository;
 
@@ -32,8 +31,6 @@ class LevelServiceTest {
     void clear() {
         fakeUserRepository.clear();
     }
-
-
 
     @Test
     public void 상위_10명의_랭킹_정보와_나의_랭킹_정보를_볼_수_있다() throws Exception

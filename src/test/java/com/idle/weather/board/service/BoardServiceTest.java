@@ -49,9 +49,6 @@ class BoardServiceTest {
     @Mock
     private RedisTemplate<String, Integer> redisTemplate;
 
-    @Mock
-    private ValueOperations<String, Integer> valueOperations;
-
     @BeforeEach
     void init() {
         fakeUserRepository = new FakeUserRepository();
@@ -333,6 +330,4 @@ class BoardServiceTest {
 
         }
     }
-
-
 }

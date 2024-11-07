@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.*;
 public class FakeMissionRepository implements MissionRepository {
     private static Long id = 0L;
     private final List<Mission> data = new ArrayList<>();
-
     public FakeMissionRepository() {
         Mission hotMission = Mission.builder()
                 .id(1L)

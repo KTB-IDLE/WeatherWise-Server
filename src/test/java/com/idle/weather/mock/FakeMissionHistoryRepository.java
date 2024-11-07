@@ -21,7 +21,6 @@ import java.util.Objects;
 public class FakeMissionHistoryRepository implements MissionHistoryRepository {
     private static Long id = 0L;
     private final List<MissionHistory> data = new ArrayList<>();
-
     @Override
     public MissionHistory findById(Long id) {
         return data.stream().filter(item -> item.getId().equals(id)).findAny()

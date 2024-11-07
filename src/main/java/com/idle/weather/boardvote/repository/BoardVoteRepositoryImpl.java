@@ -28,7 +28,6 @@ public class BoardVoteRepositoryImpl implements BoardVoteRepository {
 
     @Override
     public Optional<BoardVote> findCurrentVoteTypeByUserAndBoard(User user, Board board) {
-        System.out.println("BoardVoteRepositoryImpl.findCurrentVoteTypeByUserAndBoard");
         return boardVoteJpaRepository.findCurrentVoteTypeByUserAndBoard(UserEntity.toEntity(user), BoardEntity.toEntity(board))
                 .map(BoardVoteEntity::toDomain);
     }

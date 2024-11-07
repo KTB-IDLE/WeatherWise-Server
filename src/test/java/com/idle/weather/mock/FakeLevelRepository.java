@@ -11,7 +11,6 @@ import java.util.List;
 
 public class FakeLevelRepository implements LevelRepository {
     private final List<Level> data = new ArrayList<>();
-
     public FakeLevelRepository() {
         Level level_1 = Level.builder()
                 .level(1)

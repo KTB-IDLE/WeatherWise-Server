@@ -18,7 +18,6 @@ public class FakeLocationRepository implements LocationRepository {
                 .build();
         data.add(testLocation);
     }
-
     public Location getTestLocation() {
         return data.get(0);
     }

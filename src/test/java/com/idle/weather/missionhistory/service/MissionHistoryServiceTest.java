@@ -62,7 +62,8 @@ class MissionHistoryServiceTest {
                 "imageFile",                // 필드 이름
                 "test-image.jpg",            // 원래 파일 이름
                 "image/jpeg",                // MIME 타입
-                new FileInputStream("/Users/supportkim/Desktop/dev/WeatherWise-Server/src/test/resources/test-image.png") // 실제 파일 경로
+                // 실제 파일 경로로 지정하기
+                new FileInputStream("resources/test-image.png")
         );
         // Mock 설정
         mockUrl = new URL("https://bucket-name.s3.amazonaws.com/file-key");;

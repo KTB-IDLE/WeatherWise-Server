@@ -18,13 +18,11 @@ import java.util.stream.Collectors;
 public class FakeUserRepository implements UserRepository {
     private static Long id = 0L;
     private final List<User> data = new ArrayList<>();
-
     @Override
     public User findById(Long id) {
         return data.stream().filter(item -> item.getId().equals(id)).findAny()
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
     }
-
     @Override
     public User save(User user) {
         if (user.getId() == null || user.getId() == 0) {
@@ -58,7 +56,6 @@ public class FakeUserRepository implements UserRepository {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public Optional<UserJpaRepository.UserSecurityForm> findUserIdAndRoleBySerialId(String userId) {
         return Optional.empty();
@@ -79,8 +76,6 @@ public class FakeUserRepository implements UserRepository {
 
     }
 
-
-
     @Override
     public int findUserRanking(int level) {
         return 0;
@@ -95,8 +90,6 @@ public class FakeUserRepository implements UserRepository {
     public Optional<UserEntity> findBySerialIdAndIsDeleted(String serialId, boolean isDeleted) {
         return Optional.empty();
     }
-
-
     @Override
     public Optional<UserEntity> findByIdForLegacy(Long id) {
         return Optional.empty();
