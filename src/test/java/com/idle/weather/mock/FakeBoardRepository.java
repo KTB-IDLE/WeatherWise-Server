@@ -116,4 +116,8 @@ public class FakeBoardRepository implements BoardRepository {
     public int getDataSize() {
         return data.size();
     }
+
+    public void clear() {
+        data.clear();
+    }
 }

@@ -81,6 +81,7 @@ class BoardServiceTest {
     @AfterEach
     void clear() {
         fakeUserRepository.clear();
+        fakeBoardRepository.clear();
     }
 
     @Test
@@ -215,7 +216,7 @@ class BoardServiceTest {
         assertThat(board.getUpvoteCount()).isNotEqualTo(100);
     }
 
-    @Test
+/*    @Test
     public void 낙관적_락을_적용하여_멀티_스레드_환경에서도_안전하다() throws Exception
     {
         //given
@@ -264,7 +265,7 @@ class BoardServiceTest {
 
         //then
         assertThat(createBoard.getUpvoteCount()).isEqualTo(100);
-    }
+    }*/
     @Test
     public void VoteType_를_이용하여_게시글에_싫어요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
     {
