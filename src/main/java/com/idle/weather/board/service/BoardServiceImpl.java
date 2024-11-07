@@ -56,7 +56,13 @@ public class BoardServiceImpl implements BoardService {
                 boardRequest.content()
         );
 
-        return BoardResponse.from(boardJpaRepository.save(newBoard));
+        BoardEntity savedBoard = boardJpaRepository.save(newBoard);
+        // Redis 초기값 설정 (0으로 설정)
+        String upvoteKey = UPVOTE_KEY + savedBoard.getBoardId();
+        String downvoteKey = DOWNVOTE_KEY + savedBoard.getBoardId();
+        redisTemplate.opsForValue().set(upvoteKey, 0);
+        redisTemplate.opsForValue().set(downvoteKey, 0);
+        return BoardResponse.from(savedBoard);
     }
 
     @Override
