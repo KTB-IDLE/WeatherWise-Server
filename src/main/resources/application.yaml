@@ -1,5 +1,23 @@
 # dev env setting
 spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BINDER}
+          auto-create-topics: false
+          required-acks: ${KAFKA_REQUIRED_ACK_MODE}
+      bindings:
+        send-out-0:
+          destination: ${KAFKA_TOPIC}
+          producer:
+            record-metadata-channel: ${KAFKA_RESULT_CHANNEL}
+        consume-in-0:
+          destination: ${KAFKA_TOPIC}
+          group: ${KAFKA_CONSUME_GROUP}
+          consumer:
+            max-attempts: ${KAFKA_CONSUME_MAX_ATTEMPTS}
+
   data:
     redis:
       host: ${REDIS_HOST}  # Redis 호스트를 환경 변수로 치환
@@ -9,17 +27,17 @@ spring:
     url: ${DB_URL}  # MySQL 데이터베이스 URL
     username: ${DB_USERNAME}  # MySQL 사용자 이름
     password: ${DB_PASSWORD}  # MySQL 비밀번호
-    hikari:
-      pool-name: jpa-hikari-pool
-      maximum-pool-size: 5
-      jdbc-url: ${spring.datasource.url}
-      username: ${spring.datasource.username}
-      password: ${spring.datasource.password}
-      driver-class-name: ${spring.datasource.driver-class-name}
-      data-source-properties:
-        rewriteBatchedStatements: true
-      idle-timeout: 300
-      max-lifetime: 300
+  #    hikari:
+#      pool-name: jpa-hikari-pool
+#      maximum-pool-size: 5
+#      jdbc-url: ${spring.datasource.url}
+#      username: ${spring.datasource.username}
+#      password: ${spring.datasource.password}
+#      driver-class-name: ${spring.datasource.driver-class-name}
+#      data-source-properties:
+#        rewriteBatchedStatements: true
+#      idle-timeout: 300
+#      max-lifetime: 300
   jpa:
     open-in-view: false
     database: mysql
@@ -29,12 +47,12 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
-        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-        default_batch_fetch_size: ${CHUNK_SIZE:100}  # 기본값 100
-        jdbc.batch_size: 20
-        order_inserts: true
-        order_updates: true
+#        hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+#        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+#        default_batch_fetch_size: ${CHUNK_SIZE:100}  # 기본값 100
+#        jdbc.batch_size: 20
+#        order_inserts: true
+#        order_updates: true
         format_sql: true
 
 # Security OAuth2 설정
@@ -117,3 +135,5 @@ jwt:
   secret-key: fWmf8GOZn1pSnqgAjs+6cfpd2cS4gyE5W5YoXbph1S9Y7i3ymNHIWipaajCkIp3iOnI/s5mlVnxQjogHHkILGg==  # 환경 변수로 치환
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
+server:
+  port: 8999

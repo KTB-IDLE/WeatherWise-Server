@@ -27,7 +27,6 @@ public class HomeController {
     /**
      * 설문조사 반영 API
      */
-
     @PatchMapping("/survey")
     public ResponseEntity<String> applySurveyResult(@UserId Long userId, @RequestBody SurveyDto surveyResult) {
         homeService.applySurveyResult(userId, surveyResult);

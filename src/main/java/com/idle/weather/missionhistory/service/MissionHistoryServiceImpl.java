@@ -6,6 +6,7 @@ import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.repository.LevelEntity;
 import com.idle.weather.level.repository.LevelJpaRepository;
+import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
@@ -35,6 +36,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 import static com.idle.weather.missionhistory.api.response.MissionHistoryResponseDto.*;
 
 @Service
@@ -101,7 +103,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         String imageUrl = authMissionAfterSavedS3(imageFile , missionHistory);
 
         // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
-        boolean authenticationResult  = sendFastAPIServer(imageUrl , mission , user);
+        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(mission, user));
 
         // 인증 실패시
         if (!authenticationResult) {
@@ -161,11 +163,11 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         return amazonS3Client.getUrl(bucket, storeFileName).toString();
     }
 
-    private boolean sendFastAPIServer(String imageUrl , Mission mission , User user) throws IOException {
+    private boolean sendFastAPIServer(MissionAuth missionAuthDto) throws IOException {
         /**
          * 우선 Mock 서버로 대체 (항상 True)
          */
-        return mockFastApiService.missionAuthentication();
+        return mockFastApiService.missionAuthentication(missionAuthDto);
     }
 
 

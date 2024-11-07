@@ -2,11 +2,14 @@ package com.idle.weather.board.repository;
 
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
 
@@ -28,5 +31,13 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
         ) <= 25000
         """, nativeQuery = true)
     List<BoardEntity> findByLocationWithinRadius(@Param("latitude") double latitude, @Param("longitude") double longitude);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select b from BoardEntity b where b.boardId = :boardId")
+    Optional<BoardEntity> findByIdWithPessimisticLock(Long boardId);
+
+    @Lock(LockModeType.OPTIMISTIC)
+    @Query("select b from BoardEntity b where b.boardId = :boardId")
+    Optional<BoardEntity> findByIdWithOptimisticLock(Long boardId);
 
 }

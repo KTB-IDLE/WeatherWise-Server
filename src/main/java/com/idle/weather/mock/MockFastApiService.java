@@ -1,10 +1,13 @@
 package com.idle.weather.mock;
 
+import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.CurrentWeatherResponse;
 import com.idle.weather.mission.domain.MissionType;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+
+import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 
 /**
  * AI 서버 용 MOCK SERVICE
@@ -13,7 +16,7 @@ import org.springframework.util.MultiValueMap;
 public class MockFastApiService {
     private boolean toggle = true;
 
-    public boolean missionAuthentication() {
+    public boolean missionAuthentication(MissionAuth missionAuthDto) {
         // 우선 번갈아가면서 실패 성공 하도록 추가
         boolean result = toggle;
         toggle = !toggle;

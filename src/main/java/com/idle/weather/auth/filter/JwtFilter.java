@@ -33,6 +33,14 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         log.info("REQUEST : [{}] {}", request.getMethod(), request.getRequestURI());
 
+        String path = request.getRequestURI();
+
+        // /api/test/** 경로에 대해 필터 제외
+        if (path.startsWith("/test")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Request Header에서 토큰 추출
         String token = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
                 .orElse(null);
