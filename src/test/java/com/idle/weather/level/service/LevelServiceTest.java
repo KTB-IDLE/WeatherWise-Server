@@ -96,17 +96,10 @@ class LevelServiceTest {
         //when
         RankingList rankingList = levelService.getRankingList(createUser1.getId());
 
-        List<SingleRanking> rankingList1 = rankingList.getRankingList();
-        for (SingleRanking singleRanking : rankingList1) {
-            System.out.println("singleRanking.getLevel() = " + singleRanking.getLevel());
-            System.out.println("singleRanking.getNickName() = " + singleRanking.getNickName());
-        }
-
         //then
         assertThat(rankingList.getRankingList().size()).isEqualTo(2);
         assertThat(rankingList.getRankingList().get(0).getNickName()).isEqualTo("REAL CIAN2");
         assertThat(rankingList.getRankingList().get(1).getNickName()).isEqualTo("REAL CIAN1");
-
     }
 
     private static void initUser(FakeUserRepository fakeUserRepository) {
