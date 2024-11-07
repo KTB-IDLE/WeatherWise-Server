@@ -1,5 +1,6 @@
 package com.idle.weather.board.service;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.idle.weather.board.api.BoardController;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
@@ -17,9 +18,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +36,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.assertj.core.api.Assertions.*;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+@ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
 
     private BoardServiceImpl boardService;
@@ -39,7 +47,10 @@ class BoardServiceTest {
     private FakeUserRepository fakeUserRepository;
     private FakeLocationRepository fakeLocationRepository;
     @Mock
-    private RedisTemplate<String , Integer> redisTemplate;
+    private RedisTemplate<String, Integer> redisTemplate;
+
+    @Mock
+    private ValueOperations<String, Integer> valueOperations;
 
     @BeforeEach
     void init() {
@@ -227,7 +238,7 @@ class BoardServiceTest {
         Board createBoard = fakeBoardRepository.save(board);
 
         // 동시에 100개의 요청
-        int threadCount = 10;
+        int threadCount = 100;
         // 32개의 쓰레드를 생성
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -241,11 +252,10 @@ class BoardServiceTest {
             executorService.submit(() -> {
                 lock.lock();
                 try {
-                    System.out.println("boardService.addVote 전");
-                    boardService.addVote((long) userId,createBoard.getBoardId(),VoteType.UPVOTE);
-                    System.out.println("boardService.addVote 후");
+                    boardService.addVoteForConcurrencyTest((long) userId,createBoard.getBoardId(),VoteType.UPVOTE);
                 } finally {
                     lock.unlock();
+                    latch.countDown();
                 }
             });
         }
@@ -253,16 +263,57 @@ class BoardServiceTest {
 
 
         //then
-        assertThat(board.getUpvoteCount()).isEqualTo(100);
+        assertThat(createBoard.getUpvoteCount()).isEqualTo(100);
     }
     @Test
     public void VoteType_를_이용하여_게시글에_싫어요를_투표할_수_있고_멀티_스레드_환경에서도_안전하다() throws Exception
     {
         //given
+        // 100명의 유저를 생성하는 로직
+        createUsersData();
+
+        // 1L 을 가지는 User 가 게시글을 작성했다고 가정
+        User user = fakeUserRepository.findById(1L);
+        Board board = Board.builder()
+                .upvoteCount(0)
+                .downvoteCount(0)
+                .title("test board1")
+                .content("test board1")
+                .location(new Location())
+                .votes(new HashSet<>())
+                .createdAt(LocalDateTime.now())
+                .location(fakeLocationRepository.getTestLocation())
+                .user(user)
+                .build();
+        Board createBoard = fakeBoardRepository.save(board);
+
+        // 동시에 100개의 요청
+        int threadCount = 100;
+        // 32개의 쓰레드를 생성
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // ReentrantLock 사용
+        Lock lock = new ReentrantLock();
 
         //when
+        for (int i = 1; i <= threadCount; i++) {
+            int userId = i;
+            executorService.submit(() -> {
+                lock.lock();
+                try {
+                    boardService.addVoteForConcurrencyTest((long) userId,createBoard.getBoardId(),VoteType.DOWNVOTE);
+                } finally {
+                    lock.unlock();
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
 
         //then
+        assertThat(createBoard.getDownvoteCount()).isEqualTo(100);
     }
 
     private void createUsersData() {

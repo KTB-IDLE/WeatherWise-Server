@@ -211,8 +211,11 @@ public class BoardServiceImpl implements BoardService {
                 System.out.println(2);
                 // 새로운 투표 추가
                 if (voteType == VoteType.UPVOTE) {
+                    System.out.println(3);
                     redisTemplate.opsForValue().increment(upvoteKey);
+                    System.out.println(4);
                     board.incrementUpvote();
+                    System.out.println(5);
                     boardRepository.save(board);
                 } else if (voteType == VoteType.DOWNVOTE) {
                     redisTemplate.opsForValue().increment(downvoteKey);
@@ -361,7 +364,9 @@ public class BoardServiceImpl implements BoardService {
          */
         if (currentVoteOpt.isEmpty()) {
             if (voteType == VoteType.UPVOTE) board.incrementUpvote();
-            else board.decrementDownvote();
+            else {
+                board.incrementDownvote();
+            }
         }
         // 비관적 락
         // boardRepository.saveForOptimisticLock(board);

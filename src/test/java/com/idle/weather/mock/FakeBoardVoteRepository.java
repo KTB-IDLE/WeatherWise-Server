@@ -44,13 +44,23 @@ public class FakeBoardVoteRepository implements BoardVoteRepository {
 
     @Override
     public void delete(BoardVote boardVote) {
-
+        data.remove(boardVote);
     }
 
     @Override
     public void save(BoardVote boardVote) {
         // TODO: 11/6/24 여기부터 채우면서 동시성 테스트 코드 작성하기
         // TODO: 11/6/24 모든 코드 다 한 번씩 테스트 코드 작성해보기
+        if (boardVote.getVoteId() == null || boardVote.getVoteId() == 0) {
+            BoardVote newBoardVote = BoardVote.builder()
+                    .voteId(id++)
+                    .build();
+            data.add(newBoardVote);
+        } else {
+            // 같은 User 라면 기존에 것을 삭제하고 새로 추가
+            data.removeIf(item -> Objects.equals(item.getVoteId() , boardVote.getVoteId()));
+            data.add(boardVote);
+        }
 
     }
 
