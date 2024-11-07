@@ -28,7 +28,7 @@ public class LevelServiceImpl implements LevelService {
 
         int currentUserRanking = userRepository.findUserRanking(user.getLevel());
 
-        List<User> userList = userRepository.findTop10ByOrderByLevelDesc();
+        List<User> userList = userRepository.findTop10ByOrderByLevelDescExperienceDesc();
 
         List<SingleRanking> rankingList = userList.stream()
                 .map(SingleRanking::from).toList();

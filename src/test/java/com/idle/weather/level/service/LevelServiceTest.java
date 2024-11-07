@@ -67,10 +67,46 @@ class LevelServiceTest {
     public void 랭킹_정보를_가지고_올_때_레벨이_같은_경우에는_경험치를_비교해서_순위를_매긴다() throws Exception
     {
         //given
+        User user1 = User.builder()
+                .missionHistories(new ArrayList<>())
+                .nickname("REAL CIAN1")
+                .password("!234")
+                .isCompletedSurvey(true)
+                .easilyCold(true)
+                .easilyHot(false)
+                .easilySweat(true)
+                .level(3)
+                .point(10)
+                .build();
+
+        User user2 = User.builder()
+                .missionHistories(new ArrayList<>())
+                .nickname("REAL CIAN2")
+                .password("!234")
+                .isCompletedSurvey(true)
+                .easilyCold(true)
+                .easilyHot(false)
+                .easilySweat(true)
+                .level(3)
+                .point(20)
+                .build();
+        User createUser1 = fakeUserRepository.save(user1);
+        User createUser2 = fakeUserRepository.save(user2);
 
         //when
+        RankingList rankingList = levelService.getRankingList(createUser1.getId());
+
+        List<SingleRanking> rankingList1 = rankingList.getRankingList();
+        for (SingleRanking singleRanking : rankingList1) {
+            System.out.println("singleRanking.getLevel() = " + singleRanking.getLevel());
+            System.out.println("singleRanking.getNickName() = " + singleRanking.getNickName());
+        }
 
         //then
+        assertThat(rankingList.getRankingList().size()).isEqualTo(2);
+        assertThat(rankingList.getRankingList().get(0).getNickName()).isEqualTo("REAL CIAN2");
+        assertThat(rankingList.getRankingList().get(1).getNickName()).isEqualTo("REAL CIAN1");
+
     }
 
     private static void initUser(FakeUserRepository fakeUserRepository) {

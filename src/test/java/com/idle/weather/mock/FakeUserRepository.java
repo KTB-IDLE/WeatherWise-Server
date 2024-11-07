@@ -50,10 +50,11 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findTop10ByOrderByLevelDesc() {
+    public List<User> findTop10ByOrderByLevelDescExperienceDesc() {
         return data.stream()
-                .sorted(Comparator.comparingInt(User::getLevel).reversed()) // level을 기준으로 내림차순 정렬
-                .limit(10) // 상위 10명 선택
+                .sorted(Comparator.comparingInt(User::getLevel).reversed()
+                        .thenComparing(Comparator.comparingInt(User::getPoint).reversed()))
+                .limit(10)
                 .collect(Collectors.toList());
     }
 

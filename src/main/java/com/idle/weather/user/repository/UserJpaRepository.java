@@ -25,8 +25,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "update UserEntity u set u.refreshToken = :refreshToken, u.isLogin = :isLogin where u.id = :userId")
     void updateRefreshTokenAndLoginStatus(@Param("userId") Long userId, @Param("refreshToken") String refreshToken, @Param("isLogin") Boolean isLogin);
 
-    // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리
-    List<UserEntity> findTop10ByOrderByLevelDesc();
+    // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리 (레벨이 같은 경우에는 Point 를 비교)
+    List<UserEntity> findTop10ByOrderByLevelDescPointDesc();
 
     // 자신의 랭킹을 구하는 쿼리
     @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level")

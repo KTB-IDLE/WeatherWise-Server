@@ -42,8 +42,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findTop10ByOrderByLevelDesc() {
-        return userJpaRepository.findTop10ByOrderByLevelDesc().stream().map(UserEntity::toDomain).collect(toList());
+    public List<User> findTop10ByOrderByLevelDescExperienceDesc() {
+        return userJpaRepository.findTop10ByOrderByLevelDescPointDesc().stream()
+                .map(UserEntity::toDomain).collect(toList());
     }
 
     @Override
