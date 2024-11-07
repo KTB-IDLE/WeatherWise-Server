@@ -3,6 +3,7 @@ package com.idle.weather.user.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.response.UserInfoResponse;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
@@ -34,10 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse findById(Long userId) {
+    public UserInfoResponse findById(Long userId) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return UserResponse.from(user);
+        return UserInfoResponse.from(user);
     }
 
     @Override
