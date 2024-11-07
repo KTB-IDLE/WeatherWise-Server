@@ -169,6 +169,7 @@ public class UserEntity extends BaseEntity {
                 .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
                 .isCompletedSurvey(user.isCompletedSurvey())
+                .isDeleted(user.isDeleted())
                 .build();
     }
     public User toDomain() {
@@ -187,6 +188,7 @@ public class UserEntity extends BaseEntity {
                 .serialId(serialId)
                 .refreshToken(refreshToken)
                 .isCompletedSurvey(isCompletedSurvey)
+                .isDeleted(isDeleted)
                 .build();
     }
 
