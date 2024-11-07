@@ -1,25 +1,18 @@
 package com.idle.weather.location.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Getter
+
+@Getter @Builder @AllArgsConstructor
 @NoArgsConstructor
 public class Location {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
-
-    @Column(nullable = false)
     private String locationName;
-
-    @Column(nullable = false)
     private Double latitude;
-
-    @Column(nullable = false)
     private Double longitude;
 
     public Location(String locationName, Double latitude, Double longitude) {

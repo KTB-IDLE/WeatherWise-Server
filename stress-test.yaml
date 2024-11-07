@@ -1,0 +1,16 @@
+config:
+  target: 'http://abc9fa5ca2fbc4dc193dc02b61b336b5-269825888.ap-northeast-2.elb.amazonaws.com'
+  phases:
+    - duration: 10  # 테스트 시간 2초
+      arrivalRate: 20  # 초당 100개의 요청
+      name: Load Test - 5 seconds, 10 requests
+  # Payload 파일을 사용하여 userId를 로드
+
+  defaults:
+    headers:
+      authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1aWQiOiI3Iiwicm9sIjoiVVNFUiIsImlhdCI6MTczMDg3MTQ2MiwiZXhwIjoxNzMwODc1MDYyfQ.bb7wLWpdRVRqf607rpOV-cgy5v9P5hyZp0SXCugNS3Pze8nZvCGDhkbHTOxFIX46Eq6HV2SDGTn-CxqW9gMRiw'
+
+scenarios:
+  - flow:
+      - get:
+          url: "/api/ranking"

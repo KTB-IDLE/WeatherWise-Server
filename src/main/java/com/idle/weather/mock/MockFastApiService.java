@@ -18,9 +18,8 @@ public class MockFastApiService {
 
     public boolean missionAuthentication(MissionAuth missionAuthDto) {
         // 우선 번갈아가면서 실패 성공 하도록 추가
-        boolean result = toggle;
-        toggle = !toggle;
-        return result;
+
+        return false;
     }
 
     public CurrentWeatherResponse getCurrentWeatherInfo(int nx , int ny) {

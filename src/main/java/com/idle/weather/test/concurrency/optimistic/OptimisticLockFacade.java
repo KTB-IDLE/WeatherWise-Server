@@ -14,7 +14,7 @@ public class OptimisticLockFacade {
     public void addVoteForConcurrencyTest(Long userId, Long boardId, VoteType voteType) throws InterruptedException {
         while (true) {
             try {
-                boardService.addVoteForConcurrencyTest(userId,boardId,voteType);
+                boardService.addVote(userId,boardId,voteType);
                 break;
             } catch (Exception e) {
                 Thread.sleep(50);

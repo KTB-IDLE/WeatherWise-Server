@@ -4,7 +4,6 @@ import com.idle.weather.common.constant.Constants;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.auth.dto.JwtTokenDto;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
@@ -115,7 +114,7 @@ public class JwtUtil implements InitializingBean {
         final Long id = Long.valueOf(claims.get(Constants.USER_ID_CLAIM_NAME).toString());
         final ERole role = ERole.of(claims.get(Constants.USER_ROLE_CLAIM_NAME).toString());
 
-        final UserEntity user = userRepository.findById(id).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        final UserEntity user = userRepository.findByIdForLegacy(id).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
 
         if (!Objects.equals(user.getId(), id) || user.getRole() != role || !user.getRefreshToken().equals(refreshToken)) {
             log.error("Invalid Token");

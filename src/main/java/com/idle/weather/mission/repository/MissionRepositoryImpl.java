@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @Repository
 @RequiredArgsConstructor
 public class MissionRepositoryImpl implements MissionRepository{
@@ -23,19 +25,19 @@ public class MissionRepositoryImpl implements MissionRepository{
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MISSION)).toDomain();
     }
     @Override
-    public void save(MissionEntity mission) {
-        missionJpaRepository.save(mission);
+    public void save(Mission mission) {
+        missionJpaRepository.save(MissionEntity.toEntity(mission));
     }
 
     @Override
     public List<Mission> findByMissionType(MissionType missionType) {
         return missionJpaRepository.findByMissionType(missionType)
-                .stream().map(MissionEntity::toDomain).collect(Collectors.toList());
+                .stream().map(MissionEntity::toDomain).collect(toList());
     }
 
     @Override
-    public List<MissionEntity> findAll() {
-        return missionJpaRepository.findAll();
+    public List<Mission> findAll() {
+        return missionJpaRepository.findAll().stream().map(MissionEntity::toDomain).collect(toList());
     }
 
 }

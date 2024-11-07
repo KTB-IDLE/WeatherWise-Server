@@ -44,6 +44,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+
     show-sql: true
     properties:
       hibernate:
@@ -135,5 +136,4 @@ jwt:
   secret-key: fWmf8GOZn1pSnqgAjs+6cfpd2cS4gyE5W5YoXbph1S9Y7i3ymNHIWipaajCkIp3iOnI/s5mlVnxQjogHHkILGg==  # 환경 변수로 치환
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
-server:
-  port: 8999
+

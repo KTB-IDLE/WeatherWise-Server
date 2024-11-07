@@ -20,6 +20,12 @@ public class S3Config {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.s3.domain-name}")
+    private String domainName;
+
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
@@ -29,4 +35,14 @@ public class S3Config {
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
+    @Bean
+    public String s3Bucket() {
+        return bucket;
+    }
+
+    @Bean
+    public String s3DomainName() {
+        return domainName;
+    }
+
 }

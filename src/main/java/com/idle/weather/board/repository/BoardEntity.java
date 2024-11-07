@@ -1,8 +1,11 @@
 package com.idle.weather.board.repository;
 
+import com.idle.weather.board.domain.Board;
 import com.idle.weather.boardvote.domain.BoardVote;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.location.domain.Location;
+import com.idle.weather.location.repository.LocationEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
@@ -10,6 +13,9 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Entity
 @Getter
@@ -28,7 +34,7 @@ public class BoardEntity extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    private LocationEntity location;
 
     @Column(nullable = false)
     private String title;
@@ -36,9 +42,9 @@ public class BoardEntity extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+/*    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private Set<BoardVote> votes = new HashSet<>();
+    private Set<BoardVoteEntity> votes = new HashSet<>();*/
 
     @Column(nullable = false)  // 명시적으로 컬럼 추가
     private Integer upvoteCount = 0;   // Upvote count 추가
@@ -46,10 +52,10 @@ public class BoardEntity extends BaseEntity {
     @Column(nullable = false)  // 명시적으로 컬럼 추가
     private Integer downvoteCount = 0; // Downvote count 추가
 
-    /*@Version
-    private int version;*/  // Optimistic Locking을 위한 버전 필드 추가
+    @Version
+    private int version;  // Optimistic Locking을 위한 버전 필드 추가
 
-    public static BoardEntity createNewBoard(UserEntity user, Location location, String title, String content) {
+    public static BoardEntity createNewBoard(UserEntity user, LocationEntity location, String title, String content) {
         return BoardEntity.builder()
                 .user(user)
                 .location(location)
@@ -60,7 +66,7 @@ public class BoardEntity extends BaseEntity {
                 .build();
     }
 
-    public BoardEntity updateBoard(Location location, String title, String content) {
+    public BoardEntity updateBoard(LocationEntity location, String title, String content) {
         this.location = location;
         this.title = title;
         this.content = content;
@@ -86,5 +92,34 @@ public class BoardEntity extends BaseEntity {
         if (this.downvoteCount > 0) {
             this.downvoteCount--;
         }
+    }
+
+    public Board toDomain() {
+        return Board.builder()
+                .boardId(boardId)
+                .user(user.toDomain())
+                // .votes(votes.stream().map(BoardVoteEntity::toDomain).collect(toSet()))
+                .upvoteCount(upvoteCount)
+                .downvoteCount(downvoteCount)
+                .location(location.toDomain())
+                .content(content)
+                .title(title)
+                .version(version)
+                .build();
+    }
+
+    public static BoardEntity toEntity(Board board) {
+        return BoardEntity.builder()
+                .boardId(board.getBoardId())
+                .upvoteCount(board.getUpvoteCount())
+                .downvoteCount(board.getDownvoteCount())
+                .user(UserEntity.toEntity(board.getUser()))
+                .title(board.getTitle())
+                .location(LocationEntity.toEntity(board.getLocation()))
+                // .votes(board.getVotes().stream().map(BoardVoteEntity::toEntity).collect(toSet()))
+                .title(board.getTitle())
+                .content(board.getContent())
+                .version(board.getVersion())
+                .build();
     }
 }

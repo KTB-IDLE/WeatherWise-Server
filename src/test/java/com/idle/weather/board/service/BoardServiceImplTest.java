@@ -2,16 +2,14 @@ package com.idle.weather.board.service;
 
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
-import com.idle.weather.board.service.port.BoardRepository;
 import com.idle.weather.boardvote.domain.BoardVote;
-import com.idle.weather.boardvote.domain.VoteType;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -19,11 +17,11 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * 동시성 테스트
+ */
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application.yaml")
 class BoardServiceImplTest {
@@ -32,7 +30,7 @@ class BoardServiceImplTest {
     private UserRepository userRepository;
 
     @Autowired
-    private BoardJpaRepository boardRepository;
+    private BoardJpaRepository boardJpaRepository;
     @Autowired
     private BoardVoteJpaRepository boardVoteRepository;
 
@@ -49,12 +47,12 @@ class BoardServiceImplTest {
 
         AtomicLong atomicLong = new AtomicLong();
 
-        UserEntity user = userRepository.findById(atomicLong.getAndIncrement())
+        UserEntity user = userRepository.findByIdForLegacy(atomicLong.getAndIncrement())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        BoardEntity board = boardRepository.findById(1L)
+        BoardEntity board = boardJpaRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
 
-        Optional<BoardVote> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
+        Optional<BoardVoteEntity> currentVoteOpt = boardVoteRepository.findCurrentVoteTypeByUserAndBoard(user, board);
 
         if (currentVoteOpt.isEmpty()) {
             for (int i = 0; i < threadCount; i++) {

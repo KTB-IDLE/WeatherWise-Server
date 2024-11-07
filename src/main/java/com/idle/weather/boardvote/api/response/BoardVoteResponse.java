@@ -4,6 +4,7 @@ import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.domain.VoteType;
+import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record BoardVoteResponse(

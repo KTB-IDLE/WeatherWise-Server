@@ -7,6 +7,8 @@ import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.common.annotation.UserId;
+import com.idle.weather.test.concurrency.javalock.ReentrantLockFacade;
+import com.idle.weather.test.concurrency.optimistic.OptimisticLockFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
 
     private final BoardService boardService;
+    private final ReentrantLockFacade reentrantLockFacade;
 
     // 게시글 생성
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -64,8 +67,9 @@ public class BoardController {
 
     // 투표 추가 및 변경
     @PostMapping(path = "/{boardId}/vote")
-    public void addVote(@UserId Long userId, @PathVariable Long boardId, @RequestParam VoteType voteType) {
-        boardService.addVote(userId, boardId, voteType);
+    public void addVote(@UserId Long userId, @PathVariable Long boardId, @RequestParam VoteType voteType) throws InterruptedException {
+        // 우선 ReentrantLock 으로 설정
+        reentrantLockFacade.addVote(userId,boardId,voteType);
     }
 
     @GetMapping("/{boardId}/user")

@@ -27,10 +27,12 @@ public class MissionRequestDto {
     @NoArgsConstructor @AllArgsConstructor
     public static class MissionAuth {
         private String missionName;
+        private String missionImageUrl;
         private UserInfo userInfo;
 
-        public static MissionAuth of(Mission mission , User user) {
+        public static MissionAuth of(String missionImageUrl,Mission mission , User user) {
             return MissionAuth.builder()
+                    .missionImageUrl(missionImageUrl)
                     .missionName(mission.getName())
                     .userInfo(UserInfo.from(user))
                     .build();
