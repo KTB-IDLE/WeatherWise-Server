@@ -36,10 +36,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-
-    public UserResponse findById(Long userId) {
+    public UserInfoResponse findById(Long userId) {
         User user = userRepository.findById(userId);
-        return UserResponse.from(UserEntity.toEntity(user));
+        return UserInfoResponse.from(UserEntity.toEntity(user));
     }
 
     @Override

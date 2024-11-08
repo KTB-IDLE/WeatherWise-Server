@@ -3,6 +3,8 @@ package com.idle.weather.level.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.api.port.LevelService;
+import com.idle.weather.level.api.response.ExpByLevelResponse;
+import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;

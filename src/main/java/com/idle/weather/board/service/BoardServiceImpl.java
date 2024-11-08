@@ -6,6 +6,7 @@ import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
 import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
+import com.idle.weather.board.repository.BoardJpaRepository;
 import com.idle.weather.board.service.port.BoardRepository;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.BoardVote;
@@ -13,10 +14,14 @@ import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.boardvote.repository.BoardVoteJpaRepository;
 import com.idle.weather.boardvote.service.port.BoardVoteRepository;
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.location.repository.LocationEntity;
+import com.idle.weather.location.repository.LocationJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
+import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -40,28 +45,45 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final BoardVoteRepository boardVoteRepository;
     private final UserRepository userRepository;
+    private final BoardJpaRepository boardJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final LocationJpaRepository locationJpaRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
 
     private static final String UPVOTE_KEY = "board:upvote";
     private static final String DOWNVOTE_KEY = "board:downvote";
 
     @Override
+    @Transactional
     public BoardResponse createBoard(Long userId, BoardRequest boardRequest) {
-        User user = userRepository.findById(userId);
+        // User 조회
+        UserEntity user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Location location = boardRequest.locationRequest().toDomain();
+        // Location 조회 또는 생성
+        LocationEntity location = locationJpaRepository.findByLocationName(boardRequest.locationRequest().locationName())
+                .orElseGet(() -> {
+                    LocationEntity newLocation = boardRequest.locationRequest().toEntity();
+                    return locationJpaRepository.save(newLocation); // 새로운 Location 저장
+                });
 
+        // Board 생성
         BoardEntity newBoard = BoardEntity.createNewBoard(
-                UserEntity.toEntity(user),
-                LocationEntity.toEntity(location),
+                user,
+                location,  // 저장된 LocationEntity 사용
                 boardRequest.title(),
                 boardRequest.content()
         );
+
+        BoardEntity savedBoard = boardJpaRepository.save(newBoard);
+
+        // Redis 초기값 설정 (0으로 설정)
         String upvoteKey = UPVOTE_KEY + savedBoard.getBoardId();
         String downvoteKey = DOWNVOTE_KEY + savedBoard.getBoardId();
         redisTemplate.opsForValue().set(upvoteKey, 0);
         redisTemplate.opsForValue().set(downvoteKey, 0);
-        return BoardResponse.from(boardRepository.save(newBoard.toDomain()));
+
+        return BoardResponse.from(savedBoard.toDomain());
     }
 
     @Override
@@ -92,13 +114,15 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponse updateBoard(Long boardId, BoardRequest boardRequest) {
-        Board board = boardRepository.findById(boardId);
 
-        Location updatedLocation = boardRequest.locationRequest().toDomain();
+        BoardEntity board = boardRepository
+                .findByIdForLegacy(boardId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_BOARD));
+
+        LocationEntity updatedLocation = boardRequest.locationRequest().toEntity();
 
         board.updateBoard(updatedLocation, boardRequest.title(), boardRequest.content());
-        boardRepository.save(board);
-        return BoardResponse.from(boardRepository.save(board));
+        boardJpaRepository.save(board);
+        return BoardResponse.from(boardRepository.save(board.toDomain()));
     }
 
     @Override

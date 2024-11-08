@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "location_id")
     private Long locationId;
 
     @Column(nullable = false)

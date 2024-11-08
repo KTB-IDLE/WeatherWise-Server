@@ -14,8 +14,8 @@ public record LocationRequest(
         @Schema(description = "경도", example = "")
         Double longitude
 ) {
-        public Location toDomain() {
-                return Location.createNewLocation(
+        public LocationEntity toEntity() {
+                return LocationEntity.createNewLocation(
                         locationName,
                         latitude,
                         longitude
