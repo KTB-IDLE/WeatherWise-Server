@@ -14,28 +14,24 @@ public class MissionHistory {
     private Mission mission;
     private boolean isCompleted;
     private MissionTime missionTime;
-    private User user;
     private String uploadFileName;
     private String storeFileName;
+    private User user;
     public void updateCompleted() {
         this.isCompleted = true;
     }
 
-    public static MissionHistory of(User user , Mission mission , MissionTime missionTime) {
+    public static MissionHistory of(User user,Mission mission , MissionTime missionTime) {
         return MissionHistory.builder()
                 .mission(mission)
-                .user(user)
                 .isCompleted(false)
                 .missionTime(missionTime)
+                .user(user)
                 .build();
     }
 
     public void updateImageUrl(String uploadFileName , String storeFileName) {
         this.uploadFileName = uploadFileName;
         this.storeFileName = storeFileName;
-    }
-
-    public void settingUser(User user) {
-        this.user = user;
     }
 }

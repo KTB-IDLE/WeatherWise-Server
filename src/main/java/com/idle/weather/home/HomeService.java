@@ -19,7 +19,6 @@ public class HomeService {
 
     public HomeResponse getInfo(Long userId) {
         boolean result = userService.checkSurvey(userId);
-        log.info("result = {} " , result);
         // 여기에 AI 서버와 통신하는 로직 추가 예정
         return HomeResponse.from(result);
     }

@@ -47,3 +47,8 @@ application.yaml
 client.properties
 get_helm.sh
 promtail-linux-amd64.zip
+current-test.yaml
+report.html
+report.json
+user_ids.csv
+

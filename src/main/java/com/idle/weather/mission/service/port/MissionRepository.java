@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MissionRepository {
     Mission findById(Long id);
-    void save(MissionEntity mission);
+    void save(Mission mission);
     List<Mission> findByMissionType(MissionType missionType);
-    List<MissionEntity> findAll();
+    List<Mission> findAll();
 }

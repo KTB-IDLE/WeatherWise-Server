@@ -11,11 +11,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @ToString
 @Entity
@@ -65,20 +66,20 @@ public class UserEntity extends BaseEntity {
     private int point;
     // 더위
     @Column(name = "hot")
-    private Boolean runHot;
+    private Boolean easilyHot;
     // 추위
     @Column(name = "cold")
-    private Boolean runCold;
+    private Boolean easilyCold;
     // 땀
     @Column(name = "sweat")
-    private Boolean runSweat;
-
-    @OneToMany(mappedBy = "user")
-    private List<MissionHistoryEntity> missionHistories = new ArrayList<>();
+    private Boolean easilySweat;
+    @Column(name = "is_completed_survey")
+    private Boolean isCompletedSurvey;
 
     @Builder
     public UserEntity(Long id, String serialId, String password, String nickname,
-                      EProvider provider, ERole role, boolean runHot , boolean runCold , boolean runSweat) {
+                      EProvider provider, ERole role, boolean easilyHot, boolean easilyCold, boolean easilySweat,
+                      Boolean isCompletedSurvey) {
         this.id = id;
         this.serialId = serialId;
         this.password = password;
@@ -87,9 +88,10 @@ public class UserEntity extends BaseEntity {
         this.role = role;
         this.isLogin = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
-        this.runCold = runCold;
-        this.runHot = runHot;
-        this.runSweat = runSweat;
+        this.easilyCold = easilyCold;
+        this.easilyHot = easilyHot;
+        this.easilySweat = easilySweat;
+        this.isCompletedSurvey = isCompletedSurvey;
         this.level = 1;
         this.point = 0;
     }
@@ -104,6 +106,10 @@ public class UserEntity extends BaseEntity {
         this.nickname = nickname;
         this.level = 1;
         this.point = 0;
+        this.isCompletedSurvey = false;
+        this.easilyCold = false;
+        this.easilySweat = false;
+        this.easilyHot = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
@@ -130,6 +136,13 @@ public class UserEntity extends BaseEntity {
                 .level(1)
                 .point(0)
                 .isLogin(Boolean.FALSE)
+                // 회원가입 할 때는 모두 FALSE 로 초기화
+                .easilyCold(Boolean.FALSE)
+                .easilySweat(Boolean.FALSE)
+                .easilyHot(Boolean.FALSE)
+                // 설문조사 여부
+                .isCompletedSurvey(Boolean.FALSE)
+                .isDeleted(false)
                 .build();
         user.register(authSignUpDto.nickname());
         return user;
@@ -151,10 +164,12 @@ public class UserEntity extends BaseEntity {
                 .role(user.getRole())
                 .serialId(user.getSerialId())
                 .isLogin(user.getIsLogin())
-                .runHot(user.isRunHot())
-                .runSweat(user.isRunSweat())
-                .runCold(user.isRunCold())
+                .easilyHot(user.isEasilyHot())
+                .easilySweat(user.isEasilySweat())
+                .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
+                .isCompletedSurvey(user.isCompletedSurvey())
+                .isDeleted(user.isDeleted())
                 .build();
     }
     public User toDomain() {
@@ -166,13 +181,14 @@ public class UserEntity extends BaseEntity {
                 .point(point)
                 .role(role)
                 .provider(provider)
-                .missionHistories(missionHistories.stream().map(MissionHistoryEntity::toDomain).collect(Collectors.toList()))
-                .runHot(runHot)
-                .runCold(runCold)
+                .easilyHot(easilyHot)
+                .easilyCold(easilyCold)
                 .isLogin(isLogin)
-                .runSweat(runSweat)
+                .easilySweat(easilySweat)
                 .serialId(serialId)
                 .refreshToken(refreshToken)
+                .isCompletedSurvey(isCompletedSurvey)
+                .isDeleted(isDeleted)
                 .build();
     }
 
@@ -201,9 +217,9 @@ public class UserEntity extends BaseEntity {
     }
 
     public void applySurveyResult(SurveyDto surveyResult) {
-        this.runHot = surveyResult.runHot();
-        this.runSweat = surveyResult.runSweat();
-        this.runCold = surveyResult.runCold();
+        this.easilyHot = surveyResult.runHot();
+        this.easilySweat = surveyResult.runSweat();
+        this.easilyCold = surveyResult.runCold();
     }
 }
 

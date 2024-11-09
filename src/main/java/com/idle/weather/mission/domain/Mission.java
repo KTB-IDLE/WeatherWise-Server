@@ -14,6 +14,5 @@ public class Mission {
     private String description;
     private MissionType missionType;
     private int point;
-    private List<MissionHistory> missionHistories;
     private boolean isCompleted;
 }

@@ -64,6 +64,19 @@ dependencies {
 
 	// FeignClient
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// https://mvnrepository.com/artifact/org.redisson/redisson
+	implementation group: 'org.redisson', name: 'redisson', version: '3.34.1'
+
+	// Spring Kafka
+	implementation 'org.springframework.cloud:spring-cloud-stream'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+
+	// Test Mockito
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+	testImplementation 'org.mockito:mockito-core:5.5.0'
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+
 }
 
 dependencyManagement {

@@ -3,10 +3,13 @@ package com.idle.weather.level.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.api.port.LevelService;
-import com.idle.weather.level.api.response.LevelResponseDto;
+import com.idle.weather.level.api.response.ExpByLevelResponse;
+import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
+import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +19,33 @@ import static com.idle.weather.level.api.response.LevelResponseDto.*;
 
 @Service
 @RequiredArgsConstructor
+@Builder
 public class LevelServiceImpl implements LevelService {
 
     private final UserRepository userRepository;
+    private final LevelJpaRepository levelJpaRepository;
 
     @Override
     public RankingList getRankingList(Long userId) {
-        // TODO: 10/18/24 UserEntity -> Domain 으로 수정하기
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findById(userId);
 
         int currentUserRanking = userRepository.findUserRanking(user.getLevel());
 
+        List<User> userList = userRepository.findTop10ByOrderByLevelDescExperienceDesc();
 
-        List<UserEntity> userList = userRepository.findTop10ByOrderByLevelDesc();
         List<SingleRanking> rankingList = userList.stream()
                 .map(SingleRanking::from).toList();
 
-        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel());
+        boolean isTopLevelUser = false;
+        if (user.getLevel() <= 10) {
+            isTopLevelUser = true;
+        }
+        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel(),isTopLevelUser);
+    }
+
+    @Override
+    public ExpByLevelResponse getExpByLevel(int level) {
+        return ExpByLevelResponse.from(levelJpaRepository.findByLevel(level));
     }
 }
 

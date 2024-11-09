@@ -2,7 +2,6 @@ package com.idle.weather.auth.handler.signin;
 
 import com.idle.weather.auth.CustomUserDetails;
 import com.idle.weather.auth.dto.JwtTokenDto;
-import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.ERole;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.service.port.UserRepository;
@@ -43,7 +42,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         JwtTokenDto jwtTokenDto = jwtUtil.generateTokens(userPrincipal.getId(), userPrincipal.getRole());
         userRepository.updateRefreshTokenAndLoginStatus(userPrincipal.getId(), jwtTokenDto.getRefreshToken(), true);
-        String nickname = userRepository.findById(userPrincipal.getId()).map(UserEntity::getNickname).orElse("");
+        String nickname = userRepository.findByIdForLegacy(userPrincipal.getId()).map(UserEntity::getNickname).orElse("");
 
         CookieUtil.addSecureCookie(response, "refreshToken", jwtTokenDto.getRefreshToken(), jwtUtil.getWebRefreshTokenExpirationSecond());
         CookieUtil.addCookie(response, "accessToken", jwtTokenDto.getAccessToken());
