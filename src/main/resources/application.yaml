@@ -1,5 +1,22 @@
 # dev env setting
 spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BINDER}
+          auto-create-topics: false
+          required-acks: ${KAFKA_REQUIRED_ACK_MODE}
+      bindings:
+        send-out-0:
+          destination: ${KAFKA_TOPIC}
+          producer:
+            record-metadata-channel: ${KAFKA_RESULT_CHANNEL}
+        consume-in-0:
+          destination: ${KAFKA_TOPIC}
+          group: ${KAFKA_CONSUME_GROUP}
+          consumer:
+            max-attempts: ${KAFKA_CONSUME_MAX_ATTEMPTS}
   data:
     redis:
       host: ${REDIS_HOST}  # Redis 호스트를 환경 변수로 치환
@@ -117,3 +134,6 @@ jwt:
   secret-key: fWmf8GOZn1pSnqgAjs+6cfpd2cS4gyE5W5YoXbph1S9Y7i3ymNHIWipaajCkIp3iOnI/s5mlVnxQjogHHkILGg==  # 환경 변수로 치환
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
+
+server:
+  port: 8999

@@ -44,3 +44,6 @@ secret.yaml
 mysql-secret.yaml
 spring-deployment.yaml
 application.yaml
+client.properties
+get_helm.sh
+promtail-linux-amd64.zip
