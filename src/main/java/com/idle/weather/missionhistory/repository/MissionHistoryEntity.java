@@ -51,6 +51,7 @@ public class MissionHistoryEntity extends BaseEntity {
                 .uploadFileName(missionHistory.getUploadFileName())
                 .user(UserEntity.toEntity(missionHistory.getUser()))
                 .isCompleted(missionHistory.isCompleted())
+                .completedAt(missionHistory.getCompletedAt())
                 .build();
     }
 
@@ -63,11 +64,9 @@ public class MissionHistoryEntity extends BaseEntity {
                 .storeFileName(storeFileName)
                 .uploadFileName(uploadFileName)
                 .user(user.toDomain())
+                .isCompleted(isCompleted)
+                .completedAt(completedAt)
                 .build();
-    }
-
-    public void updateCompleted(MissionHistory missionHistory) {
-        this.isCompleted = missionHistory.isCompleted();
     }
 }
 
