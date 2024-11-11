@@ -33,6 +33,7 @@ public class HomeController {
     @PatchMapping("/survey")
     public ResponseEntity<String> applySurveyResult(@UserId Long userId, @RequestBody SurveyDto surveyResult) {
         homeService.applySurveyResult(userId, surveyResult);
+        System.out.println("applySurveyResult 반영");
         return ResponseEntity.ok("설문조사 완료");
     }
 }

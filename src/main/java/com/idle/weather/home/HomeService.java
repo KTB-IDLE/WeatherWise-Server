@@ -29,6 +29,7 @@ public class HomeService {
         }
 
         WeatherResponse currentWeatherInfo = aiServerClient.getCurrentWeatherInfo(latitude, longitude, userId);
+        log.info("getInfo 응답 완료");
         return HomeResponse.of(result , currentWeatherInfo);
 
     }

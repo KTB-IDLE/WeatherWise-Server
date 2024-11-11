@@ -36,6 +36,7 @@ public class AIServerImpl implements AIServerClient {
         HttpEntity<MissionAuth> request = new HttpEntity<>(missionAuthDto, headers);
         String response = restTemplate.postForObject(AI_END_POINT + "/verification", request, String.class);
         JsonNode jsonNode = objectMapper.readTree(response);
+        log.info("AI Response = {} " , jsonNode.get("certified"));
         return jsonNode.get("certified").asBoolean();
     }
 
@@ -46,6 +47,8 @@ public class AIServerImpl implements AIServerClient {
         WeatherRequest weatherRequest = WeatherRequest.of(latitude, longitude, userId);
         HttpEntity<WeatherRequest> request = new HttpEntity<>(weatherRequest, headers);
         String response = restTemplate.postForObject(AI_END_POINT + "/weather_data", request, String.class);
+
+        log.info("response = {} " ,response);
         return objectMapper.readValue(response, WeatherResponse.class);
     }
 
