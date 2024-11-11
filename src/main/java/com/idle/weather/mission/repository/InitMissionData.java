@@ -35,6 +35,7 @@ public class InitMissionData {
                     .missionType(MissionType.HOT)
                     .point(20)
                     .name("날씨가 더우니 양산을 챙기세요!")
+                    .question("Is there a parasol in this image?")
                     .build();
             missionRepository.save(hot1.toDomain());
 
@@ -42,6 +43,7 @@ public class InitMissionData {
                     .missionType(MissionType.HOT)
                     .point(40)
                     .name("날씨가 더우니 물을 챙기세요!")
+                    .question("Is there a water bottle in this image")
                     .build();
             missionRepository.save(hot2.toDomain());
 
@@ -49,6 +51,7 @@ public class InitMissionData {
                     .missionType(MissionType.HOT)
                     .point(30)
                     .name("날씨가 더우니 손풍기를 챙기세요!")
+                    .question("Is there a hand fan in this image?")
                     .build();
             missionRepository.save(hot3.toDomain());
         }
@@ -57,6 +60,7 @@ public class InitMissionData {
                     .missionType(MissionType.COLD)
                     .point(70)
                     .name("날씨가 추우니 목도리를 챙기세요!")
+                    .question("Is there a scarf in this image?")
                     .build();
             missionRepository.save(cold1.toDomain());
 
@@ -64,6 +68,7 @@ public class InitMissionData {
                     .missionType(MissionType.COLD)
                     .point(90)
                     .name("날씨가 추우니 핫팩을 챙기세요!")
+                    .question("Is there a hot pack in this image?")
                     .build();
             missionRepository.save(cold2.toDomain());
 
@@ -71,6 +76,7 @@ public class InitMissionData {
                     .missionType(MissionType.COLD)
                     .point(10)
                     .name("날씨가 추우니 장갑을 챙기세요!")
+                    .question("Is there a pair of gloves in this image?")
                     .build();
             missionRepository.save(cold3.toDomain());
         }
@@ -80,6 +86,7 @@ public class InitMissionData {
                     .missionType(MissionType.RAIN)
                     .point(50)
                     .name("비가 오고 있으니 우산을 챙기세요!")
+                    .question("Is there an umbrella in this image?")
                     .build();
             missionRepository.save(rain1.toDomain());
 
@@ -87,6 +94,7 @@ public class InitMissionData {
                     .missionType(MissionType.RAIN)
                     .point(60)
                     .name("비가 오고 있으니 우비를 챙기세요!")
+                    .question("Is there a raincoat in this image?")
                     .build();
             missionRepository.save(rain2.toDomain());
 
@@ -94,8 +102,25 @@ public class InitMissionData {
                     .missionType(MissionType.RAIN)
                     .point(10)
                     .name("비가 오고 있으니 장화를 챙기세요!")
+                    .question("Is there a pair of rain boots in this image?")
                     .build();
             missionRepository.save(rain3.toDomain());
+
+            MissionEntity sunny1 = MissionEntity.builder()
+                    .missionType(MissionType.SUNNY)
+                    .point(30)
+                    .name("날씨가 좋으니 하늘사진 촬영해서 업로드해주세요!")
+                    .question("Does this image show a photograph of the sky taken in good weather?")
+                    .build();
+            missionRepository.save(sunny1.toDomain());
+
+            MissionEntity sunny2 = MissionEntity.builder()
+                    .missionType(MissionType.SUNNY)
+                    .point(30)
+                    .name("날씨가 좋으니 자전거를 타보세요!")
+                    .question("Does this image show someone riding a bicycle?")
+                    .build();
+            missionRepository.save(sunny2.toDomain());
         }
     }
 }

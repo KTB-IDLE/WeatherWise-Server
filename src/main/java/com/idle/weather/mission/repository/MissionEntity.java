@@ -38,6 +38,7 @@ public class MissionEntity extends BaseEntity {
                 .name(mission.getName())
                 .point(mission.getPoint())
                 .missionType(mission.getMissionType())
+                .question(mission.getQuestion())
                 .build();
     }
 
@@ -47,6 +48,7 @@ public class MissionEntity extends BaseEntity {
                 .point(point)
                 .name(name)
                 .missionType(missionType)
+                .question(question)
                 .build();
     }
 }
