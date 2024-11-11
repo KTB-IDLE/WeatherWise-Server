@@ -105,6 +105,7 @@ public class BoardEntity extends BaseEntity {
                 .content(content)
                 .title(title)
                 .version(version)
+                .createdAt(getCreatedAt())
                 .build();
     }
 

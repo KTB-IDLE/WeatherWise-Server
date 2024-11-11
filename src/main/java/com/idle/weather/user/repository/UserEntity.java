@@ -189,6 +189,7 @@ public class UserEntity extends BaseEntity {
                 .refreshToken(refreshToken)
                 .isCompletedSurvey(isCompletedSurvey)
                 .isDeleted(isDeleted)
+                .missionHistories(new ArrayList<>())
                 .build();
     }
 
