@@ -92,7 +92,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         String imageUrl = getImageUrlAfterSavedS3(imageFile , missionHistory);
 
         // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
-        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(imageUrl,mission, user));
+        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(imageUrl,mission));
 
         // 인증 실패시
         if (!authenticationResult) {
