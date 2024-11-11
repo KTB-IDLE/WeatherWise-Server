@@ -1,5 +1,6 @@
 package com.idle.weather.missionhistory.service.port;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.CurrentWeatherResponse;
 
@@ -11,7 +12,7 @@ import static com.idle.weather.mission.api.request.MissionRequestDto.*;
  */
 public interface AIServerClient {
     // 미션 인증 API
-    boolean missionAuthentication(MissionAuth missionAuthDto);
+    boolean missionAuthentication(MissionAuth missionAuthDto) throws JsonProcessingException;
 
     // 날씨 가져오는 API
     CurrentWeatherResponse getCurrentWeatherInfo(int nx , int ny);
