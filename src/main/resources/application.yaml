@@ -5,7 +5,7 @@ spring:
       kafka:
         binder:
           brokers: ${KAFKA_BINDER}
-          auto-create-topics: false
+          auto-create-topics: true
           required-acks: ${KAFKA_REQUIRED_ACK_MODE}
       bindings:
         send-out-0:
@@ -136,5 +136,15 @@ jwt:
   access-token-expire-period: ${JWT_ACCESS_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
   refresh-token-expire-period: ${JWT_REFRESH_TOKEN_EXPIRE_PERIOD}  # 환경 변수로 치환
 
-server:
-  port: 8999
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+  health:
+    kafka:
+      enabled: false
+
