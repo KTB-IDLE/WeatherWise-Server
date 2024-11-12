@@ -43,7 +43,6 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final UserRepository userRepository;
     private final LevelRepository levelRepository;
-    // Mock Server
     private final AIServerClient aiServerClient;
     // S3
     private final AmazonS3Client amazonS3Client;
@@ -129,16 +128,11 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public SuccessMissionHistories getSuccessMissions(Long userId) {
-
-        User user = userRepository.findById(userId);
-
-        List<MissionHistory> missionHistories = user.getMissionHistories();
-
-        List<SingleMissionHistory> userSuccessMissionHistories = missionHistories.stream()
+        List<MissionHistory> missionHistoryList = missionHistoryRepository.findMissionHistoriesByUserId(userId);
+        List<SingleMissionHistory> userSuccessMissionHistories = missionHistoryList.stream()
                 .filter(MissionHistory::isCompleted)
                 .map(SingleMissionHistory::from)
                 .toList();
-
         return SuccessMissionHistories.from(userSuccessMissionHistories);
     }
 

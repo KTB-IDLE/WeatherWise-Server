@@ -32,14 +32,13 @@ public class AIServerImpl implements AIServerClient {
 
     @Value("${ai.endpoints.weather}")
     private String aiWeatherEndpoints;
-    private final static String AI_END_POINT = "http://localhost:8000/";
 
     @Override
     public boolean missionAuthentication(MissionAuth missionAuthDto) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MissionAuth> request = new HttpEntity<>(missionAuthDto, headers);
-        String response = restTemplate.postForObject(AI_END_POINT + "verification", request, String.class);
+        String response = restTemplate.postForObject(aiMissionAuthEndpoints + "verification", request, String.class);
         JsonNode jsonNode = objectMapper.readTree(response);
         log.info("AI Response = {} " , jsonNode.get("certified"));
         return jsonNode.get("certified").asBoolean();
@@ -51,9 +50,8 @@ public class AIServerImpl implements AIServerClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         WeatherRequest weatherRequest = WeatherRequest.of(latitude, longitude, userId);
         HttpEntity<WeatherRequest> request = new HttpEntity<>(weatherRequest, headers);
-        String response = restTemplate.postForObject(AI_END_POINT + "weather_data", request, String.class);
+        String response = restTemplate.postForObject(aiWeatherEndpoints + "weather_data", request, String.class);
         log.info("response = {} " ,response);
         return objectMapper.readValue(response, WeatherResponse.class);
     }
-
 }

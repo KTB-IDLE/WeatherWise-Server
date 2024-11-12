@@ -9,7 +9,6 @@ import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 
 /**
  * AI 서버와 통신하는 로직을 추상화
- * WebClient , RestTemplate , FeignClient , gRPC?
  */
 public interface AIServerClient {
     // 미션 인증 API

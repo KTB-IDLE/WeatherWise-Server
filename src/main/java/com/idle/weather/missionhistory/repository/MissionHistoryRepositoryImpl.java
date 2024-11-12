@@ -35,4 +35,12 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
     public MissionHistory save(MissionHistory missionHistory) {
         return missionHistoryJpaRepository.save(MissionHistoryEntity.toEntity(missionHistory)).toDomain();
     }
+
+    @Override
+    public List<MissionHistory> findMissionHistoriesByUserId(Long userId) {
+        return missionHistoryJpaRepository.findMissionHistoriesByUserId(userId)
+                .stream()
+                .map(MissionHistoryEntity::toDomain)
+                .toList();
+    }
 }

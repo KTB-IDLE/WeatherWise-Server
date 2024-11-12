@@ -2,6 +2,7 @@ package com.idle.weather.missionhistory.service.port;
 
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.missionhistory.repository.MissionHistoryRepositoryImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,4 +12,5 @@ public interface MissionHistoryRepository {
     MissionHistory findById(Long id);
     MissionHistoryEntity findByIdEntity(Long id);
     MissionHistory save(MissionHistory missionHistory);
+    List<MissionHistory> findMissionHistoriesByUserId(Long userId);
 }
