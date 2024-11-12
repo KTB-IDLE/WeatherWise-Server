@@ -13,4 +13,9 @@ public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistor
     List<MissionHistoryEntity> findMissionHistoryByDate(
             @Param("userId") Long userId,
             @Param("date") LocalDate date);
+
+    @Query("SELECT m FROM MissionHistoryEntity m " +
+            "JOIN m.user u " +
+            "WHERE u.id = :userId")
+    List<MissionHistoryEntity> findMissionHistoriesByUserId(@Param("userId") Long userId);
 }

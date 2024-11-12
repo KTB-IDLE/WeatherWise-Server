@@ -15,4 +15,6 @@ public class Mission {
     private MissionType missionType;
     private int point;
     private boolean isCompleted;
+    // AI 서버에 보낼 영문 질문
+    private String question;
 }

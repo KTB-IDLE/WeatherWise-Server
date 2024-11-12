@@ -29,6 +29,8 @@ public class MissionEntity extends BaseEntity {
 
     @Enumerated(STRING)
     private MissionType missionType;
+    // AI 서버에 보낼 영문 질문
+    private String question;
 
     public static MissionEntity toEntity(Mission mission) {
         return MissionEntity.builder()
@@ -36,6 +38,7 @@ public class MissionEntity extends BaseEntity {
                 .name(mission.getName())
                 .point(mission.getPoint())
                 .missionType(mission.getMissionType())
+                .question(mission.getQuestion())
                 .build();
     }
 
@@ -45,6 +48,7 @@ public class MissionEntity extends BaseEntity {
                 .point(point)
                 .name(name)
                 .missionType(missionType)
+                .question(question)
                 .build();
     }
 }

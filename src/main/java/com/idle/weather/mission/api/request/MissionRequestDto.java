@@ -28,13 +28,13 @@ public class MissionRequestDto {
     public static class MissionAuth {
         private String missionName;
         private String missionImageUrl;
-        private UserInfo userInfo;
+        private String question;
 
-        public static MissionAuth of(String missionImageUrl,Mission mission , User user) {
+        public static MissionAuth of(String missionImageUrl,Mission mission) {
             return MissionAuth.builder()
                     .missionImageUrl(missionImageUrl)
                     .missionName(mission.getName())
-                    .userInfo(UserInfo.from(user))
+                    .question(mission.getQuestion())
                     .build();
         }
     }

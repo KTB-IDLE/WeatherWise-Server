@@ -48,6 +48,11 @@ public class FakeMissionHistoryRepository implements MissionHistoryRepository {
     }
 
     @Override
+    public List<MissionHistory> findMissionHistoriesByUserId(Long userId) {
+        return null;
+    }
+
+    @Override
     public List<MissionHistory> findMissionHistoryByDate(Long userId, LocalDate date) {
         return null;
     }

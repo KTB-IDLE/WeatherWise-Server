@@ -42,7 +42,7 @@ spring:
     database: mysql
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     show-sql: true
     properties:
@@ -148,3 +148,7 @@ management:
     kafka:
       enabled: false
 
+ai:
+  endpoints:
+    mission-auth: ${AI_ENDPOINTS_MISSION_AUTH}
+    weather: ${AI_ENDPOINTS_WEATHER}

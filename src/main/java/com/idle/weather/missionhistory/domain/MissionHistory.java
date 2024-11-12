@@ -6,6 +6,8 @@ import com.idle.weather.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class MissionHistory {
@@ -17,8 +19,10 @@ public class MissionHistory {
     private String uploadFileName;
     private String storeFileName;
     private User user;
+    private LocalDateTime completedAt;
     public void updateCompleted() {
         this.isCompleted = true;
+        completedAt = LocalDateTime.now();
     }
 
     public static MissionHistory of(User user,Mission mission , MissionTime missionTime) {

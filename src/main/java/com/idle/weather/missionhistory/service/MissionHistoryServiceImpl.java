@@ -43,7 +43,6 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final UserRepository userRepository;
     private final LevelRepository levelRepository;
-    // Mock Server
     private final AIServerClient aiServerClient;
     // S3
     private final AmazonS3Client amazonS3Client;
@@ -92,7 +91,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         String imageUrl = getImageUrlAfterSavedS3(imageFile , missionHistory);
 
         // 이미지 인증 결과 (imageUrl , Mission , User 정보 담아서 AI 서버에 전송)
-        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(imageUrl,mission, user));
+        boolean authenticationResult  = sendFastAPIServer(MissionAuth.of(imageUrl,mission));
 
         // 인증 실패시
         if (!authenticationResult) {
@@ -129,16 +128,11 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
     @Override
     public SuccessMissionHistories getSuccessMissions(Long userId) {
-
-        User user = userRepository.findById(userId);
-
-        List<MissionHistory> missionHistories = user.getMissionHistories();
-
-        List<SingleMissionHistory> userSuccessMissionHistories = missionHistories.stream()
+        List<MissionHistory> missionHistoryList = missionHistoryRepository.findMissionHistoriesByUserId(userId);
+        List<SingleMissionHistory> userSuccessMissionHistories = missionHistoryList.stream()
                 .filter(MissionHistory::isCompleted)
                 .map(SingleMissionHistory::from)
                 .toList();
-
         return SuccessMissionHistories.from(userSuccessMissionHistories);
     }
 
