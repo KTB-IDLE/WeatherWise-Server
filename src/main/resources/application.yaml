@@ -148,3 +148,7 @@ management:
     kafka:
       enabled: false
 
+ai:
+  endpoints:
+    mission-auth: ${AI_ENDPOINTS_MISSION_AUTH}
+    weather: ${AI_ENDPOINTS_WEATHER}
