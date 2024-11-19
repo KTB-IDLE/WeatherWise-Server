@@ -76,6 +76,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findByNickName(String nickName) {
+        return userJpaRepository.findByNickname(nickName)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+    }
+
+    @Override
     public User save(User user) {
         return userJpaRepository.save(UserEntity.toEntity(user)).toDomain();
     }

@@ -16,16 +16,20 @@ public class LevelResponseDto {
         private String currentUserNickName;
         private int currentUserLevel;
         private boolean isTopLevelUser;
+        private boolean hasNext;
+        private boolean hasPrevious;
 
         public static RankingList of(List<SingleRanking> rankingList,
                                      int currentUserRanking , String currentUserNickName , int currentUserLevel,
-                                     boolean isTopLevelUser) {
+                                     boolean isTopLevelUser , boolean hasNext , boolean hasPrevious) {
             return RankingList.builder()
                     .rankingList(rankingList)
                     .currentUserRanking(currentUserRanking)
                     .currentUserNickName(currentUserNickName)
                     .currentUserLevel(currentUserLevel)
                     .isTopLevelUser(isTopLevelUser)
+                    .hasNext(hasNext)
+                    .hasPrevious(hasPrevious)
                     .build();
         }
     }

@@ -41,6 +41,7 @@ public class LevelServiceImpl implements LevelService {
         Page<User> userPage = userRepository.findAllByOrderByLevelDescPointDesc(pageable);
         List<SingleRanking> rankingList = userPage.getContent().stream().map(SingleRanking::from).collect(toList());
 
+
 /*        List<User> userList = userRepository.findTop10ByOrderByLevelDescExperienceDesc();
         List<SingleRanking> rankingList = userList.stream()
                 .map(SingleRanking::from).toList();
@@ -49,7 +50,13 @@ public class LevelServiceImpl implements LevelService {
             isTopLevelUser = true;
         }*/
         boolean isTopLevelUser = currentUserRanking <= size * page;
-        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel(),isTopLevelUser);
+        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel()
+                ,isTopLevelUser , userPage.hasNext() , userPage.hasPrevious());
+    }
+
+    @Override
+    public SingleRanking getRankingByNickName(String nickName) {
+        return SingleRanking.from(userRepository.findByNickName(nickName));
     }
 
     @Override

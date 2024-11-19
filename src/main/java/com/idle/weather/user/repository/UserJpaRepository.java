@@ -1,5 +1,6 @@
 package com.idle.weather.user.repository;
 
+import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
 import org.springframework.data.domain.Page;
@@ -27,8 +28,11 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "update UserEntity u set u.refreshToken = :refreshToken, u.isLogin = :isLogin where u.id = :userId")
     void updateRefreshTokenAndLoginStatus(@Param("userId") Long userId, @Param("refreshToken") String refreshToken, @Param("isLogin") Boolean isLogin);
 
+    Optional<UserEntity> findByNickname(String nickname);
+
     // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리 (레벨이 같은 경우에는 Point 를 비교)
     List<UserEntity> findTop10ByOrderByLevelDescPointDesc();
+
 
     @Query("SELECT u FROM UserEntity u ORDER BY u.level DESC, u.point DESC")
     Page<UserEntity> findAllByOrderByLevelDescPointDesc(Pageable pageable);

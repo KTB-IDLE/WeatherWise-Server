@@ -25,6 +25,12 @@ public class FakeUserRepository implements UserRepository {
         return data.stream().filter(item -> item.getId().equals(id)).findAny()
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
     }
+
+    @Override
+    public User findByNickName(String nickName) {
+        return null;
+    }
+
     @Override
     public User save(User user) {
         if (user.getId() == null || user.getId() == 0) {
