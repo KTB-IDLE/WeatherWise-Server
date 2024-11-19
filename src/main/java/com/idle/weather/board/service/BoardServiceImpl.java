@@ -4,6 +4,7 @@ import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.board.api.response.BoardResponseDto;
 import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.repository.BoardJpaRepository;
@@ -26,6 +27,7 @@ import com.idle.weather.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,9 +95,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardListResponse getBoardsWithRadius(double latitude, double longitude) {
-        List<Board> boards = boardRepository.findByLocationWithinRadius(latitude, longitude);
-        return BoardListResponse.from(boards);
+    public BoardResponseDto getBoardsWithRadius(double latitude, double longitude , int page , int size) {
+        Page<Board> boards = boardRepository.findByLocationWithinRadius(latitude, longitude,page,size);
+
+        return BoardResponseDto.of(boards.getContent() , boards.hasNext());
     }
 
     @Override

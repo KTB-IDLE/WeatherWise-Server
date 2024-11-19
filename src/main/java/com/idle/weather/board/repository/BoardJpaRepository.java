@@ -2,6 +2,8 @@ package com.idle.weather.board.repository;
 
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -30,6 +32,28 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
         ) <= 5000
         """, nativeQuery = true)
     List<BoardEntity> findByLocationWithinRadius(@Param("latitude") double latitude, @Param("longitude") double longitude);
+
+    // 특정 위치 반경 5km 이내 게시글 목록을 조회 (Native Query)
+    @Query(value = """
+        SELECT b.*
+        FROM board_entity b
+        JOIN location_entity l ON b.location_id = l.location_id
+        WHERE ST_Distance_Sphere(
+            point(l.longitude, l.latitude),  -- 경도, 위도 순으로 수정
+            point(:longitude, :latitude)     -- 경도, 위도 순으로 수정
+        ) <= 5000
+        """,
+            countQuery = """
+        SELECT COUNT(b.board_id)
+        FROM board_entity b
+        JOIN location_entity l ON b.location_id = l.location_id
+        WHERE ST_Distance_Sphere(
+            point(l.longitude, l.latitude),
+            point(:longitude, :latitude)
+        ) <= 5000
+        """, nativeQuery = true)
+    Page<BoardEntity> findByLocationWithinRadiusPage(@Param("latitude") double latitude,
+                                                     @Param("longitude") double longitude, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select b from BoardEntity b where b.boardId = :boardId")

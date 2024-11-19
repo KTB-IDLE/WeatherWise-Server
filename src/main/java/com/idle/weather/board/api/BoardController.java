@@ -4,6 +4,7 @@ import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.board.api.response.BoardResponseDto;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.common.annotation.UserId;
@@ -35,10 +36,12 @@ public class BoardController {
         return boardService.getBoardById(boardId);
     }
 
-    // 특정 위치 반경 5km 이내 게시글 조회
+    // 특정 위치 반경 5km 이내 게시글 조회 (무한 스크롤 추가)
     @GetMapping(path = "/radius", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BoardListResponse getBoardsWithRadius(@RequestParam double latitude, @RequestParam double longitude) {
-        return boardService.getBoardsWithRadius(latitude, longitude);
+    public BoardResponseDto getBoardsWithRadius(@RequestParam double latitude, @RequestParam double longitude,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size) {
+        return boardService.getBoardsWithRadius(latitude, longitude,page,size);
     }
 
     // 모든 게시글 조회

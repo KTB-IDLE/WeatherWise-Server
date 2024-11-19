@@ -7,6 +7,9 @@ import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,9 +30,9 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public List<Board> findByLocationWithinRadius(double latitude, double longitude) {
-        return boardJpaRepository
-                .findByLocationWithinRadius(latitude , longitude).stream().map(BoardEntity::toDomain).collect(toList());
+    public Page<Board> findByLocationWithinRadius(double latitude, double longitude , int page , int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return boardJpaRepository.findByLocationWithinRadiusPage(latitude , longitude,pageable).map(BoardEntity::toDomain);
     }
 
     @Override

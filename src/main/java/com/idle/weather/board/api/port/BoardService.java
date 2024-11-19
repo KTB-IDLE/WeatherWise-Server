@@ -3,6 +3,7 @@ package com.idle.weather.board.api.port;
 import com.idle.weather.board.api.request.BoardRequest;
 import com.idle.weather.board.api.response.BoardListResponse;
 import com.idle.weather.board.api.response.BoardResponse;
+import com.idle.weather.board.api.response.BoardResponseDto;
 import com.idle.weather.boardvote.api.response.BoardVoteResponse;
 import com.idle.weather.boardvote.domain.VoteType;
 import com.idle.weather.user.domain.User;
@@ -16,7 +17,7 @@ public interface BoardService {
     BoardResponse getBoardById(Long boardId);
 
     // 특정 위치 반경 25km 이내 게시글 조회
-    BoardListResponse getBoardsWithRadius(double latitude, double longitude);
+    BoardResponseDto getBoardsWithRadius(double latitude, double longitude , int page , int size);
 
     // 모든 게시글 가져오기
     BoardListResponse getAllBoards();

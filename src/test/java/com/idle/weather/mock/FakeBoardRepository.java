@@ -10,6 +10,7 @@ import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class FakeBoardRepository implements BoardRepository {
 
 
     @Override
-    public List<Board> findByLocationWithinRadius(double latitude, double longitude) {
+    public Page<Board> findByLocationWithinRadius(double latitude, double longitude, int page , int size) {
         return null;
     }
 
