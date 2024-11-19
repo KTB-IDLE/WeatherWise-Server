@@ -53,7 +53,7 @@ class LevelServiceTest {
 
 
         //when
-        RankingList rankingList = levelService.getRankingList(createUser.getId());
+        RankingList rankingList = levelService.getRankingList(createUser.getId(),0,10);
 
         //then
         assertThat(rankingList.getRankingList().size()).isEqualTo(10);
@@ -91,7 +91,7 @@ class LevelServiceTest {
         User createUser2 = fakeUserRepository.save(user2);
 
         //when
-        RankingList rankingList = levelService.getRankingList(createUser1.getId());
+        RankingList rankingList = levelService.getRankingList(createUser1.getId(),0,10);
 
         //then
         assertThat(rankingList.getRankingList().size()).isEqualTo(2);
@@ -129,7 +129,7 @@ class LevelServiceTest {
         User createUser2 = fakeUserRepository.save(user2);
 
         //when
-        RankingList rankingList = levelService.getRankingList(createUser1.getId());
+        RankingList rankingList = levelService.getRankingList(createUser1.getId(),0,10);
 
         //then
         assertThat(rankingList.isTopLevelUser()).isTrue();

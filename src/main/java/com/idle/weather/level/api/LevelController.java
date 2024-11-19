@@ -19,9 +19,17 @@ public class LevelController {
 
     private final LevelService levelService;
 
+    @GetMapping("/rankings")
+    public ResponseEntity<BaseResponse<LevelResponseDto.RankingList>> getRanking(@UserId Long userId,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingList(userId,page,size)));
+    }
+
     @GetMapping("/ranking")
-    public ResponseEntity<BaseResponse<LevelResponseDto.RankingList>> getRanking(@UserId Long userId) {
-        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingList(userId)));
+    public ResponseEntity<BaseResponse<LevelResponseDto.SingleRanking>> getRankingByNickName(@UserId Long userId,
+                                                                                           @RequestParam("nickname") String nickName) {
+        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingByNickName(nickName)));
     }
 
     @GetMapping("/exp")

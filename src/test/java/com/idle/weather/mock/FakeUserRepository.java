@@ -7,6 +7,8 @@ import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.*;
@@ -23,6 +25,12 @@ public class FakeUserRepository implements UserRepository {
         return data.stream().filter(item -> item.getId().equals(id)).findAny()
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
     }
+
+    @Override
+    public int findByRankFromNickname(String nickName) {
+        return 0;
+    }
+
     @Override
     public User save(User user) {
         if (user.getId() == null || user.getId() == 0) {
@@ -54,6 +62,11 @@ public class FakeUserRepository implements UserRepository {
                         .thenComparing(Comparator.comparingInt(User::getPoint).reversed()))
                 .limit(10)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<User> findAllByOrderByLevelDescPointDesc(Pageable pageable) {
+        return null;
     }
 
     @Override
