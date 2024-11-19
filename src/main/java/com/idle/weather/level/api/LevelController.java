@@ -20,8 +20,10 @@ public class LevelController {
     private final LevelService levelService;
 
     @GetMapping("/ranking")
-    public ResponseEntity<BaseResponse<LevelResponseDto.RankingList>> getRanking(@UserId Long userId) {
-        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingList(userId)));
+    public ResponseEntity<BaseResponse<LevelResponseDto.RankingList>> getRanking(@UserId Long userId,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingList(userId,page,size)));
     }
 
     @GetMapping("/exp")

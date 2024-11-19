@@ -7,6 +7,8 @@ import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.*;
@@ -54,6 +56,11 @@ public class FakeUserRepository implements UserRepository {
                         .thenComparing(Comparator.comparingInt(User::getPoint).reversed()))
                 .limit(10)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<User> findAllByOrderByLevelDescPointDesc(Pageable pageable) {
+        return null;
     }
 
     @Override

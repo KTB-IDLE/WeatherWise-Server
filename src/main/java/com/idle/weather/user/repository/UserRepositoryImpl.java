@@ -6,6 +6,8 @@ import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,6 +47,12 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findTop10ByOrderByLevelDescExperienceDesc() {
         return userJpaRepository.findTop10ByOrderByLevelDescPointDesc().stream()
                 .map(UserEntity::toDomain).collect(toList());
+    }
+
+    @Override
+    public Page<User> findAllByOrderByLevelDescPointDesc(Pageable pageable) {
+        return userJpaRepository.findAllByOrderByLevelDescPointDesc(pageable)
+                        .map(UserEntity::toDomain);
     }
 
     @Override

@@ -33,6 +33,8 @@ public class AIServerImpl implements AIServerClient {
     @Value("${ai.endpoints.weather}")
     private String aiWeatherEndpoints;
 
+    private static final String AI_LOCAL_ENDPOINT = "http://localhost:8000/";
+
 
     @Override
     public boolean missionAuthentication(MissionAuth missionAuthDto) throws JsonProcessingException {
@@ -51,7 +53,7 @@ public class AIServerImpl implements AIServerClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         WeatherRequest weatherRequest = WeatherRequest.of(latitude, longitude, userId);
         HttpEntity<WeatherRequest> request = new HttpEntity<>(weatherRequest, headers);
-        String response = restTemplate.postForObject(aiWeatherEndpoints + "weather_data", request, String.class);
+        String response = restTemplate.postForObject(AI_LOCAL_ENDPOINT + "weather_data", request, String.class);
         log.info("response = {} " ,response);
         return objectMapper.readValue(response, WeatherResponse.class);
     }
