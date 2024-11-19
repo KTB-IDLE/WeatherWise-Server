@@ -27,8 +27,8 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public User findByNickName(String nickName) {
-        return null;
+    public int findByRankFromNickname(String nickName) {
+        return 0;
     }
 
     @Override

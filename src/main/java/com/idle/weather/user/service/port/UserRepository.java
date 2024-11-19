@@ -1,5 +1,6 @@
 package com.idle.weather.user.service.port;
 
+import com.idle.weather.level.api.response.LevelResponseDto;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
@@ -30,7 +31,7 @@ public interface UserRepository {
     Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
 
     User findById(Long id);
-    User findByNickName(String nickName);
+    LevelResponseDto.SingleRanking findByRankFromNickname(String nickName);
     Optional<UserEntity> findByIdForLegacy(Long id);
 
     User save(User user);

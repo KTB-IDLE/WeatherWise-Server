@@ -2,6 +2,7 @@ package com.idle.weather.user.repository;
 
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
+import com.idle.weather.level.api.response.LevelResponseDto;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.service.port.UserRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.idle.weather.level.api.response.LevelResponseDto.*;
 import static java.util.stream.Collectors.*;
 
 @Repository
@@ -76,9 +78,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByNickName(String nickName) {
-        return userJpaRepository.findByNickname(nickName)
+    public SingleRanking findByRankFromNickname(String nickName) {
+        User user = userJpaRepository.findByNickname(nickName)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER)).toDomain();
+        int rank = userJpaRepository.calculateUserRanking(user.getLevel(), user.getPoint());
+        return SingleRanking.of(user,rank);
     }
 
     @Override

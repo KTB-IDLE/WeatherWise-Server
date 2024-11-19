@@ -33,6 +33,9 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리 (레벨이 같은 경우에는 Point 를 비교)
     List<UserEntity> findTop10ByOrderByLevelDescPointDesc();
 
+    @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level OR (u.level = :level AND u.point > :point)")
+    int calculateUserRanking(@Param("level") int level, @Param("point") int point);
+
 
     @Query("SELECT u FROM UserEntity u ORDER BY u.level DESC, u.point DESC")
     Page<UserEntity> findAllByOrderByLevelDescPointDesc(Pageable pageable);

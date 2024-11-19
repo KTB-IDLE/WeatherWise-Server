@@ -56,7 +56,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public SingleRanking getRankingByNickName(String nickName) {
-        return SingleRanking.from(userRepository.findByNickName(nickName));
+        return userRepository.findByRankFromNickname(nickName);
     }
 
     @Override
