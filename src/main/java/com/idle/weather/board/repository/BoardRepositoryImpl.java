@@ -41,29 +41,27 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     @Override
     public BoardResponseDto findByLocationWithinRadiusAndCursor(double latitude, double longitude, String cursor, int size) {
-
-        // hasMore 을 위해 한 개를 더 가져와서 다음 데이터가 있는지 확인
+        // 한 개 더 가져와서 다음 데이터 유무 확인
         int limit = size + 1;
 
-        // 커서를 파싱하여 LocalDateTime으로 변환 (처음에는 null 이 들어오기 때문에 null 처리)
+        // 커서를 LocalDateTime으로 변환 (null이면 전체 조회)
         LocalDateTime cursorTime = (cursor != null) ? LocalDateTime.parse(cursor) : null;
 
-        // cursor 를 기준으로 11개의 데이터를 가지고 온다.
+        // 데이터베이스에서 결과 조회
         List<Board> boards = boardJpaRepository
                 .findByLocationWithinRadiusAndCursor(latitude, longitude, cursorTime, limit)
                 .stream()
                 .map(BoardEntity::toDomain)
                 .collect(Collectors.toList());
 
-        // boards.size() 가 11개를 가져왔다면 다음 데이터가 또 있다는 것
+        // 다음 데이터가 있는지 확인
         boolean hasMore = boards.size() > size;
         if (hasMore) {
-            // hasMore 확인을 위해 가져왔기 때문에 맨 마지막 게시글은 삭제
+            // 다음 페이지 확인용 데이터 제거
             boards.remove(boards.size() - 1);
         }
 
-        // 데이터가 아에 없다면 null 로 반환
-        // 만약 있다면 마지막 게시글의 createdAt 을 nextCurosr 로 지정
+        // 다음 커서를 계산 (마지막 게시글의 createdAt)
         String nextCursor = boards.isEmpty() ? null : boards.get(boards.size() - 1).getCreatedAt().toString();
 
         return BoardResponseDto.ofForCursor(boards, hasMore, nextCursor);

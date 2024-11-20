@@ -57,17 +57,17 @@ public interface BoardJpaRepository extends JpaRepository<BoardEntity, Long> {
                                                      @Param("longitude") double longitude, Pageable pageable);
 
     @Query(value = """
-    SELECT b.*
-    FROM board_entity b
-    JOIN location_entity l ON b.location_id = l.location_id
-    WHERE ST_Distance_Sphere(
-        point(l.longitude, l.latitude),
-        point(:longitude, :latitude)
-    ) <= 5000
-    AND (:cursor IS NULL OR b.created_at > :cursor) 
-    ORDER BY b.created_at ASC
-    LIMIT :limit
-    """, nativeQuery = true)
+            SELECT b.*
+            FROM board_entity b
+            JOIN location_entity l ON b.location_id = l.location_id
+            WHERE ST_Distance_Sphere(
+                point(l.longitude, l.latitude),
+                point(:longitude, :latitude)
+            ) <= 5000
+            AND (:cursor IS NULL OR b.created_at < :cursor) 
+            ORDER BY b.created_at DESC                     
+            LIMIT :limit
+            """, nativeQuery = true)
     List<BoardEntity> findByLocationWithinRadiusAndCursor(@Param("latitude") double latitude,
                                                           @Param("longitude") double longitude,
                                                           @Param("cursor") LocalDateTime cursor,
