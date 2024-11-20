@@ -18,6 +18,7 @@ public interface BoardService {
 
     // 특정 위치 반경 25km 이내 게시글 조회
     BoardResponseDto getBoardsWithRadius(double latitude, double longitude , int page , int size);
+    BoardResponseDto getBoardsWithRadiusAndCursor(double latitude, double longitude , String cursor , int size);
 
     // 모든 게시글 가져오기
     BoardListResponse getAllBoards();

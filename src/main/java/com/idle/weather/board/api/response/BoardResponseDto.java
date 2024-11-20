@@ -11,6 +11,7 @@ public class BoardResponseDto {
 
     List<BoardResponse> boards;
     boolean hasMore;
+    String nextCursor;
 
     public static BoardResponseDto of(List<Board> boards , boolean hasMore) {
         return BoardResponseDto.builder()
@@ -18,6 +19,16 @@ public class BoardResponseDto {
                         .map(BoardResponse::from)
                         .toList())
                 .hasMore(hasMore)
+                .build();
+    }
+
+    public static BoardResponseDto ofForCursor(List<Board> boards , boolean hasMore , String nextCursor) {
+        return BoardResponseDto.builder()
+                .boards(boards.stream()
+                        .map(BoardResponse::from)
+                        .toList())
+                .hasMore(hasMore)
+                .nextCursor(nextCursor)
                 .build();
     }
 }

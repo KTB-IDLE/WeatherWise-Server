@@ -1,5 +1,6 @@
 package com.idle.weather.board.service.port;
 
+import com.idle.weather.board.api.response.BoardResponseDto;
 import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.user.domain.User;
@@ -7,6 +8,7 @@ import com.idle.weather.user.repository.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,9 @@ public interface BoardRepository {
 
     Page<Board> findByLocationWithinRadius(@Param("latitude") double latitude, @Param("longitude") double longitude ,
                                            int page , int size);
+
+    BoardResponseDto findByLocationWithinRadiusAndCursor(@Param("latitude") double latitude, @Param("longitude") double longitude ,
+                                                     String cursor, int size);
 
     Optional<Board> findByIdWithPessimisticLock(Long boardId);
 

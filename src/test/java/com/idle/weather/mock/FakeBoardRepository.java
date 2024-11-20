@@ -1,5 +1,6 @@
 package com.idle.weather.mock;
 
+import com.idle.weather.board.api.response.BoardResponseDto;
 import com.idle.weather.board.domain.Board;
 import com.idle.weather.board.repository.BoardEntity;
 import com.idle.weather.board.service.port.BoardRepository;
@@ -12,6 +13,7 @@ import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +72,11 @@ public class FakeBoardRepository implements BoardRepository {
 
     @Override
     public Page<Board> findByLocationWithinRadius(double latitude, double longitude, int page , int size) {
+        return null;
+    }
+
+    @Override
+    public BoardResponseDto findByLocationWithinRadiusAndCursor(double latitude, double longitude, String  cursor, int size) {
         return null;
     }
 

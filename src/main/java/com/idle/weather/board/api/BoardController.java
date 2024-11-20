@@ -36,13 +36,23 @@ public class BoardController {
         return boardService.getBoardById(boardId);
     }
 
-    // 특정 위치 반경 5km 이내 게시글 조회 (무한 스크롤 추가)
-    @GetMapping(path = "/radius", produces = MediaType.APPLICATION_JSON_VALUE)
+    // TODO: 11/20/24 페이지 번호 기반 , 커서 기반 성능 테스트
+    // 특정 위치 반경 5km 이내 게시글 조회 (무한 스크롤 - 페이지 번호 기반)
+/*    @GetMapping(path = "/radius", produces = MediaType.APPLICATION_JSON_VALUE)
     public BoardResponseDto getBoardsWithRadius(@RequestParam double latitude, @RequestParam double longitude,
                                                 @RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size) {
         return boardService.getBoardsWithRadius(latitude, longitude,page,size);
+    }*/
+
+    // 특정 위치 반경 5km 이내 게시글 조회 (무한 스크롤 - 커서 기반)
+    @GetMapping(path = "/radius", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BoardResponseDto getBoardsWithRadius(@RequestParam double latitude, @RequestParam double longitude,
+                                                @RequestParam(value = "cursor",required = false) String cursor,
+                                                @RequestParam(defaultValue = "10") int size) {
+        return boardService.getBoardsWithRadiusAndCursor(latitude, longitude,cursor,size);
     }
+
 
     // 모든 게시글 조회
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

@@ -32,6 +32,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -99,6 +100,11 @@ public class BoardServiceImpl implements BoardService {
         Page<Board> boards = boardRepository.findByLocationWithinRadius(latitude, longitude,page,size);
 
         return BoardResponseDto.of(boards.getContent() , boards.hasNext());
+    }
+
+    @Override
+    public BoardResponseDto getBoardsWithRadiusAndCursor(double latitude, double longitude, String cursor, int size) {
+        return boardRepository.findByLocationWithinRadiusAndCursor(latitude, longitude, cursor, size);
     }
 
     @Override
