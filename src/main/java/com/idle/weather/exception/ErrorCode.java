@@ -32,6 +32,7 @@ public enum ErrorCode {
     BAD_REQUEST_JSON(HttpStatus.BAD_REQUEST, "4004", "잘못된 JSON 형식입니다."),
     INVALID_PARAMETER_FORMAT(HttpStatus.BAD_REQUEST, "4005", "요청에 유효하지 않은 파라미터 형식입니다."),
     MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "4006", "필수 요청 파라미터가 누락되었습니다."),
+    DUPLICATION_NICKNAME(HttpStatus.BAD_REQUEST, "4007", "중복된 닉네임입니다"),
 
 
     /**

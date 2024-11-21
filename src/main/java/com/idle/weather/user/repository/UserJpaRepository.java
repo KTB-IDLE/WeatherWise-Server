@@ -29,6 +29,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     void updateRefreshTokenAndLoginStatus(@Param("userId") Long userId, @Param("refreshToken") String refreshToken, @Param("isLogin") Boolean isLogin);
 
     Optional<UserEntity> findByNickname(String nickname);
+    Optional<UserEntity> findByNicknameAndIsDeleted(@Param("nickname")String nickname, @Param("isDeleted")Boolean isDeleted);
 
     // 레벨 기준으로 상위 10명의 User 를 가지고 오는 쿼리 (레벨이 같은 경우에는 Point 를 비교)
     List<UserEntity> findTop10ByOrderByLevelDescPointDesc();

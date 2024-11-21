@@ -9,6 +9,7 @@ import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.repository.UserEntity;
+import com.idle.weather.user.repository.UserJpaRepository;
 import com.idle.weather.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     @Transactional
     public UserResponse signUp(AuthSignUpDto authSignUpDto) {
+        userJpaRepository.findByNicknameAndIsDeleted(authSignUpDto.nickname(), false)
+        .ifPresent(u -> {
+            throw new BaseException(ErrorCode.DUPLICATION_NICKNAME);
+        });
+
         String encodedPass = passwordEncoder.encode(authSignUpDto.password());
         UserEntity newUser = UserEntity.signUp(authSignUpDto, encodedPass);
         User user = userRepository.save(newUser.toDomain());
@@ -61,6 +68,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse updateNickname(Long userId, String newNickname) {
+        userJpaRepository.findByNicknameAndIsDeleted(newNickname, false)
+        .ifPresent(u -> {
+            throw new BaseException(ErrorCode.DUPLICATION_NICKNAME);
+        });
+        
         User user = userRepository.findById(userId);
         user.updateInfo(newNickname);
         return UserResponse.from(UserEntity.toEntity(userRepository.save(user)));

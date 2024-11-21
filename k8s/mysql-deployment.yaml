@@ -12,6 +12,8 @@ spec:
       labels:
         app: mysql
     spec:
+      nodeSelector:
+        node-role: backend
       containers:
         - name: mysql
           image: mysql:latest
