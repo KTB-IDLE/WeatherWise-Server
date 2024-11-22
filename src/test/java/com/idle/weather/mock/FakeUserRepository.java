@@ -2,6 +2,7 @@ package com.idle.weather.mock;
 
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
+import com.idle.weather.level.api.response.LevelResponseDto;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.repository.UserEntity;
@@ -27,9 +28,10 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public int findByRankFromNickname(String nickName) {
-        return 0;
+    public LevelResponseDto.SingleRanking findByRankFromNickname(String nickName) {
+        return null;
     }
+
 
     @Override
     public User save(User user) {

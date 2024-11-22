@@ -41,7 +41,15 @@ public class LevelServiceImpl implements LevelService {
 
         int currentUserRanking = userRepository.findUserRanking(user.getLevel() , user.getPoint());
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("level"), Sort.Order.desc("point")));
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                        Sort.Order.desc("level"),
+                        Sort.Order.desc("point"),
+                        Sort.Order.asc("nickname")
+                )
+        );
         Page<User> userPage = userRepository.findAllByOrderByLevelDescPointDesc(pageable);
         List<SingleRanking> rankingList = userPage.getContent().stream().map(SingleRanking::from).collect(toList());
 
