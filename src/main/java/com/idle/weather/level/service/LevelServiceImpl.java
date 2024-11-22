@@ -31,16 +31,21 @@ public class LevelServiceImpl implements LevelService {
     private final UserRepository userRepository;
     private final LevelJpaRepository levelJpaRepository;
 
+    /**
+     * 10위까지만
+     * 검색하면 등수 달라지는거 똑같이 하기
+     */
     @Override
     public RankingList getRankingList(Long userId, int page , int size) {
         User user = userRepository.findById(userId);
 
-        int currentUserRanking = userRepository.findUserRanking(user.getLevel());
+        int currentUserRanking = userRepository.findUserRanking(user.getLevel() , user.getPoint());
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("level"), Sort.Order.desc("point")));
         Page<User> userPage = userRepository.findAllByOrderByLevelDescPointDesc(pageable);
         List<SingleRanking> rankingList = userPage.getContent().stream().map(SingleRanking::from).collect(toList());
 
+        boolean isExistUserInCurrentPage = userPage.getContent().stream().anyMatch(u -> u.getId().equals(userId));
 
 /*        List<User> userList = userRepository.findTop10ByOrderByLevelDescExperienceDesc();
         List<SingleRanking> rankingList = userList.stream()
@@ -50,8 +55,8 @@ public class LevelServiceImpl implements LevelService {
             isTopLevelUser = true;
         }*/
         boolean isTopLevelUser = currentUserRanking <= size * page;
-        return RankingList.of(rankingList , currentUserRanking , user.getNickname(), user.getLevel()
-                ,isTopLevelUser , userPage.hasNext() , userPage.hasPrevious());
+        return RankingList.of(rankingList , currentUserRanking , user.getNickname(),
+                user.getLevel(), userPage.hasNext() , userPage.hasPrevious(),isExistUserInCurrentPage);
     }
 
     @Override

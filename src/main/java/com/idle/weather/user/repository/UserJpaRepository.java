@@ -41,8 +41,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     Page<UserEntity> findAllByOrderByLevelDescPointDesc(Pageable pageable);
 
     // 자신의 랭킹을 구하는 쿼리
-    @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level")
-    int findUserRanking(@Param("level") int level);
+    @Query("SELECT COUNT(u) + 1 FROM UserEntity u WHERE u.level > :level OR (u.level = :level AND u.point > :point)")
+    int findUserRanking(@Param("level") int level,@Param("point") int point);
 
     @Query("SELECT u.isCompletedSurvey FROM UserEntity u WHERE u.id = :userId")
     boolean checkSurvey(@Param("userId") Long userId);

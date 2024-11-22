@@ -26,7 +26,7 @@ public interface UserRepository {
     List<User> findTop10ByOrderByLevelDescExperienceDesc();
     // 페이징 쿼리
     Page<User> findAllByOrderByLevelDescPointDesc(Pageable pageable);
-    int findUserRanking(@Param("level") int level);
+    int findUserRanking(@Param("level") int level , @Param("level") int point);
     boolean checkSurvey(@Param("userId") Long userId);
     Optional<UserEntity> findBySerialIdAndIsDeleted(@Param("serialId") String serialId, @Param("isDeleted") boolean isDeleted);
 

@@ -90,7 +90,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public int findUserRanking(int level) {
+    public int findUserRanking(int level , int point) {
         return 0;
     }
 
