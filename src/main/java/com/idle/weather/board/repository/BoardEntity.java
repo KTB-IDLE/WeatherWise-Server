@@ -4,20 +4,12 @@ import com.idle.weather.board.domain.Board;
 import com.idle.weather.boardvote.domain.BoardVote;
 import com.idle.weather.boardvote.repository.BoardVoteEntity;
 import com.idle.weather.global.BaseEntity;
-import com.idle.weather.level.repository.LevelEntity;
 import com.idle.weather.location.domain.Location;
 import com.idle.weather.location.repository.LocationEntity;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.*;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

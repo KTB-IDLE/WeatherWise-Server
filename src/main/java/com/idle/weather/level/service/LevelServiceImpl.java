@@ -3,8 +3,6 @@ package com.idle.weather.level.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.level.api.port.LevelService;
-import com.idle.weather.level.api.response.ExpByLevelResponse;
-import com.idle.weather.level.repository.LevelJpaRepository;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.repository.UserEntity;
 import com.idle.weather.user.repository.UserJpaRepository;
@@ -29,7 +27,6 @@ import static java.util.stream.Collectors.*;
 public class LevelServiceImpl implements LevelService {
 
     private final UserRepository userRepository;
-    private final LevelJpaRepository levelJpaRepository;
 
     /**
      * 10위까지만
@@ -72,9 +69,10 @@ public class LevelServiceImpl implements LevelService {
         return userRepository.findByRankFromNickname(nickName);
     }
 
-    @Override
+
+/*    @Override
     public ExpByLevelResponse getExpByLevel(int level) {
         return ExpByLevelResponse.from(levelJpaRepository.findByLevel(level));
-    }
+    }*/
 }
 

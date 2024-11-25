@@ -37,7 +37,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     int calculateUserRanking(@Param("level") int level, @Param("point") int point);
 
 
-    @Query("SELECT u FROM UserEntity u ORDER BY u.level DESC, u.point DESC, u.nickname ASC")
+    @Query("SELECT u FROM UserEntity u WHERE u.isDeleted = false ORDER BY u.level DESC, u.point DESC, u.nickname ASC")
     Page<UserEntity> findAllByOrderByLevelDescPointDesc(Pageable pageable);
 
     // 자신의 랭킹을 구하는 쿼리

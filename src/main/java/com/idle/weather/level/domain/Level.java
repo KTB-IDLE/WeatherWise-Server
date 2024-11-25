@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Getter @NoArgsConstructor @AllArgsConstructor
-public class Level {
-    private int level;
-    private int minExp;
-    private int maxExp;
-}
+//@Builder
+//@Getter @NoArgsConstructor @AllArgsConstructor
+//public class Level {
+//    private int level;
+//    private int minExp;
+//    private int maxExp;
+//}
