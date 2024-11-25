@@ -6,6 +6,7 @@ import com.idle.weather.global.BaseResponse;
 import com.idle.weather.user.api.port.UserService;
 import com.idle.weather.user.dto.SurveyDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import static com.idle.weather.home.HomeRequestDto.*;
 import static com.idle.weather.home.HomeResponseDto.*;
 
 @RestController
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 @RequestMapping("/api")
 public class HomeController {
     private final HomeService homeService;

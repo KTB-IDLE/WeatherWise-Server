@@ -4,8 +4,6 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
-import com.idle.weather.level.domain.Level;
-import com.idle.weather.level.service.port.LevelRepository;
 import com.idle.weather.mission.domain.Mission;
 import com.idle.weather.missionhistory.api.port.MissionHistoryService;
 import com.idle.weather.missionhistory.domain.MissionHistory;
@@ -42,7 +40,6 @@ import static com.idle.weather.missionhistory.api.response.MissionHistoryRespons
 public class MissionHistoryServiceImpl implements MissionHistoryService {
     private final MissionHistoryRepository missionHistoryRepository;
     private final UserRepository userRepository;
-    private final LevelRepository levelRepository;
     private final AIServerClient aiServerClient;
     // S3
     private final AmazonS3Client amazonS3Client;
@@ -102,14 +99,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
 
         // 인증 성공시
         // User 경험치 추가 (경험치 추가 할 때 레벨 계산)
-        Level level = levelRepository.findById(user.getLevel());
-
-        int totalPoint = user.getPoint() + mission.getPoint();
-        if (totalPoint >= level.getMaxExp()) {
-            user.levelUp(totalPoint-level.getMaxExp());
-        }
-
-        user.updatedExperience(mission.getPoint());
+        user.gainPoint(mission.getPoint());
 
         // MissionHistory 인증 성공으로 업데이트
         missionHistory.updateCompleted();
@@ -123,7 +113,7 @@ public class MissionHistoryServiceImpl implements MissionHistoryService {
         userRepository.save(user);
 
         return MissionAuthenticate.of(authenticationResult , mission.getPoint() ,
-                user.getLevel() ,user.getPoint(),level.getMaxExp());
+                user.getLevel() ,user.getPoint());
     }
 
     @Override

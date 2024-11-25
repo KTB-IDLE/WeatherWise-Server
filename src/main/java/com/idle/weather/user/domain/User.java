@@ -66,5 +66,14 @@ public class User {
         this.refreshToken = null;
     }
 
+    public void gainPoint(int point) {
+        int totalPoint = this.point + point;
+        if (totalPoint >= 100) {
+            this.level++;
+            this.point = totalPoint - this.point;
+        } else {
+            this.point += point;
+        }
+    }
 }
 

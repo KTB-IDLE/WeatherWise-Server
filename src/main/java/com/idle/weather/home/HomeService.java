@@ -31,6 +31,7 @@ public class HomeService {
     private final MissionHistoryRepository missionHistoryRepository;
 
     public HomeResponse getInfo(Long userId, double latitude , double longitude) throws JsonProcessingException {
+        long startTime = System.currentTimeMillis();
         boolean result = userService.checkSurvey(userId);
 
         if (!result) {
@@ -41,8 +42,8 @@ public class HomeService {
 
         List<MissionHistory> missionHistoryList = missionHistoryRepository.findMissionHistoriesByUserId(userId);
 
-        log.info("size = {} " , missionHistoryList.size());
-
+        long endTime = System.currentTimeMillis();
+        log.info("result time = {} "  , endTime-startTime);
         // 미션 유무
         return HomeResponse.of(result , currentWeatherInfo,missionHistoryList.size());
     }

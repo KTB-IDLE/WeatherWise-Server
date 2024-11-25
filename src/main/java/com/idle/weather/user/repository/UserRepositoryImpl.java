@@ -58,8 +58,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public int findUserRanking(int level) {
-        return userJpaRepository.findUserRanking(level);
+    public int findUserRanking(int level , int point) {
+        return userJpaRepository.findUserRanking(level , point);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.idle.weather.level.api;
 import com.idle.weather.common.annotation.UserId;
 import com.idle.weather.global.BaseResponse;
 import com.idle.weather.level.api.port.LevelService;
-import com.idle.weather.level.api.response.ExpByLevelResponse;
 import com.idle.weather.level.api.response.LevelResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +31,8 @@ public class LevelController {
         return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingByNickName(nickName)));
     }
 
-    @GetMapping("/exp")
+    /*@GetMapping("/exp")
     public ResponseEntity<BaseResponse<ExpByLevelResponse>> getExpByLevel(@RequestParam int level) {
         return ResponseEntity.ok().body(new BaseResponse<>(levelService.getExpByLevel(level)));
-    }
+    }*/
 }

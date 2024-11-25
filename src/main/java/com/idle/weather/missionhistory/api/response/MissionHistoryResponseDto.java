@@ -66,16 +66,14 @@ public class MissionHistoryResponseDto {
         private int missionExp; // 해당 미션 포인트
         private int userLevel; // 현재 user level
         private int userExp; // 현재 user 가 보여하고 있는 포인트
-        private int userLevelTotalExp; // 현재 user level 의 총 경험치
 
         public static MissionAuthenticate of(boolean isAuthenticated , int missionPoint , int userLevel ,
-                                             int userPoint , int userLevelTotalExp) {
+                                             int userPoint) {
             return MissionAuthenticate.builder()
                     .isAuthenticated(isAuthenticated)
                     .missionExp(missionPoint)
                     .userLevel(userLevel)
                     .userExp(userPoint)
-                    .userLevelTotalExp(userLevelTotalExp)
                     .build();
         }
 
