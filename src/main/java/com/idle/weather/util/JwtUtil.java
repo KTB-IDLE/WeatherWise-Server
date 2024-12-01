@@ -88,6 +88,11 @@ public class JwtUtil implements InitializingBean {
                 .compact();
     }
 
+    public Long extractUserIdFromToken(String token) {
+        Claims claims = validateToken(token);
+        return Long.valueOf(claims.get(Constants.USER_ID_CLAIM_NAME).toString());
+    }
+
     public Claims validateToken(final String token) throws ExpiredJwtException, JwtException {
         final JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
         return jwtParser.parseClaimsJws(token).getBody();
