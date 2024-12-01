@@ -1,16 +1,17 @@
 package com.idle.weather.global.config;
 
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
@@ -20,7 +21,11 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    private static final String REDISSON_HOST_PREFIX = "redis://";
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        log.info("Initializing LettuceConnectionFactory for Spring Data Redis");
+        return new LettuceConnectionFactory(redisHost, redisPort);
+    }
 
     @Bean
     public RedisTemplate<String, Integer> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -41,14 +46,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedissonClient redissonClient() {
-        Config config = new Config();
-        config.useSingleServer()
-                .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort);
-        return Redisson.create(config);
-
+    public RedisTemplate<String, Object> redisJsonTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
     }
-
 
 }
 
