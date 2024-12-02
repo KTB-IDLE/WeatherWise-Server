@@ -95,6 +95,7 @@ public class WeatherAlertEntity extends BaseEntity {
     public void updateWeatherAlert(WeatherAlertEntity apiAlert) {
         this.endTime = apiAlert.getEndTime();
         this.command = apiAlert.getCommand();
+        this.alertLevel = apiAlert.getAlertLevel();
     }
 
     public void deactivateWeatherAlert() {

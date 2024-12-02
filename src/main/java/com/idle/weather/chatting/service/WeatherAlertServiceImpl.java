@@ -132,7 +132,8 @@ public class WeatherAlertServiceImpl implements WeatherAlertService {
 
     private boolean hasAlertChanged(WeatherAlertEntity dbAlert, WeatherAlertEntity apiAlert) {
         return !Objects.equals(dbAlert.getEndTime(), apiAlert.getEndTime()) ||
-                !Objects.equals(dbAlert.getCommand(), apiAlert.getCommand());
+                !Objects.equals(dbAlert.getCommand(), apiAlert.getCommand()) ||
+                !Objects.equals(dbAlert.getAlertLevel(), apiAlert.getAlertLevel());
     }
 
     private String generateUniqueKey(WeatherAlertEntity weatherAlertEntity) {
