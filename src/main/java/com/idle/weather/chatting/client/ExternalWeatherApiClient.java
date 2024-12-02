@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Component
@@ -69,9 +71,9 @@ public class ExternalWeatherApiClient {
                 String alertLevel = fields[7].trim(); // '경보', '주의', '예비' 중 하나
 
                 // '경보'가 아닌 경우 필터링
-                if (!"경보".equals(alertLevel)) {
-                    continue;
-                }
+//                if (!"경보".equals(alertLevel)) {
+//                    continue;
+//                }
 
                 WeatherAlertEntity weatherAlertEntity = WeatherAlertEntity.createWeatherAlert(
                         fields[0].trim(), // regUp
@@ -99,29 +101,51 @@ public class ExternalWeatherApiClient {
         }
 
         try {
-            // 오늘 날짜를 기준으로 계산 (예: '01일' → 다음달 1일)
-            LocalDate today = LocalDate.now();
-            int currentMonth = today.getMonthValue();
-            int currentYear = today.getYear();
+            Pattern pattern = Pattern.compile("(\\d+)일\\s*(.*)");
+            Matcher matcher = pattern.matcher(edTm);
+            if (matcher.matches()) {
+                int dayOffset = Integer.parseInt(matcher.group(1).trim());
+                String timeRange = matcher.group(2).trim();
 
-            // 날짜 계산: "01일" 추출
-            int day = extractDayFromEdTm(edTm);
+                LocalDate today = LocalDate.now();
+                LocalDate targetDate = today.plusDays(dayOffset - 1);
 
-            // '01일'이 현재보다 이전 날짜라면 다음 달로 계산
-            LocalDate date = LocalDate.of(currentYear, currentMonth, day);
-            if (date.isBefore(today)) {
-                date = date.plusMonths(1);
+                LocalTime time = mapTimeRangeToLocalTime(timeRange);
+
+                return LocalDateTime.of(targetDate, time);
+            } else {
+                log.warn("예상치 못한 edTm 형싱 : '{}'", edTm);
+                return null;
             }
-
-            // 시간대 매핑: 최대 시간으로 설정
-            LocalTime time = extractMaxTimeFromEdTm(edTm);
-
-            // 최종 LocalDateTime 생성
-            return LocalDateTime.of(date, time);
-
         } catch (Exception e) {
             log.warn("endTime 파싱 실패: '{}', 오류: {}", edTm, e.getMessage());
             return null;
+        }
+    }
+
+    private LocalTime mapTimeRangeToLocalTime(String timeRange) {
+        switch (timeRange) {
+            case "새벽(00시~03시)":
+                return LocalTime.of(3, 0);
+            case "새벽(03시~06시)":
+                return LocalTime.of(6, 0);
+            case "아침(06시~09시)":
+                return LocalTime.of(9, 0);
+            case "오전(09시~12시)":
+                return LocalTime.of(12, 0);
+            case "낮(12시~15시)":
+                return LocalTime.of(13, 30);
+            case "오후(12시~18시)":
+                return LocalTime.of(15, 0);
+            case "늦은 오후(15시~18시)":
+                return LocalTime.of(18, 0);
+            case "저녁(18시~21시)":
+                return LocalTime.of(21, 0);
+            case "밤(21시~24시)":
+                return LocalTime.of(0, 0);
+            default:
+                log.warn("예상치 못한 시간대: '{}'", timeRange);
+                return LocalTime.of(12, 0); // 기본값 설정
         }
     }
 
