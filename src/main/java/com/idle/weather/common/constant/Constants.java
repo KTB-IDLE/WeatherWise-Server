@@ -8,6 +8,6 @@ public class Constants {
     public static final String[] NO_NEED_AUTH_URLS = {
             "/api/v1/auth/basic", "/api/v1/sign-in", "/api/auth/kakao", "/oauth2/authorization/kakao",
             "/login/oauth2/code/kakao", "/api/v1/auth/reissue", "/api/v1/users/signup", "/api/boards/**",
-            "/actuator/health"
+            "/actuator/health", "/swagger-ui/**", "/favicon.ico"
     };
 }
