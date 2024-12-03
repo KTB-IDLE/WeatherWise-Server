@@ -130,6 +130,8 @@ cloud:
 weather:
   endpoint: ${WEATHER_API_ENDPOINT}  # 환경 변수로 치환
   serviceKey: ${WEATHER_API_SERVICE_KEY}  # 환경 변수로 치환
+  api:
+    auth-key: h9VypPe8RN2VcqT3vDTdBA
 
 jwt:
   secret-key: fWmf8GOZn1pSnqgAjs+6cfpd2cS4gyE5W5YoXbph1S9Y7i3ymNHIWipaajCkIp3iOnI/s5mlVnxQjogHHkILGg==  # 환경 변수로 치환
