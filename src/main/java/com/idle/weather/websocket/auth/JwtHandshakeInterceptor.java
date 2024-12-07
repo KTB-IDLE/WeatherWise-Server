@@ -25,22 +25,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             ServerHttpResponse response,
             WebSocketHandler webSocketHandler,
             Map<String, Object> attributes) throws Exception {
-
-        String token = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (token == null || !token.startsWith("Bearer ")) {
-            log.warn("Authorization 헤더가 없거나 유효하지 않습니다.");
-            return false;
-        }
-
-        try {
-            Long userId = jwtUtil.extractUserIdFromToken(token.substring(7));
-            attributes.put("USER_ID", userId);
-            log.info("WebSocket 핸드셰이크 성공: USER_ID={}", userId);
-        } catch (Exception e) {
-            log.error("토큰 검증 실패: {}", e.getMessage());
-            return false;
-        }
-
+        log.info("WebSocket Handshake 요청 헤더: {}", request.getHeaders());
         return true;
     }
 

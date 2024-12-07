@@ -38,19 +38,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     @Transactional
-    public ChatMessageResponse sendMessage(ChatMessageRequest chatMessageRequest, Long senderId) {
-        chatRoomJpaRepository.findById(chatMessageRequest.chatRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found" + chatMessageRequest.chatRoomId()));
+    public ChatMessageResponse sendMessage(Long chatRoomId, ChatMessageRequest chatMessageRequest, Long senderId) {
+        chatRoomJpaRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found" + chatRoomId));
 
         ChatMessageEntity chatMessage = ChatMessageEntity.createChatMessage(
-                chatMessageRequest.chatRoomId(),
+                chatRoomId,
                 senderId,
                 chatMessageRequest.message()
         );
 
         ChatMessageEntity savedMessage = chatMessageJpaRepository.save(chatMessage); // DB 처리
 
-        cacheMessageInRedis(chatMessageRequest.chatRoomId(), savedMessage); // Redis 처리
+        cacheMessageInRedis(chatRoomId, savedMessage); // Redis 처리
 
         return ChatMessageResponse.from(savedMessage);
     }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ChatMessageService {
-    ChatMessageResponse sendMessage(ChatMessageRequest chatMessageRequest, Long senderId);
+    ChatMessageResponse sendMessage(Long chatRoomId, ChatMessageRequest chatMessageRequest, Long senderId);
     List<ChatMessageResponse> getRecentMessages(Long chatRoomId);
     Page<ChatMessageResponse> getMessages(Long chatRoomId, int page, int size);
 }

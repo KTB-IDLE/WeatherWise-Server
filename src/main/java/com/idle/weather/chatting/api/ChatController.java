@@ -17,9 +17,9 @@ public class ChatController {
 
     private final ChatMessageService chatMessageService;
 
-    @PostMapping("/send")
-    public ChatMessageResponse sendMessage(@RequestBody ChatMessageRequest chatMessageRequest, @UserId Long senderId) {
-        return chatMessageService.sendMessage(chatMessageRequest, senderId);
+    @PostMapping("/send/{chatRoomId}")
+    public ChatMessageResponse sendMessage(@PathVariable Long chatRoomId, @RequestBody ChatMessageRequest chatMessageRequest, @UserId Long senderId) {
+        return chatMessageService.sendMessage(chatRoomId, chatMessageRequest, senderId);
     }
 
     @GetMapping("/{chatRoomId}/recent")
