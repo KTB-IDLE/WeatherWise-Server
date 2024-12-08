@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -42,5 +43,10 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
                 .stream()
                 .map(MissionHistoryEntity::toDomain)
                 .toList();
+    }
+
+    @Override
+    public boolean hasUserCompletedAnyMission(Long userId, LocalDateTime time) {
+        return missionHistoryJpaRepository.hasCompletedMissionToday(userId,time);
     }
 }

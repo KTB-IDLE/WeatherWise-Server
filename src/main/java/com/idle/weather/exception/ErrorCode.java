@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_FOUND_MISSION_HISTORY(HttpStatus.NOT_FOUND, "4045" , "해당 미션 기록이 존재하지 않습니다."),
     NOT_FOUND_LEVEL(HttpStatus.NOT_FOUND, "4046" , "해당 레벨은 존재하지 않습니다."),
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "4046" , "해당 게시글은 존재하지 않습니다"),
+    NOT_FOUND_COUPON(HttpStatus.NOT_FOUND, "4047" , "해당 쿠폰은 존재하지 않습니다"),
 
     INVALID_MISSION_TIME(HttpStatus.BAD_REQUEST,"4047" , "해당 미션 시간은 존재하지 않습니다."),
     // Server, File Up/DownLoad Error
@@ -33,6 +34,9 @@ public enum ErrorCode {
     INVALID_PARAMETER_FORMAT(HttpStatus.BAD_REQUEST, "4005", "요청에 유효하지 않은 파라미터 형식입니다."),
     MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "4006", "필수 요청 파라미터가 누락되었습니다."),
     DUPLICATION_NICKNAME(HttpStatus.BAD_REQUEST, "4007", "중복된 닉네임입니다"),
+    COUPON_QUANTITY_EXCEEDED(HttpStatus.BAD_REQUEST, "4008", "해당 쿠폰 수량이 초과됐습니다."),
+    NOT_COMPLETED_ANY_MISSION(HttpStatus.BAD_REQUEST, "4009", "당일 성공한 미션이 하나도 존재하지 않습니다."),
+    ALREADY_ISSUED_COUPON(HttpStatus.BAD_REQUEST, "4010", "이미 발급 받은 쿠폰 입니다."),
 
 
     /**
