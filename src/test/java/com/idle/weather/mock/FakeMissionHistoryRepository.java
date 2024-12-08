@@ -11,6 +11,7 @@ import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.user.domain.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,12 @@ public class FakeMissionHistoryRepository implements MissionHistoryRepository {
     public List<MissionHistory> findMissionHistoriesByUserId(Long userId) {
         return null;
     }
+
+    @Override
+    public boolean hasUserCompletedAnyMission(Long userId, LocalDateTime time) {
+        return false;
+    }
+
 
     @Override
     public List<MissionHistory> findMissionHistoryByDate(Long userId, LocalDate date) {
