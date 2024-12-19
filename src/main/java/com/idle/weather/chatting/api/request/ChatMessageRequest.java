@@ -6,4 +6,7 @@ public record ChatMessageRequest(
         @Schema(description = "메시지 내용", example = "비가 너무 많이오네요.. 고양이들 괜찮을까요?")
         String message
 ) {
+        public static ChatMessageRequest from(String message) {
+                return new ChatMessageRequest(message);
+        }
 }

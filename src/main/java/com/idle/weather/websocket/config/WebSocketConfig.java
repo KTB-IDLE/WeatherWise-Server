@@ -1,53 +1,30 @@
 package com.idle.weather.websocket.config;
 
+import com.idle.weather.chatting.api.port.ChatMessageService;
 import com.idle.weather.util.JwtUtil;
-import com.idle.weather.websocket.auth.JwtChannelInterceptor;
+import com.idle.weather.websocket.handler.ChatWebSocketHandler;
 import com.idle.weather.websocket.auth.JwtHandshakeInterceptor;
-import com.idle.weather.websocket.interceptor.StompUserIdArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
-import org.springframework.messaging.simp.config.ChannelRegistration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
-import java.util.List;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Slf4j
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocket
 @RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketConfigurer {
 
     private final JwtUtil jwtUtil;
+    private final ChatWebSocketHandler chatWebSocketHandler;
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        log.info("Registering STOMP endpoint /ws/chat");
-        registry.addEndpoint("/ws/chat") // WebSocket 엔트포인트
-                .setAllowedOrigins("*") // 허용 도메인
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(chatWebSocketHandler, "ws/chat")
+                .setAllowedOrigins("*")
                 .addInterceptors(new JwtHandshakeInterceptor(jwtUtil));
-                //.withSockJS(); // SockJs 지원
-        log.info("Sunny : addInterceptors에서 JwtHandshakeInterceptor(jwtUtil) 호출");
     }
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "queue"); // 메시지 브로커
-        config.setApplicationDestinationPrefixes("/app"); // 클라이언트가 보낼 prefix
-    }
-
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new JwtChannelInterceptor(jwtUtil)); // STOMP 메시지 송수신 시 JWT 인증을 처리
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new StompUserIdArgumentResolver());
-    }
-
 }
