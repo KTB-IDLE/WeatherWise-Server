@@ -49,7 +49,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRooms);
     }
 
-    // 오래된 비활성화된 기상특보 삭제 수동 트리거 (테스트용)
+    // 오래된 비활성화된 채팅  삭제 수동 트리거 (테스트용)
     @DeleteMapping("/delete-old")
     public ResponseEntity<Void> deleteOldDeactivatedChatRooms(@RequestParam(defaultValue = "7") int day) {
         chatRoomService.deleteOldDeactivatedChatRooms(day);
