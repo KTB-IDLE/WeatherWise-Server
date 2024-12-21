@@ -2,9 +2,12 @@ package com.idle.weather.user.domain;
 
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.domain.SuccessMissionHistory;
+import com.idle.weather.user.api.request.SurveyRequestDto;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.dto.type.EProvider;
 import com.idle.weather.user.dto.type.ERole;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,9 +36,8 @@ public class User {
     private int point;
 
     private List<MissionHistory> missionHistories = new ArrayList<>();
-    private boolean easilyHot;
-    private boolean easilyCold;
-    private boolean easilySweat;
+
+    private SurveyResult surveyResult;
     private boolean isDeleted;
     private boolean isCompletedSurvey;
 
@@ -54,10 +56,8 @@ public class User {
             this.nickname = nickname;
         }
     }
-    public void applySurveyResult(SurveyDto surveyResult) {
-        this.easilyHot = surveyResult.runHot();
-        this.easilySweat = surveyResult.runSweat();
-        this.easilyCold = surveyResult.runCold();
+    public void applySurveyResult(SurveyRequestDto surveyResult) {
+        this.surveyResult = SurveyResult.of(surveyResult);
         this.isCompletedSurvey = true;
     }
     public void delete() {

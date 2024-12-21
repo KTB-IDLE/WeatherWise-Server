@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ChatRoomJpaRepository extends JpaRepository<ChatRoomEntity, Long> {
@@ -16,6 +17,8 @@ public interface ChatRoomJpaRepository extends JpaRepository<ChatRoomEntity, Lon
     boolean existsByParentRegionCode(String parentRegionCode);
 
     Optional<ChatRoomEntity> findByParentRegionCode(String parentRegionCode);
+    // 특정 id 집합에 해당하는 ChatRoomEntity 전부 조회
+    List<ChatRoomEntity> findAllByIdIn(Set<Long> ids);
 
     @Query("""
             SELECT c
@@ -38,4 +41,6 @@ public interface ChatRoomJpaRepository extends JpaRepository<ChatRoomEntity, Lon
             WHERE c.isActivated = false AND c.deactivatedAt IS NOT NULL AND c.deactivatedAt < :time
             """)
     List<ChatRoomEntity> findAllDeactivatedOlderThan(LocalDateTime time);
+
+
 }

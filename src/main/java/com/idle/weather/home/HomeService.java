@@ -5,6 +5,8 @@ import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.service.port.AIServerClient;
 import com.idle.weather.missionhistory.service.port.MissionHistoryRepository;
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.request.SurveyRequestDto;
+
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.SurveyDto;
 import com.idle.weather.user.service.port.UserRepository;
@@ -49,7 +51,13 @@ public class HomeService {
     }
 
     @Transactional
-    public void applySurveyResult(Long userId , SurveyDto surveyResult) {
-        userService.applySurveyResult(userId,surveyResult);
+    public void applySurveyResult(Long userId , SurveyRequestDto surveyResult) {
+        User user = userRepository.findById(userId);
+        user.applySurveyResult(surveyResult);
+        userRepository.save(user);
+    }
+
+    public boolean checkSurvey(Long userId) {
+        return userRepository.checkSurvey(userId);
     }
 }

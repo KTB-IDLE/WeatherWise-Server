@@ -1,5 +1,6 @@
 package com.idle.weather.user.api.port;
 
+import com.idle.weather.user.api.request.SurveyRequestDto;
 import com.idle.weather.user.api.response.UserInfoResponse;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
@@ -15,10 +16,11 @@ public interface UserService {
     UserResponse findBySerialId(String serialId);
     void updatePassword(Long userId, String newPassword);
     UserResponse updateNickname(Long userId, String newNickname);
+    String getNickname(Long userId);
     void deleteUser(Long userId);
     UserResponse reActivateUser(String serialId, String newPassword);
     void updateRefreshToken(Long userId, String refreshToken, boolean isLogin);
     boolean checkSurvey(Long userId);
 
-    void applySurveyResult(Long userId, SurveyDto surveyResult);
+    void applySurveyResult(Long userId, SurveyRequestDto surveyResult);
 }

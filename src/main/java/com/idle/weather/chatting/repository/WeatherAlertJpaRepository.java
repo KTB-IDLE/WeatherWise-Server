@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface WeatherAlertJpaRepository extends JpaRepository<WeatherAlertEntity ,Long> {
+public interface WeatherAlertJpaRepository extends JpaRepository<WeatherAlertEntity, Long> {
 
     @Query("""
             SELECT w
@@ -29,5 +29,14 @@ public interface WeatherAlertJpaRepository extends JpaRepository<WeatherAlertEnt
             FROM WeatherAlertEntity w
             WHERE w.isActivated = true
             """)
-    List<WeatherAlertEntity> findAllActivatedAlerts();
+    List<WeatherAlertEntity> findAllActivatedAlerts(); // ChatRoomEntity 안의 'chatRoomName' 필드가 있다고 가정
+
+    @Query("""
+                SELECT w
+                FROM WeatherAlertEntity w
+                JOIN FETCH w.chatRoom c
+                WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(w.parentRegionName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            """)
+    List<WeatherAlertEntity> findByKeywordInChatRoomOrParentRegion(@Param("keyword") String keyword);
 }

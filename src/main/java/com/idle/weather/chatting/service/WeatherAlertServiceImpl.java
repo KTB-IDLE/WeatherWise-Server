@@ -130,6 +130,11 @@ public class WeatherAlertServiceImpl implements WeatherAlertService {
         return WeatherAlertResponse.from(weatherAlertEntity);
     }
 
+    @Override
+    public List<WeatherAlertEntity> getRegionList(String region) {
+        return weatherAlertJpaRepository.findByKeywordInChatRoomOrParentRegion(region);
+    }
+
     private boolean hasAlertChanged(WeatherAlertEntity dbAlert, WeatherAlertEntity apiAlert) {
         return !Objects.equals(dbAlert.getEndTime(), apiAlert.getEndTime()) ||
                 !Objects.equals(dbAlert.getCommand(), apiAlert.getCommand()) ||
