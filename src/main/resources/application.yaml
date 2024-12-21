@@ -96,12 +96,7 @@ client:
       client-id: ${KAKAO_CLIENT_ID}  # 환경 변수로 치환
       redirect-uri: ${KAKAO_REDIRECT_URI}  # 환경 변수로 치환
 
-logging:
-  level:
-    root: INFO
-    com.fasterxml.jackson: DEBUG
-    org.springframework.security: DEBUG
-    com.idle.weather: DEBUG
+
 
 springdoc:
   swagger-ui:
@@ -146,11 +141,17 @@ management:
   endpoint:
     health:
       show-details: always
-  health:
-    kafka:
-      enabled: false
+
 
 ai:
   endpoints:
     mission-auth: ${AI_ENDPOINTS_MISSION_AUTH}
     weather: ${AI_ENDPOINTS_WEATHER}
+
+logging:
+  level:
+    org.apache.kafka.clients.NetworkClient: ERROR
+
+google:
+  api:
+    key: ${GOOGLE_API_KEY}

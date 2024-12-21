@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idle.weather.chatting.api.port.ChatMessageService;
 import com.idle.weather.chatting.api.request.ChatMessageRequest;
 import com.idle.weather.chatting.api.response.ChatMessageResponse;
+import com.idle.weather.chatting.api.response.ChatMessageViewResponse;
 import com.idle.weather.chatting.repository.ChatMessageEntity;
 import com.idle.weather.chatting.repository.ChatMessageJpaRepository;
 import com.idle.weather.chatting.repository.ChatRoomJpaRepository;
+import com.idle.weather.user.domain.User;
+import com.idle.weather.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
@@ -30,6 +33,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private final UserRepository userRepository;
     private final RedissonClient redissonClient;
 
     private final ObjectMapper objectMapper;
@@ -38,7 +42,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     @Transactional
-    public ChatMessageResponse sendMessage(Long chatRoomId, ChatMessageRequest chatMessageRequest, Long senderId) {
+    public ChatMessageViewResponse sendMessage(Long chatRoomId, ChatMessageRequest chatMessageRequest, Long senderId) {
+        User user = userRepository.findById(senderId);
         chatRoomJpaRepository.findById(chatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found" + chatRoomId));
 
@@ -52,7 +57,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         cacheMessageInRedis(chatRoomId, savedMessage); // Redis 처리
 
-        return ChatMessageResponse.from(savedMessage);
+        return ChatMessageViewResponse.from(savedMessage , user.getNickname());
     }
 
     private void cacheMessageInRedis(Long chatRoomId, ChatMessageEntity chatMessage) {
@@ -76,12 +81,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public List<ChatMessageResponse> getRecentMessages(Long chatRoomId) {
+    public List<ChatMessageViewResponse> getRecentMessages(Long chatRoomId) {
+        // 1) 존재하는 채팅방인지 확인
         chatRoomJpaRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found with chatRoomId : " + chatRoomId));
+                .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found with chatRoomId: " + chatRoomId));
+
+        // 2) Redis에서 해당 채팅방 메시지 가져오기
         String cacheKey = MESSAGE_CACHE_PREFIX + chatRoomId;
         RScoredSortedSet<String> redisMessages = redissonClient.getScoredSortedSet(cacheKey);
 
+        // 3) Redis JSON -> ChatMessageEntity -> ChatMessageViewResponse 변환
         return redisMessages.readAll().stream()
                 .map(data -> {
                     try {
@@ -90,7 +99,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                         throw new RuntimeException("Redis에서 메시지 역직렬화 실패", e);
                     }
                 })
-                .map(ChatMessageResponse::from)
+                .map(entity -> {
+                    // senderId -> DB에서 User 조회 -> nickname 획득
+                    Long senderId = entity.getSenderId();
+                    User user = userRepository.findById(senderId);
+                    // ChatMessageViewResponse 로 변환( nickname = user.getNickname() )
+                    return ChatMessageViewResponse.from(entity, user.getNickname());
+                })
                 .toList();
     }
 

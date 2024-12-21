@@ -44,6 +44,11 @@ public class UserController {
         return userService.updateNickname(userId, newNickname);
     }
 
+    @GetMapping("/nickname")
+    public String getNickName(@UserId Long userId) {
+        return userService.getNickname(userId);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@UserId Long userId) {
         userService.deleteUser(userId);

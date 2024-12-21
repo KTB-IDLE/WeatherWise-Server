@@ -53,6 +53,8 @@ public class AIServerImpl implements AIServerClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         WeatherRequest weatherRequest = WeatherRequest.of(latitude, longitude, userId);
         HttpEntity<WeatherRequest> request = new HttpEntity<>(weatherRequest, headers);
+        log.info("latitude = {} " , latitude);
+        log.info("longitude = {} " , longitude);
         String response = restTemplate.postForObject(aiWeatherEndpoints + "weather_data", request, String.class);
         log.info("response = {} " ,response);
         return objectMapper.readValue(response, WeatherResponse.class);

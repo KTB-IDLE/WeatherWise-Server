@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.idle.weather.common.annotation.UserId;
 import com.idle.weather.global.BaseResponse;
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.request.SurveyRequestDto;
 import com.idle.weather.user.dto.SurveyDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +33,19 @@ public class HomeController {
      * 설문조사 반영 API
      */
     @PatchMapping("/survey")
-    public ResponseEntity<String> applySurveyResult(@UserId Long userId, @RequestBody SurveyDto surveyResult) {
+    public ResponseEntity<String> applySurveyResult(@UserId Long userId, @RequestBody SurveyRequestDto surveyResult) {
         homeService.applySurveyResult(userId, surveyResult);
         System.out.println("applySurveyResult 반영");
         return ResponseEntity.ok("설문조사 완료");
     }
+
+    /**
+     * 설문조사 확인 API
+     */
+    @GetMapping("/survey")
+    public boolean checkSurvey(@UserId Long userId) {
+        return homeService.checkSurvey(userId);
+    }
+
+
 }

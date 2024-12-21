@@ -3,6 +3,7 @@ package com.idle.weather.user.service;
 import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.user.api.port.UserService;
+import com.idle.weather.user.api.request.SurveyRequestDto;
 import com.idle.weather.user.api.response.UserInfoResponse;
 import com.idle.weather.user.api.response.UserResponse;
 import com.idle.weather.user.domain.User;
@@ -79,6 +80,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getNickname(Long userId) {
+        UserEntity user = userJpaRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER));
+        log.info("getNickName = {} " , user.getNickname());
+        return user.getNickname();
+    }
+
+    @Override
     @Transactional
     public void updateRefreshToken(Long userId, String refreshToken, boolean isLogin) {
         userRepository.updateRefreshTokenAndLoginStatus(userId, refreshToken, isLogin);
@@ -91,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void applySurveyResult(Long userId, SurveyDto surveyResult) {
+    public void applySurveyResult(Long userId, SurveyRequestDto surveyResult) {
         User user = userRepository.findById(userId);
         user.applySurveyResult(surveyResult);
         userRepository.save(user);

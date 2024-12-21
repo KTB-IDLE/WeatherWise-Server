@@ -3,6 +3,7 @@ package com.idle.weather.chatting.api;
 import com.idle.weather.chatting.api.port.ChatMessageService;
 import com.idle.weather.chatting.api.request.ChatMessageRequest;
 import com.idle.weather.chatting.api.response.ChatMessageResponse;
+import com.idle.weather.chatting.api.response.ChatMessageViewResponse;
 import com.idle.weather.common.annotation.UserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,12 +19,12 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
 
     @PostMapping("/send/{chatRoomId}")
-    public ChatMessageResponse sendMessage(@PathVariable Long chatRoomId, @RequestBody ChatMessageRequest chatMessageRequest, @UserId Long senderId) {
+    public ChatMessageViewResponse sendMessage(@PathVariable Long chatRoomId, @RequestBody ChatMessageRequest chatMessageRequest, @UserId Long senderId) {
         return chatMessageService.sendMessage(chatRoomId, chatMessageRequest, senderId);
     }
 
     @GetMapping("/{chatRoomId}/recent")
-    public List<ChatMessageResponse> getRecentMessages(@PathVariable Long chatRoomId) {
+    public List<ChatMessageViewResponse> getRecentMessages(@PathVariable Long chatRoomId) {
         return chatMessageService.getRecentMessages(chatRoomId);
     }
 

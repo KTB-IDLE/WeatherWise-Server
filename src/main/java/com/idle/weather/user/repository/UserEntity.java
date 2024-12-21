@@ -2,6 +2,7 @@ package com.idle.weather.user.repository;
 
 import com.idle.weather.global.BaseEntity;
 import com.idle.weather.missionhistory.repository.MissionHistoryEntity;
+import com.idle.weather.user.domain.SurveyResult;
 import com.idle.weather.user.domain.User;
 import com.idle.weather.user.dto.AuthSignUpDto;
 import com.idle.weather.user.dto.SurveyDto;
@@ -64,15 +65,8 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "point" , nullable = false)
     private int point;
-    // 더위
-    @Column(name = "hot")
-    private Boolean easilyHot;
-    // 추위
-    @Column(name = "cold")
-    private Boolean easilyCold;
-    // 땀
-    @Column(name = "sweat")
-    private Boolean easilySweat;
+    @Embedded
+    private SurveyResult surveyResult;
     @Column(name = "is_completed_survey")
     private Boolean isCompletedSurvey;
 
@@ -88,9 +82,6 @@ public class UserEntity extends BaseEntity {
         this.role = role;
         this.isLogin = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
-        this.easilyCold = easilyCold;
-        this.easilyHot = easilyHot;
-        this.easilySweat = easilySweat;
         this.isCompletedSurvey = isCompletedSurvey;
         this.level = 1;
         this.point = 0;
@@ -107,9 +98,6 @@ public class UserEntity extends BaseEntity {
         this.level = 1;
         this.point = 0;
         this.isCompletedSurvey = false;
-        this.easilyCold = false;
-        this.easilySweat = false;
-        this.easilyHot = false;
         this.isDeleted = isDeleted != null ? isDeleted : false;
     }
 
@@ -136,10 +124,6 @@ public class UserEntity extends BaseEntity {
                 .level(1)
                 .point(0)
                 .isLogin(Boolean.FALSE)
-                // 회원가입 할 때는 모두 FALSE 로 초기화
-                .easilyCold(Boolean.FALSE)
-                .easilySweat(Boolean.FALSE)
-                .easilyHot(Boolean.FALSE)
                 // 설문조사 여부
                 .isCompletedSurvey(Boolean.FALSE)
                 .isDeleted(false)
@@ -164,10 +148,8 @@ public class UserEntity extends BaseEntity {
                 .role(user.getRole())
                 .serialId(user.getSerialId())
                 .isLogin(user.getIsLogin())
-                .easilyHot(user.isEasilyHot())
-                .easilySweat(user.isEasilySweat())
-                .easilyCold(user.isEasilyCold())
                 .refreshToken(user.getRefreshToken())
+                .surveyResult(user.getSurveyResult())
                 .isCompletedSurvey(user.isCompletedSurvey())
                 .isDeleted(user.isDeleted())
                 .build();
@@ -181,10 +163,7 @@ public class UserEntity extends BaseEntity {
                 .point(point)
                 .role(role)
                 .provider(provider)
-                .easilyHot(easilyHot)
-                .easilyCold(easilyCold)
                 .isLogin(isLogin)
-                .easilySweat(easilySweat)
                 .serialId(serialId)
                 .refreshToken(refreshToken)
                 .isCompletedSurvey(isCompletedSurvey)
@@ -215,12 +194,6 @@ public class UserEntity extends BaseEntity {
         this.isDeleted = false;
         this.password = newPassword;
         this.isLogin = true;
-    }
-
-    public void applySurveyResult(SurveyDto surveyResult) {
-        this.easilyHot = surveyResult.runHot();
-        this.easilySweat = surveyResult.runSweat();
-        this.easilyCold = surveyResult.runCold();
     }
 }
 
