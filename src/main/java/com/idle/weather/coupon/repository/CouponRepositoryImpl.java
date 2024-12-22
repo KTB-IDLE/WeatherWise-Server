@@ -29,4 +29,9 @@ public class CouponRepositoryImpl implements CouponRepository {
         return couponRepository.findByIdWithPessimisticLock(couponId)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_COUPON));
     }
+
+    @Override
+    public void save(CouponEntity coupon) {
+        couponRepository.save(coupon);
+    }
 }
