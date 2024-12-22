@@ -2,14 +2,23 @@ package com.idle.weather.usercoupon.api;
 
 import com.idle.weather.common.annotation.UserId;
 import com.idle.weather.coupon.service.CouponService;
+import com.idle.weather.usercoupon.api.response.UserCouponResponseDto;
+import com.idle.weather.usercoupon.service.UserCouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.idle.weather.usercoupon.api.response.UserCouponResponseDto.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/user-coupons")
 public class UserCouponController {
+    private final UserCouponService userCouponService;
 
+    @GetMapping
+    public List<SingleUserCoupon> getUserCoupons(@UserId Long userId) {
+        return userCouponService.getUserCoupons(userId);
+    }
 }

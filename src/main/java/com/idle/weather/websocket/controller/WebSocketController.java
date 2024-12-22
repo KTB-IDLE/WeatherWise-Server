@@ -33,15 +33,18 @@ public class WebSocketController {
 
     @MessageMapping("/chat.enterRoom/{chatRoomId}")
     public void enterRoom(@DestinationVariable Long chatRoomId, @UserId Long senderId) {
+        chatRoomMemberService.joinChatRoom(chatRoomId,senderId);
+        log.info("enterRoom 호출");
         int count = chatRoomMemberService.getChatRoomUsers(chatRoomId).size();
-        log.info("enterRoom count = {} ", count);
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count+1);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count);
     }
 
     @MessageMapping("/chat.exitRoom/{chatRoomId}")
     public void exitRoom(@DestinationVariable Long chatRoomId, @UserId Long senderId) {
+        log.info("exitRoom 호출");
+        chatRoomMemberService.leaveChatRoom(chatRoomId,senderId);
         int count = chatRoomMemberService.getChatRoomUsers(chatRoomId).size();
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count-1);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count);
     }
 
 }
