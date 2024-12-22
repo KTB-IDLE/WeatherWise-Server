@@ -10,4 +10,5 @@ public interface CouponRepository {
     List<CouponEntity> findAll();
 
     CouponEntity findByIdForLock(Long couponId);
+    void save(CouponEntity coupon);
 }
