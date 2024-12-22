@@ -1,5 +1,7 @@
 package com.idle.weather.coupon.repository;
 
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,11 +30,15 @@ public class CouponEntity extends BaseEntity {
 
     @Column(name = "coupon_name")
     private String name;
-
     @Column(name = "quantity")
     private int quantity;
+    @Column(name = "coupon_condition")
+    private String condition;
 
-    public boolean checkQuantity() {
-        return this.quantity - 1 > 0;
+    public void issue() {
+        if (this.quantity <= 0) {
+            throw new BaseException(ErrorCode.COUPON_QUANTITY_EXCEEDED);
+        }
+        this.quantity--;
     }
 }

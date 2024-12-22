@@ -40,6 +40,7 @@ public class UserCouponEntity extends BaseEntity {
                 .couponId(couponId)
                 .userId(userId)
                 .isUsed(false)
+                .acquiredAt(LocalDateTime.now())
                 .build();
     }
 
