@@ -4,15 +4,17 @@ import com.idle.weather.exception.BaseException;
 import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.global.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
+@Entity @NoArgsConstructor @AllArgsConstructor
 @Getter @Builder
 public class CouponEntity extends BaseEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
