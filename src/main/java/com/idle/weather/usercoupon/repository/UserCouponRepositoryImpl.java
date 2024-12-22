@@ -6,6 +6,8 @@ import com.idle.weather.usercoupon.service.port.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class UserCouponRepositoryImpl implements UserCouponRepository {
@@ -21,5 +23,10 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
     public void issuedCoupon(Long userId, Long couponId) {
         UserCouponEntity userCoupon = UserCouponEntity.issuedCoupon(userId, couponId);
         userCouponRepository.save(userCoupon);
+    }
+
+    @Override
+    public List<UserCouponEntity> findByUserId(Long userId) {
+        return userCouponRepository.findByUserId(userId);
     }
 }

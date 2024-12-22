@@ -1,5 +1,6 @@
 package com.idle.weather.coupon.service;
 
+import com.idle.weather.coupon.api.response.CouponResponseDto;
 import com.idle.weather.coupon.repository.CouponEntity;
 import com.idle.weather.coupon.service.port.CouponRepository;
 import com.idle.weather.exception.BaseException;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.idle.weather.coupon.api.response.CouponResponseDto.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +33,10 @@ public class CouponService {
 
     @Transactional
     public void receiveCoupon(Long userId, Long couponId) {
-        CouponEntity coupon = couponRepository.findById(couponId);
+        CouponEntity coupon = couponRepository.findByIdForLock(couponId);
 
-        // 1. coupon 수량 확인
-        if (!coupon.checkQuantity()) {
-            throw new BaseException(ErrorCode.COUPON_QUANTITY_EXCEEDED);
-        }
+        coupon.issue();
+
         // 2. 이미 발급 받은 쿠폰인지 확인
         boolean hasAlreadyCoupon = userCouponRepository.hasCoupon(userId, couponId);
 
@@ -49,5 +52,10 @@ public class CouponService {
         }
 
         userCouponRepository.issuedCoupon(userId,couponId);
+    }
+
+    public List<SingleCoupon> findAll() {
+        List<CouponEntity> result = couponRepository.findAll();
+        return result.stream().map(SingleCoupon::from).collect(Collectors.toList());
     }
 }
