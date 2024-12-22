@@ -38,22 +38,12 @@ spring:
 #      idle-timeout: 300
 #      max-lifetime: 300
   jpa:
-    open-in-view: false
-    database: mysql
-    generate-ddl: true
     hibernate:
-      ddl-auto: update
-
-    show-sql: true
+      ddl-auto: create
     properties:
       hibernate:
-#        hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
-#        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-#        default_batch_fetch_size: ${CHUNK_SIZE:100}  # 기본값 100
-#        jdbc.batch_size: 20
-#        order_inserts: true
-#        order_updates: true
         format_sql: true
+        show_sql: true
 
 # Security OAuth2 설정
   security:
