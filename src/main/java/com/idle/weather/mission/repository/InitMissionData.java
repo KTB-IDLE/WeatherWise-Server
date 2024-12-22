@@ -1,5 +1,8 @@
 package com.idle.weather.mission.repository;
 
+import com.idle.weather.coupon.repository.CouponEntity;
+import com.idle.weather.coupon.repository.DiscountType;
+import com.idle.weather.coupon.service.port.CouponRepository;
 import com.idle.weather.mission.domain.MissionType;
 import com.idle.weather.mission.service.port.MissionRepository;
 import jakarta.annotation.PostConstruct;
@@ -8,11 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class InitMissionData {
     private final InitMissionDataService initService;
     private final MissionRepository missionRepository;
+    private final CouponRepository couponRepository;
     @PostConstruct
     public void init() {
         // DB 가 비어있을때만 초기화
@@ -20,6 +26,11 @@ public class InitMissionData {
             initService.hotMissionInit();
             initService.coldMissionInit();
             initService.rainMissionInit();
+            initService.couponInit();
+        }
+
+        if (couponRepository.findAll().size() == 0) {
+            initService.couponInit();
         }
     }
 
@@ -29,6 +40,7 @@ public class InitMissionData {
     @Transactional
     static class InitMissionDataService {
         private final MissionRepository missionRepository;
+        private final CouponRepository couponRepository;
 
         public void hotMissionInit() {
             MissionEntity hot1 = MissionEntity.builder()
@@ -121,6 +133,19 @@ public class InitMissionData {
                     .question("Does this image show someone riding a bicycle?")
                     .build();
             missionRepository.save(sunny2.toDomain());
+        }
+
+        public void couponInit() {
+            CouponEntity coupon = CouponEntity.builder()
+                    .name("에버랜드 자유이용권")
+                    .discountType(DiscountType.PERCENTAGE)
+                    .discountValue(50)
+                    .expiresAt(LocalDateTime.of(2022,12,30,23,59))
+                    .condition("당일 미션 한 개 이상 인증")
+                    .quantity(1000)
+                    .build();
+
+            couponRepository.save(coupon);
         }
     }
 }
