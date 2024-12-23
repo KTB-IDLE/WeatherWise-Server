@@ -34,5 +34,15 @@ public interface ChatRoomMemberJpaRepository extends JpaRepository<ChatRoomMembe
             """)
     List<Long> findUserIdsByChatRoomId(@Param("chatRoomId") Long chatRoomId);
 
-    Optional<ChatRoomMemberEntity> findByChatRoomIdAndUserId(Long chatRoomId, Long userId);
+    @Query("""
+        SELECT crm
+        FROM ChatRoomMemberEntity crm
+        JOIN FETCH crm.chatRoom cr
+        JOIN FETCH UserEntity u ON crm.userId = u.id
+        WHERE cr.id = :chatRoomId AND crm.userId = :userId
+        """)
+    Optional<ChatRoomMemberEntity> findWithUserByChatRoomIdAndUserId(
+            @Param("chatRoomId") Long chatRoomId,
+            @Param("userId") Long userId
+    );
 }

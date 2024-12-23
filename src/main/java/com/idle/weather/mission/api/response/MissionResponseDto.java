@@ -17,6 +17,7 @@ public class MissionResponseDto {
         private Long id;
         private String name;
         private boolean isCompleted;
+        private String description;
         private int point;
 
         public static SingleMission of(Mission mission , Long missionHistoryId) {
@@ -24,6 +25,7 @@ public class MissionResponseDto {
                     .id(missionHistoryId)
                     .name(mission.getName())
                     .point(mission.getPoint())
+                    .description(mission.getDescription())
                     .isCompleted(mission.isCompleted())
                     .build();
         }

@@ -54,6 +54,7 @@ public class HomeService {
     public void applySurveyResult(Long userId , SurveyRequestDto surveyResult) {
         User user = userRepository.findById(userId);
         user.applySurveyResult(surveyResult);
+        // aiServerClient.sendUserInfo(surveyResult , userId);
         userRepository.save(user);
     }
 

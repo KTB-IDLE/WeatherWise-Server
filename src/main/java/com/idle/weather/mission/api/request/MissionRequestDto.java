@@ -16,7 +16,7 @@ public class MissionRequestDto {
         // 예보지점의 Y 좌표값
         private int ny;
         // 미션 타임
-        private String missionTime;
+        private int missionTime;
     }
 
 

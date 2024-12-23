@@ -85,4 +85,11 @@ public class FakeMissionRepository implements MissionRepository {
     public List<Mission> findAll() {
         return null;
     }
+
+    @Override
+    public List<MissionEntity> findRandomMissionExcluding(List<Long> excludeIds, List<MissionType> types) {
+        return null;
+    }
+
+
 }
