@@ -61,7 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/test/**").permitAll()
-                        .requestMatchers("/ws/chat/**").permitAll() //// WebSocket 엔드포인트는 인증 없이 허용
+                        .requestMatchers("/api/ws/chat/**").permitAll() //// WebSocket 엔드포인트는 인증 없이 허용
                         .requestMatchers(Constants.NO_NEED_AUTH_URLS).permitAll()
                         .requestMatchers("/api/v1/admins/**").hasRole(ERole.ADMIN.name())
                         .anyRequest().authenticated())

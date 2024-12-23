@@ -42,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // WebSocket 엔드포인트는 JwtFilter 적용 제외
-        if (path.startsWith("/ws/chat")) {
+        if (path.startsWith("/api/ws/chat")) {
             log.debug("WebSocket 경로 요청 - 필터 제외: {}", path);
             filterChain.doFilter(request, response);
             return;
