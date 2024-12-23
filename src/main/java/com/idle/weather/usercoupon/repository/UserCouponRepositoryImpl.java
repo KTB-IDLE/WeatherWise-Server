@@ -2,6 +2,8 @@ package com.idle.weather.usercoupon.repository;
 
 import com.idle.weather.coupon.repository.CouponJpaRepository;
 import com.idle.weather.coupon.service.port.CouponRepository;
+import com.idle.weather.exception.BaseException;
+import com.idle.weather.exception.ErrorCode;
 import com.idle.weather.usercoupon.service.port.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -28,5 +30,10 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
     @Override
     public List<UserCouponEntity> findByUserId(Long userId) {
         return userCouponRepository.findByUserId(userId);
+    }
+
+    @Override
+    public UserCouponEntity findById(Long userCouponId) {
+        return userCouponRepository.findById(userCouponId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_COUPON));
     }
 }

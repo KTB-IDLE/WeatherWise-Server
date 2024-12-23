@@ -21,4 +21,9 @@ public class UserCouponController {
     public List<SingleUserCoupon> getUserCoupons(@UserId Long userId) {
         return userCouponService.getUserCoupons(userId);
     }
+
+    @PostMapping("/{user-coupon-id}")
+    public void useCoupon(@UserId Long userId , @PathVariable("user-coupon-id") Long userCouponId) {
+        userCouponService.useCoupon(userId , userCouponId);
+    }
 }
