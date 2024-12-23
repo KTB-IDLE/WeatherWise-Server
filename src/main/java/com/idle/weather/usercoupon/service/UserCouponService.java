@@ -32,4 +32,10 @@ public class UserCouponService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void useCoupon(Long userId, Long userCouponId) {
+        UserCouponEntity userCoupon = userCouponRepository.findById(userCouponId);
+        userCoupon.use();
+    }
 }
