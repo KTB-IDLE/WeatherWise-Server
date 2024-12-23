@@ -27,4 +27,7 @@ public interface MissionHistoryJpaRepository extends JpaRepository<MissionHistor
             "AND mh.createdAt >= :#{#date.toLocalDate().atStartOfDay()} " +
             "AND mh.createdAt < :#{#date.toLocalDate().plusDays(1).atStartOfDay()}")
     boolean hasCompletedMissionToday(@Param("userId") Long userId, @Param("date") LocalDateTime date);
+
+    @Query("SELECT mh.mission.id FROM MissionHistoryEntity mh WHERE mh.user.id = :userId AND mh.createdAt BETWEEN :startOfDay AND :endOfDay")
+    List<Long> findMissionIdsByUserAndDateRange(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

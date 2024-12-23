@@ -15,6 +15,7 @@ public class MissionHistoryResponseDto {
         private String name;
         private boolean isCompleted;
         private MissionTime missionTime;
+        private String description;
         private int point;
 
         public static SingleMissionHistory from(MissionHistory mh) {
@@ -24,6 +25,7 @@ public class MissionHistoryResponseDto {
                     .isCompleted(mh.isCompleted())
                     .missionTime(mh.getMissionTime())
                     .name(mh.getMission().getName())
+                    .description(mh.getMission().getDescription())
                     .build();
         }
     }
@@ -45,6 +47,7 @@ public class MissionHistoryResponseDto {
     public static class MissionAuthenticationView {
         private String nickName;
         private String missionName;
+        private String missionDescription;
         private boolean isCompleted;
         private String uploadFileLink;
         private String storeFileName;
@@ -52,6 +55,7 @@ public class MissionHistoryResponseDto {
         public static MissionAuthenticationView of(String nickName , MissionHistory missionHistory) {
             return MissionAuthenticationView.builder()
                     .missionName(missionHistory.getMission().getName())
+                    .missionDescription(missionHistory.getMission().getDescription())
                     .nickName(nickName)
                     .isCompleted(missionHistory.isCompleted())
                     .uploadFileLink(missionHistory.getUploadFileName())

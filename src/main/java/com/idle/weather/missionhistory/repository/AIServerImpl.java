@@ -3,11 +3,13 @@ package com.idle.weather.missionhistory.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idle.weather.home.SendUserInfoDto;
 import com.idle.weather.home.WeatherRequest;
 import com.idle.weather.home.WeatherResponse;
 import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.CurrentWeatherResponse;
 import com.idle.weather.missionhistory.service.port.AIServerClient;
+import com.idle.weather.user.api.request.SurveyRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +35,9 @@ public class AIServerImpl implements AIServerClient {
     @Value("${ai.endpoints.weather}")
     private String aiWeatherEndpoints;
 
+    @Value("${ai.endpoints.user-info}")
+    private String aiSendUserInfoEndpoints;
+
     private static final String AI_LOCAL_ENDPOINT = "http://localhost:8000/";
 
 
@@ -41,7 +46,7 @@ public class AIServerImpl implements AIServerClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MissionAuth> request = new HttpEntity<>(missionAuthDto, headers);
-        String response = restTemplate.postForObject(AI_LOCAL_ENDPOINT + "verification", request, String.class);
+        String response = restTemplate.postForObject(aiMissionAuthEndpoints + "verification", request, String.class);
         JsonNode jsonNode = objectMapper.readTree(response);
         return jsonNode.get("certified").asBoolean();
     }
@@ -52,7 +57,16 @@ public class AIServerImpl implements AIServerClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         WeatherRequest weatherRequest = WeatherRequest.of(latitude, longitude, userId);
         HttpEntity<WeatherRequest> request = new HttpEntity<>(weatherRequest, headers);
-        String response = restTemplate.postForObject(AI_LOCAL_ENDPOINT + "weather_data", request, String.class);
+        String response = restTemplate.postForObject(aiWeatherEndpoints + "weather_data", request, String.class);
         return objectMapper.readValue(response, WeatherResponse.class);
+    }
+
+    @Override
+    public void sendUserInfo(SurveyRequestDto surveyResult, Long userId) {
+        SendUserInfoDto dto = SendUserInfoDto.of(surveyResult, userId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SendUserInfoDto> request = new HttpEntity<>(dto, headers);
+        restTemplate.postForObject(aiSendUserInfoEndpoints + "chat_with_pref", request, String.class);
     }
 }

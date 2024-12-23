@@ -3,7 +3,6 @@ package com.idle.weather.test;
 import com.idle.weather.board.api.port.BoardService;
 import com.idle.weather.test.concurrency.Isolation.IsolationFacade;
 import com.idle.weather.test.concurrency.javalock.ReentrantLockFacade;
-import com.idle.weather.test.concurrency.kafka.producer.KafkaProducerFacade;
 import com.idle.weather.test.concurrency.named.NamedLockFacade;
 import com.idle.weather.test.concurrency.optimistic.OptimisticLockFacade;
 import com.idle.weather.test.concurrency.optimistic.OptimisticLockFacadeOrigin;
@@ -27,7 +26,7 @@ public class TestController {
     private final RedissonLockStockFacade redissonLockStockFacade;
     private final IsolationFacade isolationFacade;
     private final ReentrantLockFacade reentrantLockFacade;
-    private final KafkaProducerFacade kafkaProducerFacade;
+    // private final KafkaProducerFacade kafkaProducerFacade;
 
 
     // 투표 추가 및 변경 (Artillery)

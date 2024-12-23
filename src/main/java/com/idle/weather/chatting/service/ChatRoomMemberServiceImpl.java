@@ -25,7 +25,7 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService {
         ChatRoomEntity chatRoom = chatRoomJpaRepository.findById(chatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found"));
         // 이미 존재하는 ChatRoomMemberEntity 확인
-        Optional<ChatRoomMemberEntity> existingMember = chatRoomMemberJpaRepository.findByChatRoomIdAndUserId(chatRoomId, userId);
+        Optional<ChatRoomMemberEntity> existingMember = chatRoomMemberJpaRepository.findWithUserByChatRoomIdAndUserId(chatRoomId, userId);
         // 이미 입장 처리된 사용자인지 확인
         if (existingMember.isPresent()) {
             // 이미 입장한 사용자일 경우 반환

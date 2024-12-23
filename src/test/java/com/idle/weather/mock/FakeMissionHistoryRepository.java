@@ -58,6 +58,11 @@ public class FakeMissionHistoryRepository implements MissionHistoryRepository {
         return false;
     }
 
+    @Override
+    public List<Long> findMissionIdsByUserAndDateRange(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return null;
+    }
+
 
     @Override
     public List<MissionHistory> findMissionHistoryByDate(Long userId, LocalDate date) {
