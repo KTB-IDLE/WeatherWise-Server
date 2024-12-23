@@ -15,4 +15,5 @@ public interface MissionHistoryRepository {
     MissionHistory save(MissionHistory missionHistory);
     List<MissionHistory> findMissionHistoriesByUserId(Long userId);
     boolean hasUserCompletedAnyMission(Long userId , LocalDateTime time);
+    List<Long> findMissionIdsByUserAndDateRange(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

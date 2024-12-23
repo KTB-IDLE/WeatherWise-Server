@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-@Component
-@RequiredArgsConstructor
-@Slf4j
-public class KafkaConsumer {
-    private final BoardService boardService;
-    @Bean
-    public Consumer<Message<VoteMessage>> consume() {
-        return voteMessageMessage -> {
-            VoteMessage message = voteMessageMessage.getPayload();
-            boardService.addVoteForConcurrencyTest(message.getUserId(), message.getBoardId(), message.getVoteType());
-        };
-    }
-}
+//@Component
+//@RequiredArgsConstructor
+//@Slf4j
+//public class KafkaConsumer {
+//    private final BoardService boardService;
+//    @Bean
+//    public Consumer<Message<VoteMessage>> consume() {
+//        return voteMessageMessage -> {
+//            VoteMessage message = voteMessageMessage.getPayload();
+//            boardService.addVoteForConcurrencyTest(message.getUserId(), message.getBoardId(), message.getVoteType());
+//        };
+//    }
+//}

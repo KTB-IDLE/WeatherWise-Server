@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -38,6 +39,11 @@ public class MissionRepositoryImpl implements MissionRepository{
     @Override
     public List<Mission> findAll() {
         return missionJpaRepository.findAll().stream().map(MissionEntity::toDomain).collect(toList());
+    }
+
+    @Override
+    public List<MissionEntity> findRandomMissionExcluding(List<Long> excludeIds , List<MissionType> types) {
+        return missionJpaRepository.findMissionsExcludingWithTypes(excludeIds , types);
     }
 
 }

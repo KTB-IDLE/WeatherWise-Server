@@ -49,4 +49,9 @@ public class MissionHistoryRepositoryImpl implements MissionHistoryRepository {
     public boolean hasUserCompletedAnyMission(Long userId, LocalDateTime time) {
         return missionHistoryJpaRepository.hasCompletedMissionToday(userId,time);
     }
+
+    @Override
+    public List<Long> findMissionIdsByUserAndDateRange(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return missionHistoryJpaRepository.findMissionIdsByUserAndDateRange(userId,startOfDay,endOfDay);
+    }
 }

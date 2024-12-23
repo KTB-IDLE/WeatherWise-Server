@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.idle.weather.home.WeatherResponse;
 import com.idle.weather.mission.api.request.MissionRequestDto;
 import com.idle.weather.mission.domain.CurrentWeatherResponse;
+import com.idle.weather.user.api.request.SurveyRequestDto;
 
 import static com.idle.weather.mission.api.request.MissionRequestDto.*;
 
@@ -16,4 +17,6 @@ public interface AIServerClient {
 
     // 날씨 가져오는 API
     WeatherResponse getCurrentWeatherInfo(double latitude , double longitude , Long userId) throws JsonProcessingException;
+
+    void sendUserInfo(SurveyRequestDto surveyResult, Long userId);
 }

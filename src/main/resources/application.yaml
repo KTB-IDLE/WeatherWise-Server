@@ -137,6 +137,7 @@ ai:
   endpoints:
     mission-auth: ${AI_ENDPOINTS_MISSION_AUTH}
     weather: ${AI_ENDPOINTS_WEATHER}
+    user-info: ${AI_ENDPOINTS_SEND_USER_INFO}
 
 logging:
   level:
