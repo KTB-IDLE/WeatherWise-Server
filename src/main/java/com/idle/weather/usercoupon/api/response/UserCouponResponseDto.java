@@ -11,6 +11,7 @@ public class UserCouponResponseDto {
 
     @Getter @Builder
     public static class SingleUserCoupon {
+        private Long userCouponId;
         private String name;
         private int disCountValue;
         private LocalDateTime expirationDate;
@@ -22,6 +23,7 @@ public class UserCouponResponseDto {
                     .disCountValue(coupon.getDiscountValue())
                     .expirationDate(coupon.getExpiresAt())
                     .isUsed(userCoupon.isUsed())
+                    .userCouponId(userCoupon.getId())
                     .build();
         }
 

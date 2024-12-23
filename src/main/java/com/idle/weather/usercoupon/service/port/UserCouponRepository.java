@@ -9,4 +9,6 @@ public interface UserCouponRepository {
     boolean hasCoupon(Long userId, Long couponId);
     void issuedCoupon(Long userId , Long conpouId);
     List<UserCouponEntity> findByUserId(Long userId);
+
+    UserCouponEntity findById(Long userCouponId);
 }

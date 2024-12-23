@@ -44,4 +44,8 @@ public class UserCouponEntity extends BaseEntity {
                 .build();
     }
 
+    public void use() {
+        this.isUsed = true;
+        this.usedAt = LocalDateTime.now();
+    }
 }
