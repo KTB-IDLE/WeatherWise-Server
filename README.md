@@ -19,14 +19,32 @@
 
 ### 📚 기술 스택
 
-|파트|프레임워크 & 라이브러리|
-|---|---|
-|Frontend|`Next.js`, `Typescript`, `TailWindCSS`, `Zustand`|
-|Backend|`Java`, `Spring Boot`, `Spring Security`, `Redis`, `Kafka`, `Spring Data Jpa`|
-|AI/ML|`Fast API`, `GPT-4o`, `LangChain`, `ollama`, `onnx`|
-|Infra|`Docker`, `AWS`, `Ansible`, `Terraform`, `Prometheus`, `Grafana`, `Kubernetes`, `Jenkins`|
-|Collaborative|`Notion`, `Figma`, `Github`, `Discord`|
+### **Frontend**
+- ⚛️ **React**: 사용자 인터페이스(UI) 개발을 위한 라이브러리
 
+### **Backend**
+- 🌱 **Spring Boot**: 강력한 백엔드 애플리케이션 개발 프레임워크
+- 🐬 **MySQL**: 데이터 저장 및 관리에 사용된 관계형 데이터베이스
+- 🚀 **Redis**: 캐싱 및 실시간 데이터 저장
+- 💬 **Kafka**: 메시지 큐 및 데이터 스트리밍 도구로 실시간 채팅 및 알림 구현
+
+### **DevOps / Infrastructure**
+- 🛠️ **Jenkins**: CI/CD 자동화를 위한 도구
+- 📦 **Docker**: 애플리케이션 컨테이너화
+- ☸️ **Kubernetes**: 컨테이너 오케스트레이션 및 관리
+- 🐙 **Argo**: DevOps 워크플로우 관리
+- ☁️ **AWS**: 클라우드 인프라 호스팅
+- 🔀 **Nginx**: 리버스 프록시 및 웹 서버
+
+### **AI / Automation**
+- 🐍 **Python**: 데이터 처리 및 AI 모델 개발
+- 🔗 **LangChain**: AI 어플리케이션 구축을 위한 프레임워크
+
+### **Collaboration / Tools**
+- 🐙 **GitHub**: 버전 관리 및 소스 코드 관리
+- 📝 **Notion**: 프로젝트 관리 및 문서화
+- 🎮 **Discord**: 팀 커뮤니케이션
+- 🎨 **Figma**: UI/UX 디자인
 
 </br>
 
