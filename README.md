@@ -1,4 +1,4 @@
-# 실시간 날씨 정보와 AI가 결합된 새로운 날씨 플랫폼, WeatherWise
+# 실시간 날씨 정보와 AI가 결합된 새로운 날씨 플랫폼, WeatherWise
 
 </br>
 
