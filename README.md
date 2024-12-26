@@ -158,6 +158,9 @@
 - **데이터 정합성**: 100% 데이터 일치 보장.
 - 다수의 동시 연결 환경에서도 메시지 손실 없이 실시간 채팅 가능.
 
+  
+<img width="691" alt="image" src="https://github.com/user-attachments/assets/b2aa2f2b-aa6a-47ee-8dbd-8ee5e75cc550" />
+
 </br>
 
   #### 2️⃣ 선착순 쿠폰 이벤트 (모놀리식 -> MSA 마이그레이션) - <ins>TPS 약 2배 향상</ins>
