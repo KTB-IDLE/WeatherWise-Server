@@ -2,6 +2,7 @@ package com.idle.weather.chatting.api;
 
 import com.idle.weather.chatting.api.port.ChatRoomService;
 import com.idle.weather.chatting.api.response.ChatRoomResponse;
+import com.idle.weather.global.BaseResponse;
 import com.idle.weather.chatting.repository.ChatRoomEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,44 +17,38 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    // 활성화된 모든 채팅방 조회
     @GetMapping("/activated")
-    public ResponseEntity<List<ChatRoomResponse>> getAllActivatedChatRooms() {
-        List<ChatRoomResponse> chatRooms = chatRoomService.getAllActivatedChatRooms();
-        return ResponseEntity.ok(chatRooms);
+    public ResponseEntity<BaseResponse<List<ChatRoomResponse>>> getAllActivatedChatRooms() {
+        return ResponseEntity.ok(new BaseResponse<>(chatRoomService.getAllActivatedChatRooms()));
     }
 
-    // 채팅방 생성
     @PostMapping
-    public ResponseEntity<ChatRoomEntity> createChatRoom(@RequestBody String parentRegionCode, @RequestBody String parentRegionName) {
-        return ResponseEntity.ok(chatRoomService.getOrCreateChatRoom(parentRegionCode, parentRegionName));
+    public ResponseEntity<BaseResponse<ChatRoomEntity>> createChatRoom(
+            @RequestParam String parentRegionCode,
+            @RequestParam String parentRegionName) {
+        ChatRoomEntity response = chatRoomService.getOrCreateChatRoom(parentRegionCode, parentRegionName);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
-    // 특정 채팅방 삭제
     @DeleteMapping("/{chatRoomId}")
     public ResponseEntity<Void> deleteChatRoom(@PathVariable Long chatRoomId) {
         chatRoomService.deleteChatRoomById(chatRoomId);
         return ResponseEntity.noContent().build();
     }
 
-    // 특정 채팅방 조회
     @GetMapping("/{chatRoomId}")
-    public ResponseEntity<ChatRoomResponse> getChatRoom(@PathVariable Long chatRoomId) {
-        return ResponseEntity.ok(chatRoomService.getChatRoomById(chatRoomId));
+    public ResponseEntity<BaseResponse<ChatRoomResponse>> getChatRoom(@PathVariable Long chatRoomId) {
+        return ResponseEntity.ok(new BaseResponse<>(chatRoomService.getChatRoomById(chatRoomId)));
     }
 
-    // 모든 채팅방 조회
     @GetMapping("/all")
-    public ResponseEntity<List<ChatRoomResponse>> getAllChatRooms() {
-        List<ChatRoomResponse> chatRooms = chatRoomService.getAllChatRooms();
-        return ResponseEntity.ok(chatRooms);
+    public ResponseEntity<BaseResponse<List<ChatRoomResponse>>> getAllChatRooms() {
+        return ResponseEntity.ok(new BaseResponse<>(chatRoomService.getAllChatRooms()));
     }
 
-    // 오래된 비활성화된 기상특보 삭제 수동 트리거 (테스트용)
     @DeleteMapping("/delete-old")
     public ResponseEntity<Void> deleteOldDeactivatedChatRooms(@RequestParam(defaultValue = "7") int day) {
         chatRoomService.deleteOldDeactivatedChatRooms(day);
         return ResponseEntity.noContent().build();
     }
-
 }

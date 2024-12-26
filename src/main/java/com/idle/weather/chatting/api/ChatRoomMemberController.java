@@ -1,7 +1,7 @@
 package com.idle.weather.chatting.api;
 
 import com.idle.weather.chatting.api.port.ChatRoomMemberService;
-import com.idle.weather.chatting.api.response.ChatRoomMemberResponse;
+import com.idle.weather.global.BaseResponse;
 import com.idle.weather.common.annotation.UserId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,24 +12,29 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/chat/{chatRoomId}/members")
-@RequiredArgsConstructor @Slf4j
+@RequiredArgsConstructor
+@Slf4j
 public class ChatRoomMemberController {
+
     private final ChatRoomMemberService chatRoomMemberService;
 
     @PostMapping("/join")
-    public ChatRoomMemberResponse joinChatRoom(@PathVariable Long chatRoomId, @UserId Long userId) {
+    public ResponseEntity<BaseResponse<Void>> joinChatRoom(
+            @PathVariable Long chatRoomId, @UserId Long userId) {
         log.info("JOIN 요청");
-        return chatRoomMemberService.joinChatRoom(chatRoomId, userId);
+        chatRoomMemberService.joinChatRoom(chatRoomId, userId);
+        return ResponseEntity.ok(new BaseResponse<>(null));
     }
 
     @DeleteMapping("/leave")
-    public ResponseEntity<Void> leaveChatRoom(@PathVariable Long chatRoomId, @UserId Long userId) {
+    public ResponseEntity<Void> leaveChatRoom(
+            @PathVariable Long chatRoomId, @UserId Long userId) {
         chatRoomMemberService.leaveChatRoom(chatRoomId, userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public List<Long> getChatRoomUsers(@PathVariable Long chatRoomId) {
-        return chatRoomMemberService.getChatRoomUsers(chatRoomId);
+    public ResponseEntity<BaseResponse<List<Long>>> getChatRoomUsers(@PathVariable Long chatRoomId) {
+        return ResponseEntity.ok(new BaseResponse<>(chatRoomMemberService.getChatRoomUsers(chatRoomId)));
     }
 }
