@@ -23,7 +23,6 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        log.info("Initializing LettuceConnectionFactory for Spring Data Redis");
         return new LettuceConnectionFactory(redisHost, redisPort);
     }
 

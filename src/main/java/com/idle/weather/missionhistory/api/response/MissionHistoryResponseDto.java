@@ -2,102 +2,80 @@ package com.idle.weather.missionhistory.api.response;
 
 import com.idle.weather.missionhistory.domain.MissionHistory;
 import com.idle.weather.missionhistory.repository.MissionTime;
-import lombok.Builder;
-import lombok.Getter;
 
 import java.util.List;
 
 public class MissionHistoryResponseDto {
 
-    @Builder @Getter
-    public static class SingleMissionHistory {
-        private Long id;
-        private String name;
-        private boolean isCompleted;
-        private MissionTime missionTime;
-        private String description;
-        private int point;
-
+    public record SingleMissionHistory(
+            Long id,
+            String name,
+            boolean isCompleted,
+            MissionTime missionTime,
+            String description,
+            int point
+    ) {
         public static SingleMissionHistory from(MissionHistory mh) {
-            return SingleMissionHistory.builder()
-                    .id(mh.getId())
-                    .point(mh.getMission().getPoint())
-                    .isCompleted(mh.isCompleted())
-                    .missionTime(mh.getMissionTime())
-                    .name(mh.getMission().getName())
-                    .description(mh.getMission().getDescription())
-                    .build();
+            return new SingleMissionHistory(
+                    mh.getId(),
+                    mh.getMission().getName(),
+                    mh.isCompleted(),
+                    mh.getMissionTime(),
+                    mh.getMission().getDescription(),
+                    mh.getMission().getPoint()
+            );
         }
     }
 
-    @Builder @Getter
-    public static class MissionHistoriesInfo {
-        private String nickName;
-        private List<SingleMissionHistory> missionList;
-
-        public static MissionHistoriesInfo of(String nickName , List<SingleMissionHistory> missionList) {
-            return MissionHistoriesInfo.builder()
-                    .nickName(nickName)
-                    .missionList(missionList)
-                    .build();
+    public record MissionHistoriesInfo(
+            String nickName,
+            List<SingleMissionHistory> missionList
+    ) {
+        public static MissionHistoriesInfo of(String nickName, List<SingleMissionHistory> missionList) {
+            return new MissionHistoriesInfo(nickName, missionList);
         }
     }
 
-    @Builder @Getter
-    public static class MissionAuthenticationView {
-        private String nickName;
-        private String missionName;
-        private String missionDescription;
-        private boolean isCompleted;
-        private String uploadFileLink;
-        private String storeFileName;
-
-        public static MissionAuthenticationView of(String nickName , MissionHistory missionHistory) {
-            return MissionAuthenticationView.builder()
-                    .missionName(missionHistory.getMission().getName())
-                    .missionDescription(missionHistory.getMission().getDescription())
-                    .nickName(nickName)
-                    .isCompleted(missionHistory.isCompleted())
-                    .uploadFileLink(missionHistory.getUploadFileName())
-                    .storeFileName(missionHistory.getStoreFileName())
-                    .build();
+    public record MissionAuthenticationView(
+            String nickName,
+            String missionName,
+            String missionDescription,
+            boolean isCompleted,
+            String uploadFileLink,
+            String storeFileName
+    ) {
+        public static MissionAuthenticationView of(String nickName, MissionHistory missionHistory) {
+            return new MissionAuthenticationView(
+                    nickName,
+                    missionHistory.getMission().getName(),
+                    missionHistory.getMission().getDescription(),
+                    missionHistory.isCompleted(),
+                    missionHistory.getUploadFileName(),
+                    missionHistory.getStoreFileName()
+            );
         }
     }
 
-    @Builder @Getter
-    public static class MissionAuthenticate {
-        private boolean isAuthenticated;
-        private int missionExp; // 해당 미션 포인트
-        private int userLevel; // 현재 user level
-        private int userExp; // 현재 user 가 보여하고 있는 포인트
-
-        public static MissionAuthenticate of(boolean isAuthenticated , int missionPoint , int userLevel ,
-                                             int userPoint) {
-            return MissionAuthenticate.builder()
-                    .isAuthenticated(isAuthenticated)
-                    .missionExp(missionPoint)
-                    .userLevel(userLevel)
-                    .userExp(userPoint)
-                    .build();
+    public record MissionAuthenticate(
+            boolean isAuthenticated,
+            int missionExp,
+            int userLevel,
+            int userExp
+    ) {
+        public static MissionAuthenticate of(boolean isAuthenticated, int missionPoint, int userLevel, int userPoint) {
+            return new MissionAuthenticate(isAuthenticated, missionPoint, userLevel, userPoint);
         }
 
         public static MissionAuthenticate fail() {
-            return MissionAuthenticate.builder()
-                    .isAuthenticated(false)
-                    .build();
+            return new MissionAuthenticate(false, 0, 0, 0);
         }
     }
-    @Builder @Getter
-    public static class SuccessMissionHistories {
-        private List<SingleMissionHistory> missionList;
 
+    public record SuccessMissionHistories(
+            List<SingleMissionHistory> missionList
+    ) {
         public static SuccessMissionHistories from(List<SingleMissionHistory> missionList) {
-            return SuccessMissionHistories.builder()
-                    .missionList(missionList)
-                    .build();
+            return new SuccessMissionHistories(missionList);
         }
-
     }
-
-
 }

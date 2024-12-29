@@ -21,12 +21,12 @@ public class SurveyResult {
 
     public static SurveyResult of(SurveyRequestDto surveyResult) {
         return SurveyResult.builder()
-                .q1_answer(surveyResult.getAnswers().get(0)+1)
-                .q2_answer(surveyResult.getAnswers().get(1)+1)
-                .q3_answer(surveyResult.getAnswers().get(2)+1)
-                .q4_answer(surveyResult.getAnswers().get(3)+1)
-                .q5_answer(surveyResult.getAnswers().get(4)+1)
-                .q6_answer(surveyResult.getAnswers().get(5)+1)
+                .q1_answer(surveyResult.answers().get(0)+1)
+                .q2_answer(surveyResult.answers().get(1)+1)
+                .q3_answer(surveyResult.answers().get(2)+1)
+                .q4_answer(surveyResult.answers().get(3)+1)
+                .q5_answer(surveyResult.answers().get(4)+1)
+                .q6_answer(surveyResult.answers().get(5)+1)
                 .build();
     }
 }

@@ -32,29 +32,25 @@ public class HomeService {
     private final UserRepository userRepository;
     private final MissionHistoryRepository missionHistoryRepository;
 
-    public HomeResponse getInfo(Long userId, double latitude , double longitude) throws JsonProcessingException {
-        long startTime = System.currentTimeMillis();
+    public HomeResponseDto getInfo(Long userId, double latitude , double longitude) throws JsonProcessingException {
         boolean result = userService.checkSurvey(userId);
 
         if (!result) {
-            return HomeResponse.from(result);
+            return HomeResponseDto.from(result);
         }
 
         WeatherResponse currentWeatherInfo = aiServerClient.getCurrentWeatherInfo(latitude, longitude, userId);
 
         List<MissionHistory> missionHistoryList = missionHistoryRepository.findMissionHistoriesByUserId(userId);
 
-        long endTime = System.currentTimeMillis();
-        log.info("result time = {} "  , endTime-startTime);
         // 미션 유무
-        return HomeResponse.of(result , currentWeatherInfo,missionHistoryList.size());
+        return HomeResponseDto.of(result , currentWeatherInfo,missionHistoryList.size());
     }
 
     @Transactional
     public void applySurveyResult(Long userId , SurveyRequestDto surveyResult) {
         User user = userRepository.findById(userId);
         user.applySurveyResult(surveyResult);
-        // aiServerClient.sendUserInfo(surveyResult , userId);
         userRepository.save(user);
     }
 

@@ -21,8 +21,6 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        log.debug("STOMP 헤더: {}", accessor.toNativeHeaderMap());
-
         String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -40,12 +38,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
         String userIdStr = userId.toString();
 
-        log.info("5-1 : STOMP 메시지 인증 성공: Long 타입, USER_ID={}", userId);
-        log.info("5-2 : STOMP 메시지 인증 성공: String 타입, USER_ID={}", userIdStr);
-
         accessor.setHeader("USER_ID", userIdStr);
-
-        log.info("6 : After setHeader in JwtChannelInterceptor: USER_ID in message header: {}", accessor.getHeader("USER_ID"));
 
         return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
     }

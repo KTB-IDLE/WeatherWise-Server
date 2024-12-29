@@ -25,11 +25,9 @@ public class StompUserIdArgumentResolver implements HandlerMethodArgumentResolve
                                   @Nullable Message<?> message) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String userIdStr = (String) accessor.getHeader("USER_ID");
-        log.info("1 : StompUserIdArgumentResolver 클래스!!, USER_ID from message header: {}", userIdStr);
         if (userIdStr == null) {
             throw new IllegalArgumentException("STOMP MESSAGE : USER_ID header를 찾지 못했습니다.");
         }
-        log.info("2 : StompUserIdArgumentResolver 클래스!!, USER_ID from message header: {}", userIdStr);
         return Long.valueOf(userIdStr);
     }
 }

@@ -24,7 +24,7 @@ public class HomeController {
      * Home API
      */
     @GetMapping("/home")
-    public ResponseEntity<BaseResponse<HomeResponse>> home(@UserId Long userId , @RequestParam("latitude") double latitude,
+    public ResponseEntity<BaseResponse<HomeResponseDto>> home(@UserId Long userId , @RequestParam("latitude") double latitude,
                                                            @RequestParam("longitude") double longitude) throws JsonProcessingException {
         return ResponseEntity.ok().body(new BaseResponse<>(homeService.getInfo(userId,latitude,longitude)));
     }
@@ -33,10 +33,8 @@ public class HomeController {
      * 설문조사 반영 API
      */
     @PatchMapping("/survey")
-    public ResponseEntity<String> applySurveyResult(@UserId Long userId, @RequestBody SurveyRequestDto surveyResult) {
+    public void applySurveyResult(@UserId Long userId, @RequestBody SurveyRequestDto surveyResult) {
         homeService.applySurveyResult(userId, surveyResult);
-        System.out.println("applySurveyResult 반영");
-        return ResponseEntity.ok("설문조사 완료");
     }
 
     /**

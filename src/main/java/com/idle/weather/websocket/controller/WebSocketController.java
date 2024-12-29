@@ -27,21 +27,18 @@ public class WebSocketController {
     @MessageMapping("/chat.sendMessage/{chatRoomId}")
     public void sendMessage(@DestinationVariable Long chatRoomId, @Payload ChatMessageRequest chatMessageRequest, @UserId Long senderId) {
         ChatMessageViewResponse chatMessageResponse = chatMessageService.sendMessage(chatRoomId, chatMessageRequest, senderId);
-        log.info("Sunny : WebSocketController에서 받은 USER_ID: " + senderId);
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, chatMessageResponse);
     }
 
     @MessageMapping("/chat.enterRoom/{chatRoomId}")
     public void enterRoom(@DestinationVariable Long chatRoomId, @UserId Long senderId) {
         chatRoomMemberService.joinChatRoom(chatRoomId,senderId);
-        log.info("enterRoom 호출");
         int count = chatRoomMemberService.getChatRoomUsers(chatRoomId).size();
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count);
     }
 
     @MessageMapping("/chat.exitRoom/{chatRoomId}")
     public void exitRoom(@DestinationVariable Long chatRoomId, @UserId Long senderId) {
-        log.info("exitRoom 호출");
         chatRoomMemberService.leaveChatRoom(chatRoomId,senderId);
         int count = chatRoomMemberService.getChatRoomUsers(chatRoomId).size();
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId + "/participants", count);

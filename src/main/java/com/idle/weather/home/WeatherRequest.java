@@ -1,22 +1,11 @@
 package com.idle.weather.home;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Builder @Getter
-@AllArgsConstructor @NoArgsConstructor
-public class WeatherRequest {
-    private double lat;
-    private double lon;
-    private String user_id;
-
+public record WeatherRequest(
+        double lat,
+        double lon,
+        String userId
+) {
     public static WeatherRequest of(double latitude, double longitude, Long userId) {
-        return WeatherRequest.builder()
-                .lat(latitude)
-                .lon(longitude)
-                .user_id(String.valueOf(userId))
-                .build();
+        return new WeatherRequest(latitude, longitude, String.valueOf(userId));
     }
 }

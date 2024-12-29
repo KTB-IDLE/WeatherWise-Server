@@ -30,9 +30,4 @@ public class LevelController {
                                                                                            @RequestParam("nickname") String nickName) {
         return ResponseEntity.ok().body(new BaseResponse<>(levelService.getRankingByNickName(nickName)));
     }
-
-    /*@GetMapping("/exp")
-    public ResponseEntity<BaseResponse<ExpByLevelResponse>> getExpByLevel(@RequestParam int level) {
-        return ResponseEntity.ok().body(new BaseResponse<>(levelService.getExpByLevel(level)));
-    }*/
 }

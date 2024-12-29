@@ -3,13 +3,11 @@ package com.idle.weather.coupon.api;
 import com.idle.weather.common.annotation.UserId;
 import com.idle.weather.coupon.api.response.CouponResponseDto;
 import com.idle.weather.coupon.service.CouponService;
-import com.idle.weather.coupon.service.port.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.idle.weather.coupon.api.response.CouponResponseDto.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class CouponController {
     }
 
     @GetMapping
-    public List<SingleCoupon> getCoupons() {
+    public List<CouponResponseDto> getCoupons() {
         return couponService.findAll();
     }
 

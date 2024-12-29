@@ -59,7 +59,7 @@ public class MissionServiceImpl implements MissionService {
         Mission mission = missionEntity.toDomain();
 
         // MissionHistory 저장
-        MissionHistory missionHistory = missionHistoryRepository.save(MissionHistory.of(user, mission, MissionTime.fromValue(createMission.getMissionTime())));
+        MissionHistory missionHistory = missionHistoryRepository.save(MissionHistory.of(user, mission, MissionTime.fromValue(createMission.missionTime())));
 
         return SingleMission.of(mission , missionHistory.getId());
     }

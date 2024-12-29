@@ -25,7 +25,6 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             ServerHttpResponse response,
             WebSocketHandler webSocketHandler,
             Map<String, Object> attributes) throws Exception {
-        log.info("WebSocket Handshake 요청 헤더: {}", request.getHeaders());
         return true;
     }
 

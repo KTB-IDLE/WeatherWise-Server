@@ -54,8 +54,8 @@ public class CouponService {
         userCouponRepository.issuedCoupon(userId,couponId);
     }
 
-    public List<SingleCoupon> findAll() {
+    public List<CouponResponseDto> findAll() {
         List<CouponEntity> result = couponRepository.findAll();
-        return result.stream().map(SingleCoupon::from).collect(Collectors.toList());
+        return result.stream().map(CouponResponseDto::from).collect(Collectors.toList());
     }
 }

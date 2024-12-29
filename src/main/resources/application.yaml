@@ -146,3 +146,5 @@ logging:
 google:
   api:
     key: ${GOOGLE_API_KEY}
+server:
+  port: 8081

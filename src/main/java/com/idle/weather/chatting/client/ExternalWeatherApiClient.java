@@ -70,11 +70,6 @@ public class ExternalWeatherApiClient {
 
                 String alertLevel = fields[7].trim(); // '경보', '주의', '예비' 중 하나
 
-                // '경보'가 아닌 경우 필터링
-//                if (!"경보".equals(alertLevel)) {
-//                    continue;
-//                }
-
                 WeatherAlertEntity weatherAlertEntity = WeatherAlertEntity.createWeatherAlert(
                         fields[0].trim(), // regUp
                         fields[1].trim(), // regUpKo

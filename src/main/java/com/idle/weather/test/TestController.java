@@ -28,12 +28,9 @@ public class TestController {
     private final ReentrantLockFacade reentrantLockFacade;
     // private final KafkaProducerFacade kafkaProducerFacade;
 
-
-    // 투표 추가 및 변경 (Artillery)
     @PostMapping(path = "/{boardId}/vote/{userId}")
     public void addVote(@PathVariable Long boardId, @PathVariable Long userId ,
                         @RequestBody TestVoteRequestType voteType) throws InterruptedException {
-        // 기존 방법 (Sunny)
         // optimisticLockFacadeOrigin.addVoteForConcurrencyTest(userId,boardId,voteType.getVoteType());
         boardService.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());
         // optimisticLockFacade.addVoteForConcurrencyTest(userId, boardId, voteType.getVoteType());

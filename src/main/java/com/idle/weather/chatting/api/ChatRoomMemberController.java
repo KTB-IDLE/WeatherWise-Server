@@ -21,7 +21,6 @@ public class ChatRoomMemberController {
     @PostMapping("/join")
     public ResponseEntity<BaseResponse<Void>> joinChatRoom(
             @PathVariable Long chatRoomId, @UserId Long userId) {
-        log.info("JOIN 요청");
         chatRoomMemberService.joinChatRoom(chatRoomId, userId);
         return ResponseEntity.ok(new BaseResponse<>(null));
     }
