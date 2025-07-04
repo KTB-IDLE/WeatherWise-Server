@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userIdInterceptor)
                 .addPathPatterns("/**") // 모든 경로에 대해 적용
-                .excludePathPatterns("/exclude-path"); // 제외할 경로가 있으면 추가
+                .excludePathPatterns("/exclude-path","/ws/chat/**", "/actuator/**"); // 제외할 경로 추가
     }
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
