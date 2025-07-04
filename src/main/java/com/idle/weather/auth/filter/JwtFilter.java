@@ -47,6 +47,12 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        // WebSocket 엔드포인트는 JwtFilter 적용 제외
+        if (path.startsWith("/actuator")) {
+            log.debug("actuator 경로 요청 - 필터 제외: {}", path);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Request Header에서 토큰 추출
         String token = HeaderUtil.refineHeader(request, Constants.AUTHORIZATION_HEADER, Constants.BEARER_PREFIX)
