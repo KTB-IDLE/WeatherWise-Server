@@ -1,0 +1,13 @@
+config:
+  target: 'ws://localhost:8080/ws/chat'
+  phases:
+    - duration: 10
+      arrivalRate: 25
+
+scenarios:
+  - engine: ws
+    name: Chat Load Test
+    flow:
+      - loop:
+          - send: '{"chatRoomId":1,"message":"테스트 메시지"}'
+        count: 1
