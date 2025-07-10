@@ -371,6 +371,3 @@ Kafka를 활용한 비동기 메시지 처리는:
 ### 🚀 트러블 슈팅
   #### 1️⃣ 추가
 
-### 👨‍💻 팀원
-- Frontend Developer: 박설, 김지원
-- Backend Developer: 박설, 김지원
